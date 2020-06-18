@@ -1,7 +1,7 @@
 |       Unit      |               Topic               |  Contributor  | Video | Tutorial |
 |:---------------:|:---------------------------------:|:-------------:|:-----:|:--------:|
 | Example         | Example-Topic                     | Maria-Example |   x   |     x    |
-| Getting started | Introducing R & RStudio           |     Jacob     |   x   |     X    |
+| Getting started | Introducing R & RStudio           |     Jacob     |   x   |     x    |
 | Getting started | Clone repo + new project          |               |       |          |
 | Getting started | GitHub push + pull                |               |       |          |
 | Getting started | R Markdown basics                 |     Jacob     |   x   |     x    |
