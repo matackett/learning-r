@@ -1,13 +1,13 @@
 |       Unit      |               Topic               |  Contributor  | Video | Tutorial |
 |:---------------:|:---------------------------------:|:-------------:|:-----:|:--------:|
 | Example         | Example-Topic                     | Maria-Example |   x   |     x    |
-| Getting started | Introducing R & RStudio           |               |       |          |
+| Getting started | Introducing R & RStudio           |     Jacob     |   x   |     X    |
 | Getting started | Clone repo + new project          |               |       |          |
 | Getting started | GitHub push + pull                |               |       |          |
-| Getting started | R Markdown basics                 |               |       |          |
-| Getting started | Introducing tidyverse             |               |       |          |
+| Getting started | R Markdown basics                 |     Jacob     |   x   |     x    |
+| Getting started | Introducing tidyverse             |     Jacob     |   x   |     x    |
 | Getting started | Code style                        |               |       |          |
-| Data viz        | `ggplot2` basics                  |               |       |          |
+| Data viz        | `ggplot2` basics                  |     Jacob     |   x   |     x    |
 | Data viz        | Customizing plots                 |               |       |          |
 | Data wrangling  | `dplyr` basics                    |     Yue-J     |   x   |     x    |
 | Data wrangling  | `forecats` / dealing with factors |     Yue-J     |   x   |     x    |
@@ -18,7 +18,7 @@
 | Regression      | `lm` + tidy output + `glance`     |     Yue-J     |   x   |     x    |
 | Regression      | `augment`                         |     Yue-J     |   x   |     x    |
 | Regression      | `glm` + tidy output               |     Yue-J     |   x   |     x    |
-| Special topics  | Spatial data                      |               |       |          |
+| Special topics  | Spatial data                      |     Jacob     |   x   |     x    |
 | Special topics  | Web scraping                      |               |       |          |
 | Special topics  | Functions                         |               |       |          |
 | Special topics  | Automation                        |               |       |          |
