@@ -22,6 +22,6 @@
 | Special topics  | Web scraping                      |               |       |          |
 | Special topics  | Functions                         |               |       |          |
 | Special topics  | Automation                        |               |       |          |
-| Special topics  | Text analysis                     |               |       |          |
+| Special topics  | Text analysis                     |     Yue-J     |   x   |     x    |
 | Special topics  | Intro to Shiny                    |               |       |          |
 | Special topics  | knn classification                |               |       |          |
