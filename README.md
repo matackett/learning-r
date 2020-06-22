@@ -6,7 +6,7 @@
 | Getting started | GitHub push + pull                |               |       |          |
 | Getting started | R Markdown basics                 |     Jacob     |   x   |     x    |
 | Getting started | Introducing tidyverse             |     Jacob     |   x   |     x    |
-| Getting started | Code style                        |               |       |          |
+| Getting started | Code style                        |     Shawn     |   x   |     x    |
 | Data viz        | `ggplot2` basics                  |     Jacob     |   x   |     x    |
 | Data viz        | Customizing plots                 |               |       |          |
 | Data wrangling  | `dplyr` basics                    |     Yue-J     |   x   |     x    |
@@ -19,9 +19,9 @@
 | Regression      | `augment`                         |     Yue-J     |   x   |     x    |
 | Regression      | `glm` + tidy output               |     Yue-J     |   x   |     x    |
 | Special topics  | Spatial data                      |     Jacob     |   x   |     x    |
-| Special topics  | Web scraping                      |               |       |          |
-| Special topics  | Functions                         |               |       |          |
-| Special topics  | Automation                        |               |       |          |
+| Special topics  | Web scraping                      |     Shawn     |   x   |     x    |
+| Special topics  | Functions                         |     Shawn     |   x   |     x    |
+| Special topics  | Automation                        |     Shawn     |   x   |     x    |
 | Special topics  | Text analysis                     |     Yue-J     |   x   |     x    |
-| Special topics  | Intro to Shiny                    |               |       |          |
+| Special topics  | Intro to Shiny                    |     Shawn     |   x   |     x    |
 | Special topics  | knn classification                |               |       |          |
