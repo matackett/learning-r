@@ -1,14 +1,13 @@
 |       Unit      |               Topic               |  Contributor  | Video | Tutorial |
 |:---------------:|:---------------------------------:|:-------------:|:-----:|:--------:|
-| Example         | Example-Topic                     | Maria-Example |   x   |     x    |
 | Getting started | Introducing R & RStudio           |     Jacob     |   x   |     x    |
-| Getting started | Clone repo + new project          |               |       |          |
-| Getting started | GitHub push + pull                |               |       |          |
+| Getting started | Clone repo + new project          |     Maria     |       |          |
+| Getting started | GitHub push + pull                |     Maria     |       |          |
 | Getting started | R Markdown basics                 |     Jacob     |   x   |     x    |
 | Getting started | Introducing tidyverse             |     Jacob     |   x   |     x    |
 | Getting started | Code style                        |     Shawn     |   x   |     x    |
 | Data viz        | `ggplot2` basics                  |     Jacob     |   x   |     x    |
-| Data viz        | Customizing plots                 |               |       |          |
+| Data viz        | Customizing plots                 |     Maria     |       |          |
 | Data wrangling  | `dplyr` basics                    |     Yue-J     |   x   |     x    |
 | Data wrangling  | `forecats` / dealing with factors |     Yue-J     |   x   |     x    |
 | Data wrangling  | Data types                        |     Yue-J     |   x   |     x    |
