@@ -11,9 +11,9 @@
 | Data wrangling  | `dplyr` basics                    |     Yue-J     |   x   |     x    |
 | Data wrangling  | `forecats` / dealing with factors |     Yue-J     |   x   |     x    |
 | Data wrangling  | Data types                        |     Yue-J     |   x   |     x    |
-| Inference       | Bootstrap w/ infer                |               |       |          |
-| Inference       | Simulation-based testing w/ infer |               |       |          |
-| Inference       | CLT t-tests w/ infer              |               |       |          |
+| Inference       | Bootstrap w/ infer                |     Bob       |   x   |     x    |
+| Inference       | Simulation-based testing w/ infer |     Bob       |   x   |     x    |
+| Inference       | CLT t-tests w/ infer              |     Bob       |   x   |     x    |
 | Regression      | `lm` + tidy output + `glance`     |     Yue-J     |   x   |     x    |
 | Regression      | `augment`                         |     Yue-J     |   x   |     x    |
 | Regression      | `glm` + tidy output               |     Yue-J     |   x   |     x    |
