@@ -1,8 +1,8 @@
 |       Unit      |               Topic               |  Contributor  | Video | Tutorial |
 |:---------------:|:---------------------------------:|:-------------:|:-----:|:--------:|
 | Getting started | Introducing R & RStudio           |     Jacob     |   x   |     x    |
-| Getting started | Clone repo + new project          |     Maria     |   x   |          |
-| Getting started | GitHub push + pull                |     Maria     |   x   |          |
+| Getting started | Clone repo + new project          |     Maria     |   x   |     x    |
+| Getting started | GitHub push + pull                |     Maria     |   x   |     x    |
 | Getting started | R Markdown basics                 |     Jacob     |   x   |     x    |
 | Getting started | Introducing tidyverse             |     Jacob     |   x   |     x    |
 | Getting started | Code style                        |     Shawn     |   x   |     x    |
@@ -23,4 +23,4 @@
 | Special topics  | Automation                        |     Shawn     |   x   |     x    |
 | Special topics  | Text analysis                     |     Yue-J     |   x   |     x    |
 | Special topics  | Intro to Shiny                    |     Shawn     |   x   |     x    |
-| Special topics  | knn classification                |               |       |          |
+| Special topics  | knn classification                |     Maria     |   x   |     x    |
