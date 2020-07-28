@@ -1,0 +1,848 @@
+---
+title: "Shiny"
+output: 
+  learnr::tutorial:
+    progressive: false
+    css: "css/tutorial.css"
+    theme: "sandstone"
+    allow_skip: true
+    includes:
+      in_header: www/hex.html
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(knitr)
+library(tidyverse)
+library(shiny)
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, exercise.timelimit = 5)
+```
+
+## Introduction
+
+---
+
+### Learning objectives
+
+- Shiny framework
+- Inputs and outputs of Shiny
+- Reactivity
+
+---
+
+Shiny is an R package that makes it easy to build interactive web apps straight 
+from R. You can host standalone apps on a webpage or embed them in R Markdown 
+documents or build dashboards. You can also extend your Shiny apps with CSS 
+themes, htmlwidgets, and JavaScript actions. To get an idea of Shiny's 
+capabilities check our the Shiny gallery at https://shiny.rstudio.com/gallery/.
+
+This tutorial serves as a gentle introduction to Shiny and covers the 
+essentials in Shiny's 
+[*Part 1 - How to build a Shiny app*](https://vimeo.com/131218530) video. 
+For advanced Shiny topics and concepts, check out Shiny's own tutorial and
+resources at https://shiny.rstudio.com/tutorial/. 
+
+### Packages
+
+The following packages have been loaded in this tutorial:
+
+```{r}
+library(shiny)
+library(tidyverse)
+```
+
+<br/>
+
+Video to go here...
+
+## Getting started
+
+Instead of coding in an R Markdown file, you will develop your Shiny app
+in a script, `.R`, file. To get started
+
+1. open RStudio;
+
+2. if not installed, run `install.packages("shiny")`;
+
+3. go to `File` `>` `New File` `>` `Shiny Web App`;
+
+4. enter your application's name;
+
+5. keep option Single File (app.R) selected;
+
+6. enter the directory of where the application should be saved;
+
+7. a file `app.R` should open. This is a 
+   template app that serves as a good starting point.
+   
+The template app uses a dataset named `faithful` that is available in the `base`
+package of R. This dataset contains waiting times between eruptions and the 
+duration of the eruption for the Old Faithful geyser in Yellowstone National 
+Park, Wyoming, USA. Variables `eruptions` and `waiting` are both in minutes.
+This tutorial will build on the template app as a way to introduce key 
+components of Shiny.
+
+Click the `Run App` button. Your template app should look similar to what 
+you see below.
+
+### {.tabset .tabset-fade .tabset-pills}
+
+#### App
+
+```{r echo=FALSE}
+fluidPage(
+  
+    titlePanel("Old Faithful Geyser Data"),
+
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput("bins",
+                        "Number of bins:",
+                        min = 1,
+                        max = 50,
+                        value = 30)
+        ),
+        
+        mainPanel(
+           plotOutput("distPlot")
+        )
+    )
+)
+
+```
+
+```{r echo=FALSE, context="server"}
+output$distPlot <- renderPlot({
+  x    <- faithful[, 2]
+  bins <- seq(min(x), max(x), length.out = input$bins + 1)
+
+  hist(x, breaks = bins, col = 'darkgray', border = 'white')
+})
+```
+
+#### Code
+
+```{r eval=FALSE}
+# Define UI for application that draws a histogram
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("Old Faithful Geyser Data"),
+
+    # Sidebar with a slider input for number of bins 
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput("bins",
+                        "Number of bins:",
+                        min = 1,
+                        max = 50,
+                        value = 30)
+        ),
+
+        # Show a plot of the generated distribution
+        mainPanel(
+           plotOutput("distPlot")
+        )
+    )
+)
+
+# Define server logic required to draw a histogram
+server <- function(input, output) {
+
+    output$distPlot <- renderPlot({
+        # generate bins based on input$bins from ui.R
+        x    <- faithful[, 2]
+        bins <- seq(min(x), max(x), length.out = input$bins + 1)
+
+        # draw the histogram with the specified number of bins
+        hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    })
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+
+
+## Shiny framework
+
+A Shiny app is comprised of two main parts: a **user interface (ui)** and a set 
+of **server** instructions. These exist together in a single file named `app.R`.
+
+### User interface (UI)
+
+The user interface of a Shiny app controls the layout, positioning of items, and
+overall appearance of your app. This is what users see when they interact with
+your app. Generally, the UI will consist of a collection of input widgets and
+output displays. In the *Old Faithful Geyser Data* app from last section, there
+was one input widget (slider input) and one output display (plot). Shiny apps
+can also support action buttons, multiple tabs or pages, themes, and much more.
+
+The user interface is built with HTML. The package `shiny` has
+helpful wrapper functions that facilitate app development without a deep
+understanding of HTML. For example, the slider widget from the
+*Old Faithful Geyser Data* app was created with the R function `sliderInput()`.
+Run the code below to see how this creates a slider widget. The corresponding
+HTML is given further below.
+
+```{r slider_demo, exercise=TRUE}
+sliderInput(inputId = "bins", label = "Number of bins:", min = 1, max = 50, value = 30)
+```
+
+```html
+<div class="form-group shiny-input-container">
+  <label class="control-label" for="bins">Number of bins:</label>
+  <input class="js-range-slider" id="bins" data-min="1" data-max="50" data-from="30" data-step="1" data-grid="true" data-grid-num="9.8" data-grid-snap="false" data-prettify-separator="," data-prettify-enabled="true" data-keyboard="true" data-data-type="number"/>
+</div>
+```
+
+Rather than having to master a lot of fancy HTML, you only need to know the R
+functions available to create specific widgets. `shiny` has structured these
+functions in such a way that is makes it relatively easy to build a fancy UI.
+
+### Server
+
+Every Shiny app is maintained by a computer running R. This could be your
+own computer (see Figure 1) or a remote server (see Figure 2). 
+When you develop your app, your computer will
+run a session of R. When you go to publish your app, a remote server will
+serve as the computer running the R session.
+
+<figure>
+<center>
+<img src="images/overview_1.png" height="200" width="500"/>
+<figcaption>Figure 1: Shiny app on laptop / desktop</figcaption>
+</center>
+</figure>
+
+<br/>
+
+<figure>
+<center>
+<img src="images/overview_2.png" height="250" width="400"/>
+<figcaption>Figure 2: Shiny app on remote server</figcaption>
+</center>
+</figure>
+
+<br/>
+
+The server provides a set of R instructions for how the app should react to
+user actions. These instructions live inside the `server()` function of the
+Shiny app framework. As you change the value of the slider widget in the 
+template app, a set of R code in the server function takes that value and 
+replots the histogram.
+
+```{r echo=FALSE}
+fluidPage(
+  
+    titlePanel("Old Faithful Geyser Data"),
+
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput("bins_2",
+                        "Number of bins:",
+                        min = 1,
+                        max = 50,
+                        value = 30)
+        ),
+        
+        mainPanel(
+           plotOutput("distPlot_2")
+        )
+    )
+)
+
+```
+
+```{r echo=FALSE, context="server"}
+output$distPlot_2 <- renderPlot({
+  x    <- faithful[, 2]
+  bins <- seq(min(x), max(x), length.out = input$bins_2 + 1)
+
+  hist(x, breaks = bins, col = 'darkgray', border = 'white')
+})
+```
+
+The R server code uses the input Id name of the input widgets as way to
+reference the current value of the widget. In this example, the value for the
+number of bins for the histogram is connected through the input Id of `"bins"`.
+
+### {.tabset .tabset-fade .tabset-pills}
+
+#### User interface
+
+```{r eval=FALSE}
+# Define UI for application that draws a histogram
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("Old Faithful Geyser Data"),
+
+    # Sidebar with a slider input for number of bins 
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput(inputId = "bins",
+                        label   = "Number of bins:",
+                        min     = 1,
+                        max     = 50,
+                        value   = 30)
+        ),
+
+        # Show a plot of the generated distribution
+        mainPanel(
+           plotOutput("distPlot")
+        )
+    )
+)
+```
+
+#### Server
+
+```{r eval=FALSE}
+# Define server logic required to draw a histogram
+server <- function(input, output) {
+
+    output$distPlot <- renderPlot({
+        # generate bins based on input$bins from ui.R
+        x    <- faithful[, 2]
+        bins <- seq(min(x), max(x), length.out = input$bins + 1)
+
+        # draw the histogram with the specified number of bins
+        hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    })
+}
+```
+
+### {-}
+
+Once the `ui` object is defined and the `server()` function is created, both are
+passed into the function `shinyApp()` to create the Shiny application.
+
+## Input widgets
+
+### Prerequisites
+
+You'll go through adding some enhancements to your template app to learn more 
+about the input widgets Shiny offers. Before you get started, update your 
+histogram with a `ggplot`-style histogram. Remove everything inside 
+`renderPlot({})` of your server function and replace it with
+
+```{r eval=FALSE}
+faithful %>% 
+  ggplot(aes(x = waiting)) +
+  geom_histogram(bins = input$bins_3, fill = "red", color = "black", alpha = .3) +
+  labs(x = "Waiting time", y = "Frequency", title = "Old Faithful Geyser") +
+  theme_minimal(base_size = 16)
+```
+
+Don't forget to load `tidyverse`. 
+Run you app. It should now look similar to the app below.
+
+```{r echo=FALSE}
+fluidPage(
+  
+    titlePanel("Old Faithful Geyser Data"),
+
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput("bins_3",
+                        "Number of bins:",
+                        min = 1,
+                        max = 50,
+                        value = 30)
+        ),
+        
+        mainPanel(
+           plotOutput("distPlot_3")
+        )
+    )
+)
+
+```
+
+```{r echo=FALSE, context="server"}
+output$distPlot_3 <- renderPlot({
+  faithful %>% 
+    ggplot(aes(x = waiting)) +
+    geom_histogram(bins = input$bins_3, fill = "red", color = "black", alpha = .3) +
+    labs(x = "Waiting time", y = "Frequency", title = "Old Faithful Geyser") +
+    theme_minimal(base_size = 16)
+})
+```
+
+### Available widgets
+
+Check out the 
+[Shiny Widgets Gallery](https://shiny.rstudio.com/gallery/widget-gallery.html) 
+to see some of the available widgets. Each
+of these has two common arguments: `inputId` and `label`. The `inputID` takes
+a character value that will be used internally to access the value of the
+widget. The `label` is the displayed value for the widget in the user
+interface. It is what users will see when they interact with your app.
+All other arguments are widget-specific. Always look at the help when
+working with a new widget.
+
+### Select input {.tabset .tabset-fade .tabset-pills}
+
+#### Instructions
+
+<br/>
+
+In the user interface after `sliderInput()`, add a select input box to your 
+user interface. Include colors “Red”, “Blue”, “Green”, “Grey”, with “Red” as 
+the default color. Look at the help for function `selectInput()`. After you 
+make the changes, run your app.
+
+*You'll need a comma to separate input widgets.*
+
+#### Widget
+
+<br/>
+
+```{r select_input_widget, exercise=TRUE}
+selectInput(inputId = "fill_color", label = "Fill color", 
+            choices = c("Red", "Blue", "Green", "Grey"),
+            selected = "Red")
+```
+
+#### App
+
+<br/>
+
+```{r echo=FALSE}
+fluidPage(
+  
+    titlePanel("Old Faithful Geyser Data"),
+
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput("bins_4",
+                        "Number of bins:",
+                        min = 1,
+                        max = 50,
+                        value = 30),
+            
+            selectInput(inputId  = "fill_color", 
+                        label    = "Fill color", 
+                        choices  = c("Red", "Blue", "Green", "Grey"),
+                        selected = "Red")
+        ),
+        
+        mainPanel(
+           plotOutput("distPlot_4")
+        )
+    )
+)
+
+```
+
+```{r echo=FALSE, context="server"}
+output$distPlot_4 <- renderPlot({
+  faithful %>% 
+    ggplot(aes(x = waiting)) +
+    geom_histogram(bins = input$bins_4, fill = "red", color = "black", alpha = .3) +
+    labs(x = "Waiting time", y = "Frequency", title = "Old Faithful Geyser") +
+    theme_minimal(base_size = 16)
+})
+```
+
+#### Updated user interface
+
+<br/>
+
+```{r eval=FALSE}
+# Define UI for application that draws a histogram
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("Old Faithful Geyser Data"),
+
+    # Sidebar with a slider input for number of bins 
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput(inputId = "bins",
+                        label   = "Number of bins:",
+                        min     = 1,
+                        max     = 50,
+                        value   = 30),
+            
+            selectInput(inputId  = "fill_color", 
+                        label    = "Fill color", 
+                        choices  = c("Red", "Blue", "Green", "Grey"),
+                        selected = "Red")
+        ),
+
+        # Show a plot of the generated distribution
+        mainPanel(
+           plotOutput("distPlot")
+        )
+    )
+)
+```
+
+### Check box {.tabset .tabset-fade .tabset-pills}
+
+#### Instructions
+
+<br/>
+
+Update the user interface to include a check box that reads “Preview data”. 
+Place this below the select input box. Set the default for the check box to be 
+unchecked. Type `?checkboxInput` in your Console for help. After you make the 
+changes, run your app.
+
+*You'll need a comma to separate input widgets.*
+
+#### Widget
+
+<br/>
+
+```{r checkbox_widget, exercise=TRUE}
+checkboxInput(inputId = "check_box", label = "Preview data", value = FALSE)
+```
+
+#### App
+
+<br/>
+
+```{r echo=FALSE}
+fluidPage(
+  
+    titlePanel("Old Faithful Geyser Data"),
+
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput("bins_5",
+                        "Number of bins:",
+                        min = 1,
+                        max = 50,
+                        value = 30),
+            
+            selectInput(inputId  = "fill_color_2", 
+                        label    = "Fill color", 
+                        choices  = c("Red", "Blue", "Green", "Grey"),
+                        selected = "Red"),
+            
+            checkboxInput(inputId = "check_box", 
+                          label   = "Preview data", 
+                          value   = FALSE)
+        ),
+        
+        mainPanel(
+           plotOutput("distPlot_5")
+        )
+    )
+)
+
+```
+
+```{r echo=FALSE, context="server"}
+output$distPlot_5 <- renderPlot({
+  faithful %>% 
+    ggplot(aes(x = waiting)) +
+    geom_histogram(bins = input$bins_5, fill = "red", color = "black", alpha = .3) +
+    labs(x = "Waiting time", y = "Frequency", title = "Old Faithful Geyser") +
+    theme_minimal(base_size = 16)
+})
+```
+
+#### Updated user interface
+
+<br/>
+
+```{r eval=FALSE}
+# Define UI for application that draws a histogram
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("Old Faithful Geyser Data"),
+
+    # Sidebar with a slider input for number of bins 
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput(inputId = "bins",
+                        label   = "Number of bins:",
+                        min     = 1,
+                        max     = 50,
+                        value   = 30),
+            
+            selectInput(inputId  = "fill_color", 
+                        label    = "Fill color", 
+                        choices  = c("Red", "Blue", "Green", "Grey"),
+                        selected = "Red"),
+            
+            checkboxInput(inputId = "check_box", 
+                          label   = "Preview data", 
+                          value   = FALSE)
+        ),
+
+        # Show a plot of the generated distribution
+        mainPanel(
+           plotOutput("distPlot")
+        )
+    )
+)
+```
+
+### {-}
+
+As you may have noticed, changing the fill color in the select box from Red to
+Blue does not change the color of the rectangles in the histogram, yet. 
+Likewise, checking "Preview data" has no affect on the app. In the next 
+section, you'll link these newly created widgets to R code in the server 
+function to enable reactivity.
+
+## Display reactive output
+
+### Prerequisites
+
+Update the user interface to include space for a data table to be output below
+the histogram. Use function `dataTableOutput()` inside function `mainPanel()` 
+and below `plotOutput()`. All you need to provide in `dataTableOutput()` is
+an `outputId` value that will be used in the server function.
+Separate functions `plotOutput()` and `dataTableOutput()` with a comma.
+
+```{r eval=FALSE}
+mainPanel(
+   plotOutput(outputId = "distPlot"),
+   dataTableOutput(outputId = "datatable")
+)
+```
+
+After you make the changes, run your app. You should see no changes in the 
+user interface. All you have done is allocate space in your user interface for 
+a data table to be displayed.
+
+### Server function
+
+Including `plotOutput()` and `dataTableOutput()` in the user interface tells
+Shiny where to position these objects. To tell Shiny how to create these objects
+you'll need to provide R code in the server function.
+
+The `server` function plays a special role in the Shiny process; it builds a 
+list-like object named `output` that contains all of the code needed to update 
+the R objects in your app. Each R object needs to have its own entry in the 
+list. Your template app currently has one entry, `output$distPlot`.
+
+Each output entry is connected with a `render*()` function. These render
+functions allow you to incorporate the reactive values from widgets into your
+R code. There is a connection between the render function you use and the
+output you want to display.
+
+| Output function in UI| Creates   |
+|----------------------|-----------|
+| `dataTableOutput`    | DataTable |
+| `htmlOutput`         | raw HTML  |
+| `imageOutput`        | image     |
+| `plotOutput`         | plot      |
+| `tableOutput`        | table     |
+| `textOutput`         | text      |
+| `uiOutput`           | raw HTML  |
+| `verbatimTextOutput` | text      |
+
+| Render function in server  | Creates                                         |
+|----------------------------|-------------------------------------------------|
+| `renderDataTable`          | DataTable                                       |
+| `renderImage`              | images (saved as a link to a source file)       |
+| `renderPlot`               | plots                                           |
+| `renderPrint`              | any printed output                              |
+| `renderTable`              | data frame, matrix, other table like structures |
+| `renderText`               | character strings                               |
+| `renderUI`                 | a Shiny tag object or HTML                      |
+
+### Use widget values
+
+In the `server` function, `input` is another list-like object. It holds all the
+values of the widgets in your app. To access these values inside a render
+function, use the form `input$<id_for_widget>`; where `<id_for_widget>` is
+replaced with the widget Id you used in your UI. For example, to reference
+the slider input's value in a render function, use `input$bins`. This is
+how you create reactivity in your Shiny app and connect the inputs to the
+outputs. 
+
+<div class="info">
+**Note!** Keep in mind that these reactive values can only be used in
+reactive style functions within your server function. The render functions
+are one set of functions that support reactive values.
+</div>
+
+### Connect fill color {.tabset .tabset-fade .tabset-pills}
+
+#### Instructions
+
+<br/>
+
+Update the `renderPlot()` component of the server function so the histogram's
+fill color will change when a new fill color is selected from the select input
+widget.
+
+#### App
+
+<br/>
+
+```{r echo=FALSE}
+fluidPage(
+  
+    titlePanel("Old Faithful Geyser Data"),
+
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput("bins_6",
+                        "Number of bins:",
+                        min = 1,
+                        max = 50,
+                        value = 30),
+            
+            selectInput(inputId  = "fill_color_3", 
+                        label    = "Fill color", 
+                        choices  = c("Red", "Blue", "Green", "Grey"),
+                        selected = "Red"),
+            
+            checkboxInput(inputId = "check_box_2", 
+                          label   = "Preview data", 
+                          value   = FALSE)
+        ),
+        
+        mainPanel(
+           plotOutput("distPlot_6"),
+           dataTableOutput(outputId = "datatable")
+        )
+    )
+)
+
+```
+
+```{r echo=FALSE, context="server"}
+output$distPlot_6 <- renderPlot({
+  faithful %>% 
+    ggplot(aes(x = waiting)) +
+    geom_histogram(bins = input$bins_6, fill = input$fill_color_3, 
+                   color = "black", alpha = .3) +
+    labs(x = "Waiting time", y = "Frequency", title = "Old Faithful Geyser") +
+    theme_minimal(base_size = 16)
+})
+```
+
+#### Updated server function
+
+<br/>
+
+```{r eval=FALSE}
+# Define server logic required to draw a histogram
+server <- function(input, output) {
+
+  output$distPlot <- renderPlot({
+    faithful %>% 
+      ggplot(aes(x = waiting)) +
+      geom_histogram(bins = input$bins, fill = input$fill_color, 
+                     color = "black", alpha = .3) +
+      labs(x = "Waiting time", y = "Frequency", title = "Old Faithful Geyser") +
+      theme_minimal(base_size = 16)
+  })
+}
+```
+
+### Connect data preview {.tabset .tabset-fade .tabset-pills}
+
+#### Instructions
+
+<br/>
+
+Update the server function so six random rows of `faithful` will be displayed 
+below the histogram when “Preview data” is checked. 
+Use function `renderDataTable()`.
+
+#### App
+
+<br/>
+
+```{r echo=FALSE}
+fluidPage(
+  
+    titlePanel("Old Faithful Geyser Data"),
+
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput("bins_7",
+                        "Number of bins:",
+                        min = 1,
+                        max = 50,
+                        value = 30),
+            
+            selectInput(inputId  = "fill_color_4", 
+                        label    = "Fill color", 
+                        choices  = c("Red", "Blue", "Green", "Grey"),
+                        selected = "Red"),
+            
+            checkboxInput(inputId = "check_box_3", 
+                          label   = "Preview data", 
+                          value   = FALSE)
+        ),
+        
+        mainPanel(
+           plotOutput("distPlot_7"),
+           dataTableOutput(outputId = "datatable_2")
+        )
+    )
+)
+
+```
+
+```{r echo=FALSE, context="server"}
+output$distPlot_7 <- renderPlot({
+  faithful %>% 
+    ggplot(aes(x = waiting)) +
+    geom_histogram(bins = input$bins_7, fill = input$fill_color_4, 
+                   color = "black", alpha = .3) +
+    labs(x = "Waiting time", y = "Frequency", title = "Old Faithful Geyser") +
+    theme_minimal(base_size = 16)
+})
+
+output$datatable_2 <- renderDataTable({
+  if (input$check_box_3) {
+    faithful %>% 
+      sample_n(size = 6)
+  }
+})
+```
+
+#### Updated server function
+
+<br/>
+
+```{r eval=FALSE}
+# Define server logic required to draw a histogram
+server <- function(input, output) {
+
+  output$distPlot <- renderPlot({
+    faithful %>% 
+      ggplot(aes(x = waiting)) +
+      geom_histogram(bins = input$bins, fill = input$fill_color, 
+                     color = "black", alpha = .3) +
+      labs(x = "Waiting time", y = "Frequency", title = "Old Faithful Geyser") +
+      theme_minimal(base_size = 16)
+  })
+  
+  output$datatable <- renderDataTable({
+    if (input$check_box) {
+      faithful %>% 
+        sample_n(size = 6)
+    }
+  })
+}
+```
+
+## Additional resources
+
+Want to learn more about Shiny? Check out some of the following resources.
+
+1. Part 2 and Part 3 of Shiny's [video tutorial](https://vimeo.com/131218530)
+
+2. In-depth articles on specific Shiny topics: https://shiny.rstudio.com/articles/
+
+3. [Dashboards](https://rstudio.github.io/shinydashboard/) using Shiny
+
+## References
+
+1. Shiny. (2020). Retrieved from https://shiny.rstudio.com/

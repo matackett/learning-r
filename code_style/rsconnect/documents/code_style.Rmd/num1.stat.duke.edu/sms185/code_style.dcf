@@ -1,0 +1,12 @@
+name: code_style
+title: code_style
+username: sms185
+account: sms185
+server: num1.stat.duke.edu
+hostUrl: http://num1.stat.duke.edu:3939/__api__
+appId: 8
+bundleId: 24
+url: http://num1.stat.duke.edu:3939/code_style/
+when: 1595963454.42586
+asMultiple: FALSE
+asStatic: FALSE
