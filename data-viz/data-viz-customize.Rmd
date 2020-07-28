@@ -1,7 +1,6 @@
 ---
 title: "Customizing Data Visualizations"
 author: "Maria Tackett"
-date: "7/28/2020"
 output: 
   html_document:
     toc: true
@@ -173,8 +172,61 @@ decorate("change-axis") %>%
 
 We can change the color palette used for the visualization. The default color palette used in `ggplot2` is not color-blind safe, so we can change the color palette to make our plots more accessible to all readers. 
 
+Let's look at a plot of the Miles per gallon vs. Horsepower colored by the cylinders.
 
-## Change font? 
+```{r}
+ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) + 
+  geom_point() +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon", 
+       color = "Cylinder",
+       subtitle = "by Cylinder",
+       title = "Horsepower vs. Miles per gallon") 
+```
+
+This is the default color palette in `ggplot2`; however,we may want to use a different color palette. One way to do this is by using the `scale_color_brewer()` function. Using this function, we can indicate which RColorBrewer palette we wish to use. 
+
+Here is the same plot above using the "Set1" color palette: 
+
+```{r set1-color, eval = F, echo = F}
+ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) + 
+  geom_point() +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon", 
+       color = "Cylinder",
+       title = "Horsepower vs. Miles per gallon",
+       subtitle = "by Cylinder") + 
+  scale_colour_brewer(palette = "Set1")
+```
+
+```{r echo = F}
+decorate("set1-color") %>%
+  flair("scale_colour_brewer(palette = \"Set1\")", background = "pink")
+```
+
+Another option for color palettes are those available in the `viridis` package. These palettes are good to make your plots more readable by those with colorblindness. 
+
+```{r viridis, echo = F, eval = F}
+library(viridis)  
+
+ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) + 
+  geom_point() +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon", 
+       color = "Cylinder",
+       title = "Horsepower vs. Miles per gallon",
+       subtitle = "by Cylinder") + 
+   scale_color_viridis(discrete = TRUE) # for discrete color scale
+```
+```{r echo = F}
+decorate("viridis") %>%
+  flair("library(viridis)", background = "pink") %>%
+  flair("scale_color_viridis(discrete = TRUE) # for discrete color scale", background = "pink")
+```
+
+
+You can find a full list of color palettes to use in `scale_color_brewer` and `scale_color_viridis` [here](https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/).
+
 
 ## Change theme
 
@@ -343,4 +395,6 @@ Finally, you can use the `plot_annotation()` function to add labels and other te
 
 - https://ggplot2.tidyverse.org/
 - https://patchwork.data-imaginist.com/index.html
+- [R for Data Science: Data visualization](https://r4ds.had.co.nz/data-visualisation.html)
+- [ggplot2: Elegant Graphics for Data Analysis](ggplot2: Elegant Graphics for Data Analysis)
 
