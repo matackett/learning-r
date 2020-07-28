@@ -1,0 +1,111 @@
+---
+title: "k nearest neighbor"
+author: "Maria Tackett"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      warning = FALSE, 
+                      message = FALSE)
+```
+
+By the end of this tutorial, you be able to:
+
+- Use `dplyr` to create training and test data sets
+- Use R to conduct knn
+- Compare actual and predicted classifications
+
+The following packages are used in this tutorial:
+
+```{r load-packages}
+library(tidyverse)
+library(class)
+library(palmerpenguins)
+```
+
+## The Data
+
+For this tutorial, we are using the `penguins` dataset from the [`palmerpenguins` R package](https://allisonhorst.github.io/palmerpenguins/index.html) maintained by Dr. Allison Horst. This data contains measurements and other characteristics for 344 penguins observed near Palmer Station Antartica. The data were originally collected by Dr. Kristen Gorman. Click [here](https://allisonhorst.github.io/palmerpenguins/reference/penguins.html) to view the codebook for this data set.
+
+```{r}
+glimpse(penguins)
+```
+
+There are some observations with missing values for the measurements, so we will remove those for the purposes of this analysis: 
+
+```{r}
+penguins <- penguins %>%
+  drop_na()
+```
+
+## Exploratory data analysis
+
+We will use k-nearest neighbor to classify the penguins into three groups based on their measurements. Before performing the classification, let's do a brief exploratory data analysis to take a look at the data. 
+
+```{r}
+ggplot(data = penguins, aes(x = species)) +
+  geom_bar(fill = "cyan4") +
+  labs(title = "Distribution of Penguin Species")
+```
+
+## k-nearest neighbor
+
+We will use the `knn` function from the `class` package. Let's start by splitting the data into training and test sets using `dplyr` functions.
+
+```{r}
+set.seed(072020) #set a seed since we will use random sampling
+
+# shuffle the observations
+penguins_shuffle <- penguins %>%
+  sample_n(nrow(penguins), replace = FALSE)
+
+n <- nrow(penguins_shuffle)
+
+train <- penguins_shuffle %>%
+  slice(1:(n-10))
+
+test <- penguins_shuffle %>%
+  slice((n-9):nrow(penguins_shuffle))
+```
+
+```{r}
+train_species <- train %>%
+  select(species) %>%
+  pull()
+
+test_species <- test %>%
+  select(species) %>%
+  pull()
+```
+
+```{r}
+train <- train %>%
+  select(body_mass_g, ends_with("_mm"))
+
+test <- test %>%
+  select(body_mass_g, ends_with("_mm"))
+```
+
+Let's perform k-nearest neighbor
+```{r}
+library(class)
+
+knn_species <- knn(train, test, train_species, k = 3, prob = FALSE)
+```
+
+Let's compare the actual values of species with the ones produced by knn for the penguins in the test set. 
+
+```{r}
+results <- tibble(actual = test_species, 
+                  predicted = knn_species)
+
+results %>%
+  count(actual, predicted)
+```
+
+
+
