@@ -20,20 +20,15 @@ library(patchwork)
 library(flair)
 ```
 
+In the [DATA VIZ - INSERT LINK] tutorial, you learned the basics of `ggplot2`, the tidyverse's primary package for creating data visualizations. In this tutorial, we will focus on different ways you can customize your data visualizations. 
 
-[INTRODUCTION]
+By the end of this tutorial, you be able to:
 
-See the [Data Visualization tutorial] to learn the basics of the `ggplot2` package.
-
-[LEARNING OBJECTIVES]
-
-- Aesthetics (by variable, for all observations)
-  - size, shape, alpha, color
-- Change axes limits
-- change scale / color palette
-- theme (standard themes)
-- ggthemes package
-- put it all together
+- Add aesthetics to a plot
+- Change the limits on the x and y axis
+- Change the color palette
+- Apply a theme to a plot
+- Arrange multiple plots in a grid
 
 ## The Data
 
@@ -275,6 +270,68 @@ decorate("ggthemes") %>%
 
 
 ### Patchwork 
+
+Sometimes we want to organize multiple plots in a grid to more neatly format our document / presentation. This is especially helpful if you have a lot of plots (e.g. when doing exploratory data analysis). 
+
+We can use the `patchwork` package to more neatly organize plots in a grid. To do so, you can assign an object name to each plot, then use those names to organize the plots. 
+
+Let's suppose we have the following three plots assigned to names `p1`, `p2`, and `p3`: 
+
+```{r}
+p1 <- ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) + 
+  geom_point() +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon", 
+       color = "Transmission")
+
+p2 <- ggplot(data = mtcars, aes(x = cyl)) + 
+  geom_bar() +
+  labs(x = "Number of Cylinders")
+
+p3 <- ggplot(data = mtcars, aes(x = hp)) + 
+  geom_histogram() +
+  labs(x = "Horsepower")
+```
+
+First, let's use the code below to load the patchwork package: 
+
+```{r echo = F}
+library(patchwork)
+```
+
+Use `/` to put a plot on a new row:  
+
+```{r}
+p1 / p2 / p3
+```
+
+Use `+` to put a plot in a new column: 
+
+```{r}
+p1 + p2 + p3
+```
+
+You can combine the `/` and `+` to arrange the plots by row and column. Let's put `p1` and `p2` on the first row and `p3` on the second row: 
+
+```{r}
+(p1 + p2) / p3
+```
+Just like in "order of operations", the `/` will be applied before `+`, so use parentheses (as in the code above) if you want the `+` to apply first. 
+
+Let's repeat the code above without the parentheses: 
+
+```{r}
+p1 + p2 / p3
+```
+
+Notice how the plots differ. 
+
+Finally, you can use the `plot_annotation()` function to add labels and other text annotations to patchwork objects. Using the code below, we can use letters to label the plots: 
+
+```{r}
+(p1 + p2) / p3 +
+  plot_annotation(tag_levels = "A")
+```
 
 ## Practice: Put it all together
 
