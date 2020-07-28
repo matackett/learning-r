@@ -1,0 +1,201 @@
+---
+title: "Customizing Data Visualizations"
+author: "Maria Tackett"
+date: "7/28/2020"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      warning = FALSE, 
+                      message = FALSE)
+```
+
+```{r load-packages}
+library(tidyverse)
+library(patchwork)
+library(flair)
+```
+
+
+[INTRODUCTION]
+
+See the [Data Visualization tutorial] to learn the basics of the `ggplot2` package.
+
+[LEARNING OBJECTIVES]
+
+- Aesthetics (by variable, for all observations)
+  - size, shape, alpha, color
+- Change axes limits
+- change scale / color palette
+- theme (standard themes)
+- ggthemes package
+- put it all together
+
+## The Data
+
+We will use the `mtcars` data set, which is automatically loaded when you open RStudio. The data is from the 1974 *Motor Trend* magazine, and it contains performance information and other specifications for 32 automobiles made in 1973 and 1974. 
+
+To learn more about the data set and the variable definitions, type the following code in the console: 
+
+```{r}
+?mtcars
+```
+
+```{r}
+mtcars <- mtcars %>%
+  mutate(am = factor(am),
+         cyl = factor(cyl), 
+         vs = factor(vs)
+         )
+```
+
+We create data visualizations using the `ggplot2` package. It is one of the core `tidyverse` packages, so it loads automatically when we load `tidyverse`.
+
+*Notice `ggplot2` in the list of packages loaded in the code below.*
+
+```{r, message = T, warning = T}
+library(tidyverse)
+```
+
+## The basic plot 
+
+Let's start with a scatterplot displaying the relationship between horsepower (`hp`) and miles per gallon (`mpg`).
+
+```{r}
+ggplot(data = mtcars, aes(x = hp, y = mpg)) +
+  geom_point() +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon", 
+       title = "Horsepower vs. Miles per gallon")
+```
+
+Using this as a baseline, let's customize the plot. 
+
+
+## Aesthetics 
+
+We can add aesthetics (features) to our plot to incorporate additional variables or to customize the plot. These aesthetics include
+
+- `color`
+- `shape`
+- `size`
+- `alpha` (transparency)
+
+Aesthetics can be mapped in two different ways: 
+
+1. Aesthetic based on value of a variable. Aesthetic defined inside `aes()`.
+2. Same aesthetic for all observations. Defined in the `geom_**` outside of `aes()`. 
+
+Let's look at two plots in which the `color` aesthetic is applied in both ways: 
+
+```{r echo = F}
+p1 <- ggplot(data = mtcars, aes(x = hp, y = mpg, color = factor(am))) +
+  geom_point() +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon",
+       color = "Transmission",
+       subtitle = "by Transmission",
+       title = "Horsepower vs. Miles per gallon")
+
+p2 <- ggplot(data = mtcars, aes(x = hp, y = mpg)) +
+  geom_point(color = "blue") +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon",
+       title = "Horsepower vs. Miles per gallon")
+
+p1 / p2 + plot_annotation(tag_levels = c('A'))
+```
+
+Notice in **Plot A** that the color of the points is based on the type of transmission (`am`). Using color in this way, we have added additional information to the plot, so instead of just doing a bivariate analsyis of the relationship between miles per gallon and horsepower, the visualization displays a multivariate relationship between horsepower, miles per gallon and transmission. 
+
+Let's look at the code for **Plot A**. 
+
+```{r aes-var, eval = F}
+ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) + 
+  geom_point() +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon", 
+       color = "Transmission",
+       subtitle = "by Transmission",
+       title = "Horsepower vs. Miles per gallon")
+```
+
+```{r echo = F}
+decorate("aes-var") %>% 
+  flair("color = am", background = "pink") %>%
+  flair("subtitle = \"by Transmission\"", background = "pink") %>%
+  flair("color = \"Transmission\"", background = "pink")
+```
+
+Notice how the code used to define the color is inside of the `aes()` function. This tells R to color the points based on the type of transmission (`am`). We also label the legend and add a subtitle to the plot. 
+
+Now, let's take a look at the code for **Plot B**. 
+
+```{r aes-all, echo = F, eval = F}
+ggplot(data = mtcars, aes(x = hp, y = mpg)) +
+  geom_point(color = "blue") +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon",
+       title = "Horsepower vs. Miles per gallon")
+```
+
+```{r echo = F}
+decorate("aes-all") %>% 
+  flair("color = \"blue\"", background = "pink")
+```
+
+Here, we have applied the same aesthetic to all observations. Since we don't color the points based on the value of a variable, we define the color in the `geom_**` outside of the `aes()` function. In this case, we haven't added any additional information to the basic plot, but we have used the aesthetic to make the plot more visually appealing.
+
+## Change axes limits
+
+Let's stick with **Plot A** for now. 
+
+Another way to customize the plot is to change the limits on the x and y axes. Suppose we want to zoom in on a portion of the plot. Let's change the axes to do so. 
+
+```{r change-axis, echo = F, eval = F}
+ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) + 
+  geom_point() +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon", 
+       color = "Transmission",
+       subtitle = "by Transmission",
+       title = "Horsepower vs. Miles per gallon") +
+  xlim(c(100, 300)) +
+  ylim(c(15, 25))
+```
+
+```{r echo = F}
+decorate("change-axis") %>% 
+  flair("xlim(c(100, 300)) +", background = "pink") %>%
+  flair("ylim(c(15, 25))", background = "pink")
+```
+
+
+
+
+
+## Change scale / color palette
+
+## Change theme
+
+### Using standard theme
+
+### `ggthemes` package
+
+### Patchwork 
+
+## Practice: Put it all together
+
+
+
+
+
+## More resources
+
+- https://ggplot2.tidyverse.org/
+- https://patchwork.data-imaginist.com/index.html
+
