@@ -104,7 +104,7 @@ p2 <- ggplot(data = mtcars, aes(x = hp, y = mpg)) +
 p1 / p2 + plot_annotation(tag_levels = c('A'))
 ```
 
-Notice in **Plot A** that the color of the points is based on the type of transmission (`am`). Using color in this way, we have added additional information to the plot, so instead of just doing a bivariate analsyis of the relationship between miles per gallon and horsepower, the visualization displays a multivariate relationship between horsepower, miles per gallon and transmission. 
+Notice in **Plot A** that the color of the points is based on the type of transmission (`am`). Using color in this way, we have added additional information to the plot, so instead of just doing a bivariate analysis of the relationship between miles per gallon and horsepower, the visualization displays a multivariate relationship between horsepower, miles per gallon and transmission. 
 
 Let's look at the code for **Plot A**. 
 
