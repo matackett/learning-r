@@ -387,11 +387,9 @@ Finally, you can use the `plot_annotation()` function to add labels and other te
 
 ## Practice: Put it all together
 
+[ADD ACTIVITIES]
 
-
-
-
-## More resources
+## Resources
 
 - https://ggplot2.tidyverse.org/
 - https://patchwork.data-imaginist.com/index.html
