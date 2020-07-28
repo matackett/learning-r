@@ -174,17 +174,105 @@ decorate("change-axis") %>%
   flair("ylim(c(15, 25))", background = "pink")
 ```
 
+## Change scale / color palette - come back to this!
+
+We can change the color palette used for the visualization. The default color palette used in `ggplot2` is not color-blind safe, so we can change the color palette to make our plots more accessible to all readers. 
 
 
-
-
-## Change scale / color palette
+## Change font? 
 
 ## Change theme
 
-### Using standard theme
+We may want to change the overall look of the visualization, e.g. the background, gridlines, etc. One way to do this is by applying a theme to the visualization. 
+
+### Themes in `ggplot2` package
+
+Let's look at two different themes that are available in `ggplot2` package.
+
+```{r theme-dark, echo = F, eval = F}
+ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) + 
+  geom_point() +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon", 
+       color = "Transmission",
+       subtitle = "by Transmission",
+       title = "Horsepower vs. Miles per gallon") +
+ theme_dark()
+```
+
+```{r echo = F}
+decorate("theme-dark") %>%
+  flair("theme_dark()", background = "pink")
+```
+
+```{r theme-classic, eval = F, echo = F}
+ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) + 
+  geom_point() +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon", 
+       color = "Transmission",
+       subtitle = "by Transmission",
+       title = "Horsepower vs. Miles per gallon") +
+ theme_classic()
+```
+
+```{r echo = F}
+decorate("theme-classic") %>%
+  flair("theme_classic()", background = "pink")
+```
+
+A list of complete themes available in the `ggplot2` package can be found [here](https://ggplot2.tidyverse.org/reference/ggtheme.html). 
+
+You can also customize the elements of a visualization individually by using the `theme()` function. One instance in which this function is especially useful is to update the font size for the labels on plots. 
+
+```{r font-size, echo = F, eval = F}
+ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) + 
+  geom_point() +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon", 
+       color = "Transmission",
+       subtitle = "by Transmission",
+       title = "Horsepower vs. Miles per gallon") +
+ theme(plot.title = element_text(size = 20), 
+       axis.title.x = element_text(size = 16), 
+       axis.title.y = element_text(size = 16))
+
+```
+
+```{r echo = F}
+decorate("font-size") %>%
+  flair("theme(plot.title = element_text(size = 20),", background = "pink") %>%
+  flair("axis.title.x = element_text(size = 16),", background = "pink") %>%
+  flair("axis.title.y = element_text(size = 16))", background = "pink")
+```
+
+See the [`theme()` reference page](https://ggplot2.tidyverse.org/reference/theme.html) to learn more about customizing themes. 
 
 ### `ggthemes` package
+
+The `ggthemes` package has a selection of custom themes and color palettes to help you customize your plot. You can find all of the themes and palettes on the [`ggthemes` webpage](https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/). 
+
+You will need to load the `ggthemes` package. Here is an example of one of their themes: 
+
+```{r ggthemes, eval = F, echo = F}
+library(ggthemes)
+
+ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) + 
+  geom_point() +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon", 
+       color = "Transmission",
+       subtitle = "by Transmission",
+       title = "Horsepower vs. Miles per gallon") +
+ theme_fivethirtyeight()
+```
+
+```{r echo = F}
+decorate("ggthemes") %>%
+  flair("library(ggthemes)", background = "pink") %>%
+  flair("theme_fivethirtyeight()", background = "pink")
+```
+
 
 ### Patchwork 
 
