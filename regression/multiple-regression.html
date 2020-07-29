@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Multiple predictors</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <link rel="stylesheet" href="sta199-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Multiple predictors
+### Duke University
+
+---
+
+
+
+
+
+
+class: center, middle
+
+### Multivariable models
+
+---
+
+### Modeling
+
+- We use models to explain relationships between variables and make 
+predictions
+
+- For now we will focus on **linear** models (but remember there are other types 
+of models too!)
+
+- Today, we will focus on fitting and interpreting models with a continuous 
+outcome variable and **multiple** predictors. This type of model is often called a &lt;font class = "vocab"&gt;multivariable&lt;/font&gt; 
+(*not multivariate*) model
+
+- We will also explore assumptions of the linear model and assess them using
+some additional functions from the `broom` package
+
+---
+
+class: center, middle
+
+# Atmospheric measurements
+
+---
+
+### Today's data
+
+&lt;img src="img/beijing1.png" width="70%" style="display: block; margin: auto;" /&gt;
+&lt;center&gt;
+Series of atmospheric measurements taken at the
+Agriculture Exhibition Hall in Beijing from 2013 - 2017
+&lt;/center&gt;
+---
+
+### `glimpse` the dataset
+
+
+```r
+beijing &lt;- read_csv("data/beijing.csv")
+glimpse(beijing)
+```
+
+```
+## Observations: 1,500
+## Variables: 16
+## $ year  &lt;dbl&gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2...
+## $ month &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3...
+## $ day   &lt;dbl&gt; 2, 3, 3, 3, 4, 4, 6, 6, 6, 6, 6, 11, 12, 14, 15, 16, 18, 18, ...
+## $ hour  &lt;dbl&gt; 21, 0, 5, 23, 5, 10, 0, 9, 10, 15, 22, 16, 22, 0, 16, 2, 0, 1...
+## $ PM2.5 &lt;dbl&gt; 69, 122, 90, 103, 3, 13, 229, 176, 138, 227, 234, 110, 163, 6...
+## $ PM10  &lt;dbl&gt; 90, 142, 109, 138, 6, 20, 232, 177, 170, 245, 257, 140, 137, ...
+## $ SO2   &lt;dbl&gt; 68, 86, 77, 36, 10, 16, 124, 88, 96, 119, 140, 115, 28, 30, 9...
+## $ NO2   &lt;dbl&gt; 116, 106, 102, 128, 22, 32, 182, 116, 114, 153, 158, 84, 94, ...
+## $ CO    &lt;dbl&gt; 2200, 3100, 3100, 2799, 300, 500, 3299, 2500, 2200, 2899, 370...
+## $ O3    &lt;dbl&gt; 6, 8, 5, 5, 74, 68, 48, 35, 35, 35, 14, 86, 14, 93, 59, 59, 1...
+## $ TEMP  &lt;dbl&gt; 0.5, -2.2, -5.2, 7.1, 6.0, 11.5, 5.6, 8.4, 8.8, 14.7, 8.3, 11...
+## $ PRES  &lt;dbl&gt; 1024.8, 1022.3, 1018.5, 1016.7, 1020.1, 1022.3, 1010.4, 1010....
+## $ DEWP  &lt;dbl&gt; -15.1, -12.8, -11.6, -12.2, -14.2, -14.3, -7.0, -6.6, -6.2, -...
+## $ RAIN  &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0...
+## $ wd    &lt;chr&gt; "N", "N", "NE", "N", "NW", "N", "NE", "N", "NE", "SW", "SE", ...
+## $ WSPM  &lt;dbl&gt; 0.2, 0.0, 0.9, 0.4, 2.4, 0.0, 0.8, 0.8, 1.1, 1.3, 1.8, 2.7, 0...
+```
+
+---
+
+class: center, middle
+
+### Modeling the relationship between variables
+
+---
+
+### Dew point and barometric pressure
+
+![](multiple-regression_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+`$$\widehat{DEWP} = 1071 - 1.08 PRES$$`
+
+---
+
+### Can we do better?
+
+We have a pretty good idea of what the dew point would be, **conditional** on
+the value of the barometric pressure. But if we knew the temperature and  
+precipitation, we might do even better!
+
+Let's add some more predictors to our model:
+
+
+```r
+mod3 &lt;- lm(DEWP ~ PRES + TEMP + RAIN, data = beijing)
+tidy(mod3)
+```
+
+```
+## # A tibble: 4 x 5
+##   term        estimate std.error statistic   p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)  361.      36.1         9.99 8.29e- 23
+## 2 PRES          -0.364    0.0353    -10.3  4.21e- 24
+## 3 TEMP           0.723    0.0313     23.1  3.06e-101
+## 4 RAIN           1.15     0.270       4.26 2.12e-  5
+```
+
+---
+
+### The multiple regression model
+
+The underlying linear model is given by
+
+`$$y_i = \beta_0 + \beta_1 x_{1i} + \beta_2x_{2i} + \cdots + \beta_px_{pi} + 
+\epsilon_i$$`
+
+- `\(p\)` is the total number of predictor or explanatory variables
+- `\(y_i\)` is the outcome variable for individual `\(i\)`
+- `\(\beta_0\)` is the intercept parameter
+- `\(\beta_1, \beta_2, \cdots, \beta_p\)` are the slope parameters
+- `\(x_{1i}, \cdots, x_{pi}\)` are the predictor variables
+- `\(\epsilon_i\)` is the unobserved error term
+
+Interpretations for slope estimates are made **conditionally** on other 
+predictors in the model. In this way, we can adjust for potential confounders
+in our model.
+
+---
+
+### Interpreting coefficients
+
+
+```
+## # A tibble: 4 x 5
+##   term        estimate std.error statistic   p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)  361.      36.1         9.99 8.29e- 23
+## 2 PRES          -0.364    0.0353    -10.3  4.21e- 24
+## 3 TEMP           0.723    0.0313     23.1  3.06e-101
+## 4 RAIN           1.15     0.270       4.26 2.12e-  5
+```
+
+`$$\widehat{DEWP} = 316 - 0.364 PRES + 0.723 TEMP + 1.15 RAIN$$`
+
+- If the barometric pressure, temperature, and precipitation are all 0, then we
+would expect a dew point of 361 degrees Celsius (hmm...)
+
+- For each additional hPa increase in barometric pressure, we would expect a
+0.364 C *decrease* in dew point (on average), 
+**holding temperature and precipiation constant**
+
+- For each additional degree C increase in temperature, we would expect a 0.723
+C increase in dew point (on average),
+**holding barometric pressure and precipiation constant**
+
+- For each additional mm increase in precipitation, we would expect a 1.15 C
+increase in dew point (on average),
+**holding barometric pressure and temperature constant**
+
+---
+
+### Inference with multiple predictors
+
+
+```
+## # A tibble: 4 x 5
+##   term        estimate std.error statistic   p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)  361.      36.1         9.99 8.29e- 23
+## 2 PRES          -0.364    0.0353    -10.3  4.21e- 24
+## 3 TEMP           0.723    0.0313     23.1  3.06e-101
+## 4 RAIN           1.15     0.270       4.26 2.12e-  5
+```
+
+We may again test hypotheses that `\(\beta\)` coefficients are equal to 0 (vs. the
+alternative that they are not equal to 0). 
+
+Be sure that any interpretation for slopes are made **conditionally** on the
+other predictors in the model (that is, holding them constant/adjusting for 
+them, etc.).
+
+.question[
+Is there sufficient evidence that barometric pressure has a linear association
+with dew point, while adjusting for temperature and precipitation?
+]
+
+---
+
+### Returning to `\(R^2\)`
+
+
+```
+## # A tibble: 1 x 11
+##   r.squared adj.r.squared sigma statistic p.value    df logLik    AIC    BIC
+##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1     0.708         0.707  7.55     1209.       0     4 -5158. 10327. 10353.
+## # ... with 2 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;
+```
+
+We see that approximately 70% of the variability in dew point explained by its
+linear relationship with barometric pressure, temperature, and dew point, which
+is higher than the 60% explained by barometric pressure alone.
+
+However, `\(R^2\)` can never decrease when variables are added to a model, 
+*even if they are useless for prediction*. We adjust for the number of 
+predictors in our model to obtain **adjusted** `\(R^2\)`, where the adjustment 
+is made to account for the number of predictors.
+
+`\(R^2_{adj}\)` incorporates a penalty for each additional predictor, so it will go 
+down if a new variable does not meaningfully improve prediction
+
+Note that `\(R^2_{adj}\)` can **not** be interpreted as explained variability
+
+---
+
+### Interaction effects
+
+Sometimes, the effect of one variable depends on the value of another. For 
+example, the effect of exercise % on obesity may be different for smokers vs.
+non-smokers. To model such a relationship, we create an &lt;font class = "vocab"&gt;interaction term&lt;/font&gt;.
+
+We fit interaction terms in the model by multiplying predictors together:
+
+
+```
+## # A tibble: 5 x 5
+##   term        estimate std.error statistic   p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)  361.      36.0        10.0  5.58e- 23
+## 2 PRES          -0.364    0.0352    -10.3  2.73e- 24
+## 3 TEMP           0.725    0.0312     23.2  4.31e-102
+## 4 RAIN           9.01     2.65        3.40 6.97e-  4
+## 5 TEMP:RAIN     -0.354    0.119      -2.98 2.93e-  3
+```
+
+`\begin{align*}
+\widehat{DEWP} &amp;= 361 - 0.364 PRES + 0.725 TEMP + 9.01RAIN \\
+&amp;\mathrel{\phantom{=}} - 0.354 TEMP \times RAIN
+\end{align*}`
+Interpretations become tricky once interactions are involved...
+
+---
+
+### Interpreting interaction effects
+
+For a given PRES, TEMP, and RAIN, our predicted DEWP is given by
+`\begin{align*}
+\widehat{DEWP} &amp;= \hat{\beta}_0 + \hat{\beta}_1PRES + \hat{\beta}_2TEMP +\\
+&amp;\mathrel{\phantom{=}} \hat{\beta}_3RAIN + \hat{\beta}_4TEMP \times RAIN
+\end{align*}`
+
+--
+
+For a day with the same PRES AND TEMP but one higher unit of RAIN, the predicted
+DEWP is given by
+`\begin{align*}
+\widehat{DEWP}^\star &amp;= \hat{\beta}_0 + \hat{\beta}_1PRES + \hat{\beta}_2TEMP +\\
+&amp;\mathrel{\phantom{=}} \hat{\beta}_3(RAIN + 1) + \hat{\beta}_4TEMP \times (RAIN + 1)
+\end{align*}`
+
+--
+
+Subtracting the two equations, we have
+`$$\widehat{DEWP} - \widehat{DEWP}^\star = \hat{\beta}_3 + \hat{\beta}_4 TEMP$$`
+The expected change in dew point for a one mm increase in precipitation, if 
+pressure is held constant, is `\(\hat{\beta}_3 + \hat{\beta}_4 \times TEMP\)`
+
+**The effect of precipitation on the dew point, adjusting for pressure, depends on temperature!**
+
+---
+
+class: center, middle
+
+### Model assumptions
+
+---
+
+### Model assumptions
+
+There are a few main assumptions to the linear model:
+
+- The outcomes `\(y_i\)` are &lt;font class = "vocab"&gt;independent&lt;/font&gt;. This means 
+that observations do not "influence" each other in any way (e.g., repeated
+outcome measures are made on the same individual)
+
+- A &lt;font class = "vocab"&gt;linear relationship&lt;/font&gt; holds (though we can relax
+this to some extent)
+
+- The **error** terms are &lt;font class = "vocab"&gt;normally distributed&lt;/font&gt;, 
+with mean zero and &lt;font class = "vocab"&gt;constant variance&lt;/font&gt; across all
+predicted/fitted values
+
+---
+
+### `augment`ing model results
+
+Note that many of the assumptions deal with the error term and fitted values,
+which we might estimate using the residuals and predictions from our model.
+
+We can use the `augment` function from the `broom` package to calculate these.
+Let's consider the multiple regression model from earlier:
+
+
+```r
+augment(mod3) %&gt;% 
+  slice(1:5)
+```
+
+```
+## # A tibble: 5 x 11
+##    DEWP  PRES  TEMP  RAIN .fitted .se.fit .resid    .hat .sigma .cooksd
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+## 1 -15.1 1025.   0.5     0  -11.6    0.306 -3.52  1.65e-3   7.55 9.00e-5
+## 2 -12.8 1022.  -2.2     0  -12.6    0.339 -0.178 2.01e-3   7.55 2.82e-7
+## 3 -11.6 1018.  -5.2     0  -13.4    0.471  1.81  3.89e-3   7.55 5.64e-5
+## 4 -12.2 1017.   7.1     0   -3.86   0.225 -8.34  8.92e-4   7.55 2.73e-4
+## 5 -14.2 1020.   6       0   -5.89   0.242 -8.31  1.02e-3   7.55 3.11e-4
+## # ... with 1 more variable: .std.resid &lt;dbl&gt;
+```
+
+We will focus on the `.fitted` and `.resid` variables in this data frame
+
+---
+
+### `augment`ing model results
+
+
+```r
+augment(mod3) %&gt;% 
+  slice(1:5) %&gt;% 
+  select(.fitted, .resid)
+```
+
+```
+## # A tibble: 5 x 2
+##   .fitted .resid
+##     &lt;dbl&gt;  &lt;dbl&gt;
+## 1  -11.6  -3.52 
+## 2  -12.6  -0.178
+## 3  -13.4   1.81 
+## 4   -3.86 -8.34 
+## 5   -5.89 -8.31
+```
+
+- `.fitted` provides the predicted value of the response variable (for the given
+observation)
+
+- `.resid` provides the residual for the observation
+
+---
+
+### Evaluating independence
+
+Unfortunately, in many cases we must simply think about how the data are 
+collected. In this case, we have atmospheric measurements through time at a 
+single station. Independence might **not** be satisfied -- we might imagine 
+that if the dew point is high today, it'll probably still be high tomorrow.
+
+---
+
+### Evaluating independence
+
+Note that the data are already sorted in 
+chronological order. Let's plot the dew point through time, examining the first
+three hundred data points:
+
+
+```r
+beijing %&gt;% 
+  slice(1:300) %&gt;% 
+  ggplot(data = ., mapping = aes(x = 1:300, y = DEWP)) + 
+  geom_line() + 
+  labs(x = "Measurement number", y = "Dew point (C)")
+```
+
+![](multiple-regression_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+
+---
+
+### Evaluating normality of errors
+
+We can simply plot a histogram of the residuals and assess visually. There are
+more formal methods, but for our purposes this will suffice. Note our use of the
+`.resid` variable from the augmented model results.
+
+
+```r
+augment(mod3) %&gt;% 
+  ggplot(data = ., mapping = aes(x = .resid)) + 
+  geom_histogram() +
+  labs(x = "Residual", y = "Count",
+       title = "Residuals are left-skewed")
+```
+
+![](multiple-regression_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+We see that normality of the errors is likely **not** satisfied.
+
+---
+
+### The residual plot
+
+One of the most useful diagnostic plots is the &lt;font class = "vocab"&gt;residual plot&lt;/font&gt;, 
+which plots the fitted values against the residuals. Let's take a look:
+
+
+```r
+augment(mod3) %&gt;% 
+  ggplot(data = ., mapping = aes(x = .fitted, y = .resid)) + 
+  geom_point() + 
+  geom_hline(yintercept = 0, color = "red") + 
+  labs(x = "Fitted value", y = "Residual")
+```
+
+![](multiple-regression_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
+
+---
+
+### The residual plot
+
+Ideally, the residual plot should be a "shapeless blob" with no real pattern. A
+pattern would be indicative of potential violation of our model assumptions.
+
+- If the residuals are not symmetric about the x-axis, then we might have
+violation of linearity. This appears to be the case in our residual plot
+
+- If the residuals do not have similar vertical spread for all fitted values,
+then we might have violation of constant error variance (homoscedasticity of
+errors). This might result in a "fanning" pattern. Our residual plot doesn't
+suggest that this assumption violated.
+
+---
+
+class: center, middle
+
+### Predicting values
+
+---
+
+### Making predictions
+
+
+```
+## # A tibble: 4 x 5
+##   term        estimate std.error statistic   p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)  361.      36.1         9.99 8.29e- 23
+## 2 PRES          -0.364    0.0353    -10.3  4.21e- 24
+## 3 TEMP           0.723    0.0313     23.1  3.06e-101
+## 4 RAIN           1.15     0.270       4.26 2.12e-  5
+```
+
+Our fitted model is given by
+
+`$$\widehat{DEWP} = 360.7 - 0.36PRES + 0.72 TEMP + 1.15RAIN,$$`
+
+and can be used to predict dew points given the barometric pressure, temperature,
+and precipitation.
+
+.question[
+Suppose the barometric pressure, temperature, and precipitation are equal to the
+mean values in our dataset. What would the predicted dew point be? Is this close
+to the mean dew point in our dataset?
+]
+
+---
+
+### More `augment` fun
+
+Let's revisit the `augment`ed model output.
+
+
+```
+## # A tibble: 1,500 x 11
+##     DEWP  PRES  TEMP  RAIN .fitted .se.fit  .resid    .hat .sigma .cooksd
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+##  1 -15.1 1025.   0.5     0 -11.6     0.306  -3.52  1.65e-3   7.55 9.00e-5
+##  2 -12.8 1022.  -2.2     0 -12.6     0.339  -0.178 2.01e-3   7.55 2.82e-7
+##  3 -11.6 1018.  -5.2     0 -13.4     0.471   1.81  3.89e-3   7.55 5.64e-5
+##  4 -12.2 1017.   7.1     0  -3.86    0.225  -8.34  8.92e-4   7.55 2.73e-4
+##  5 -14.2 1020.   6       0  -5.89    0.242  -8.31  1.02e-3   7.55 3.11e-4
+##  6 -14.3 1022.  11.5     0  -2.71    0.348 -11.6   2.12e-3   7.54 1.26e-3
+##  7  -7   1010.   5.6     0  -2.65    0.375  -4.35  2.46e-3   7.55 2.05e-4
+##  8  -6.6 1011.   8.4     0  -0.772   0.294  -5.83  1.52e-3   7.55 2.27e-4
+##  9  -6.2 1010.   8.8     0  -0.337   0.295  -5.86  1.53e-3   7.55 2.31e-4
+## 10  -4.6 1007   14.7     0   5.17    0.261  -9.77  1.19e-3   7.55 5.00e-4
+## # ... with 1,490 more rows, and 1 more variable: .std.resid &lt;dbl&gt;
+```
+
+Notice that the `augment` function provides fitted values and residuals (and 
+more) for every observation in our dataset. Although we can plug in values to our model manually, this quickly becomes 
+tedious.
+
+We can use the `augment` function to create new predictions based on
+existing models.
+
+---
+
+### Answering the question with `augment`
+
+The mean pressure, temperature, and precipitation in our dataset are 1012.6 hPa, 
+13.55 C, and 0.074 mm, respectively. Let's create a new `tibble` and "feed" it
+into our `mod3` object:
+
+
+```r
+mean_vals  = tibble(PRES = 1012.6,
+                    TEMP = 13.55,
+                    RAIN = 0.074)
+augment(mod3, newdata = mean_vals)
+```
+
+```
+## # A tibble: 1 x 5
+##    PRES  TEMP  RAIN .fitted .se.fit
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+## 1 1013.  13.6 0.074    2.38   0.195
+```
+
+Note that the new dataset has the same variable names as found in our model.
+
+We predict a dew point of 2.38 C and note that the standard error for this
+prediction is 0.195 C.
+
+.question[
+How might we use these results to create interval estimates?
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"highlightStyle": "github",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
