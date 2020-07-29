@@ -126,3 +126,8 @@ Then, rerun the `use_git_config` function with your GitHub username and email ad
 <br>
 
 **That's it! You've cloned a repo, started a new project in RStudio, and configured git. You're now ready to start your analysis in RStudio!**
+
+## Acknowledgements
+
+The instructions from this tutorial were adapted from labs in [Data Science in a Box](https://datasciencebox.org/) by Mine Çetinkaya-Rundel.
+
