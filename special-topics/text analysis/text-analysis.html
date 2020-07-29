@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Text analysis</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <link rel="stylesheet" href="sta199-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Text analysis
+### Duke University
+
+---
+
+
+
+
+
+class: center, middle
+
+# Tidytext analysis
+
+---
+
+## Packages
+
+In addition to `tidyverse` we will be using a few other packages today
+
+
+```r
+library(tidyverse)
+library(tidytext)
+library(genius) # https://github.com/JosiahParry/genius
+```
+
+---
+
+## Tidytext
+
+- Using tidy data principles can make many text mining tasks easier, more 
+effective, and consistent with tools already in wide use.
+
+- Learn more at https://www.tidytextmining.com/.
+
+---
+
+## What is tidy text?
+
+
+```r
+text &lt;- c("On your mark ready set let's go", 
+          "dance floor pro",
+          "I know you know I go psycho", 
+          "When my new joint hit", 
+          "just can't sit",
+          "Got to get jiggy wit it", 
+          "ooh, that's it")
+
+text
+```
+
+```
+## [1] "On your mark ready set let's go" "dance floor pro"                
+## [3] "I know you know I go psycho"     "When my new joint hit"          
+## [5] "just can't sit"                  "Got to get jiggy wit it"        
+## [7] "ooh, that's it"
+```
+
+---
+
+## What is tidy text?
+
+
+```r
+text_df &lt;- tibble(line = 1:7, text = text)
+
+text_df
+```
+
+```
+## # A tibble: 7 x 2
+##    line text                           
+##   &lt;int&gt; &lt;chr&gt;                          
+## 1     1 On your mark ready set let's go
+## 2     2 dance floor pro                
+## 3     3 I know you know I go psycho    
+## 4     4 When my new joint hit          
+## 5     5 just can't sit                 
+## 6     6 Got to get jiggy wit it        
+## 7     7 ooh, that's it
+```
+
+---
+
+## What is tidy text?
+
+
+```r
+text_df %&gt;%
+  unnest_tokens(word, text)
+```
+
+```
+## # A tibble: 34 x 2
+##     line word 
+##    &lt;int&gt; &lt;chr&gt;
+##  1     1 on   
+##  2     1 your 
+##  3     1 mark 
+##  4     1 ready
+##  5     1 set  
+##  6     1 let's
+##  7     1 go   
+##  8     2 dance
+##  9     2 floor
+## 10     2 pro  
+## # ... with 24 more rows
+```
+
+---
+
+## Let's get some data
+
+We'll use the `genius` package to get song lyric data from [Genius](https://genius.com/).
+
+- `genius_album()` allows you to download the lyrics for an entire album in a 
+tidy format. 
+
+- Input: Two arguments: artist and album. Supply the quoted name of artist 
+and the album (if it gives you issues check that you have the album name and 
+artists as specified on [Genius](https://genius.com/)).
+
+- Output: A tidy data frame with three columns corresponding to the track name, 
+the track number, and lyrics
+
+
+```r
+ariana &lt;- genius_album(
+  artist = "Ariana Grande", 
+  album = "thank you, next"
+  )
+
+national &lt;- genius_album(
+  artist = "The National",
+  album = "I Am Easy to Find"
+)
+```
+
+---
+
+## Ariana Grande vs. The National
+
+.pull-left[
+&lt;img src="img/ariana.png" width="90%" /&gt;
+]
+
+.pull-right[
+&lt;img src="img/national.png" width="90%" /&gt;
+]
+---
+
+## Save for later
+
+
+```r
+ariana &lt;- ariana  %&gt;% 
+  mutate(
+  artist = "Ariana Grande", 
+  album = "thank you, next"
+)
+
+national &lt;- national %&gt;% 
+  mutate(
+  artist = "The National",
+  album = "I Am Easy to Find"
+)
+```
+
+
+---
+
+## What songs are in the album?
+&lt;small&gt;
+
+```r
+ariana %&gt;%
+  distinct(track_title)
+```
+
+```
+## # A tibble: 12 x 1
+##    track_title                             
+##    &lt;chr&gt;                                   
+##  1 &lt;U+200B&gt;imagine                                 
+##  2 &lt;U+200B&gt;needy                                   
+##  3 NASA                                    
+##  4 &lt;U+200B&gt;bloodline                               
+##  5 &lt;U+200B&gt;fake smile                              
+##  6 &lt;U+200B&gt;bad idea                                
+##  7 &lt;U+200B&gt;make up                                 
+##  8 &lt;U+200B&gt;ghostin                                 
+##  9 &lt;U+200B&gt;in my head                              
+## 10 7 rings                                 
+## 11 &lt;U+200B&gt;thank u, next                           
+## 12 &lt;U+200B&gt;break up with your girlfriend, i'm bored
+```
+&lt;/small&gt;
+
+---
+
+## What songs are in the album?
+&lt;small&gt;
+
+```r
+national %&gt;%
+  distinct(track_title)
+```
+
+```
+## # A tibble: 16 x 1
+##    track_title                                     
+##    &lt;chr&gt;                                           
+##  1 You Had Your Soul with You (Ft. Gail Ann Dorsey)
+##  2 Quiet Light                                     
+##  3 Roman Holiday                                   
+##  4 Oblivions                                       
+##  5 The Pull of You                                 
+##  6 Hey Rosey                                       
+##  7 I Am Easy to Find                               
+##  8 Her Father in the Pool                          
+##  9 Where Is Her Head                               
+## 10 Not in Kansas                                   
+## 11 So Far So Fast                                  
+## 12 Dust Swirls in Strange Light                    
+## 13 Hairpin Turns                                   
+## 14 Rylan                                           
+## 15 Underwater                                      
+## 16 Light Years
+```
+
+&lt;/small&gt;
+
+---
+
+## Tidy up your lyrics!
+
+
+```r
+ariana_lyrics &lt;- ariana %&gt;%
+  unnest_tokens(word, lyric)
+
+national_lyrics &lt;- national %&gt;%
+  unnest_tokens(word, lyric)
+```
+
+---
+
+## What are the most common words?
+
+.pull-left[
+
+```r
+ariana_lyrics %&gt;%
+  count(word) %&gt;%
+  arrange(desc(n))
+```
+
+```
+## # A tibble: 685 x 2
+##    word      n
+##    &lt;chr&gt; &lt;int&gt;
+##  1 i       241
+##  2 you     232
+##  3 yeah    193
+##  4 it      163
+##  5 a        89
+##  6 i'm      86
+##  7 me       83
+##  8 the      76
+##  9 and      74
+## 10 my       71
+## # ... with 675 more rows
+```
+]
+
+.pull-right[
+
+```r
+national_lyrics %&gt;%
+  count(word) %&gt;%
+  arrange(desc(n))
+```
+
+```
+## # A tibble: 710 x 2
+##    word      n
+##    &lt;chr&gt; &lt;int&gt;
+##  1 i       184
+##  2 you     143
+##  3 the     126
+##  4 to       90
+##  5 me       75
+##  6 and      74
+##  7 is       68
+##  8 in       60
+##  9 a        58
+## 10 i'm      53
+## # ... with 700 more rows
+```
+]
+
+---
+
+## Stop words
+
+- In computing, stop words are words which are filtered out before or after 
+processing of natural language data (text).
+
+- They usually refer to the most common words in a language, but there is not a 
+single list of stop words used by all natural language processing tools.
+
+See `?get_stopwords` for more info.
+
+
+```r
+get_stopwords(source = "smart")
+```
+
+```
+## # A tibble: 571 x 2
+##    word        lexicon
+##    &lt;chr&gt;       &lt;chr&gt;  
+##  1 a           smart  
+##  2 a's         smart  
+##  3 able        smart  
+##  4 about       smart  
+##  5 above       smart  
+##  6 according   smart  
+##  7 accordingly smart  
+##  8 across      smart  
+##  9 actually    smart  
+## 10 after       smart  
+## # ... with 561 more rows
+```
+
+---
+
+## What are the most common words?
+
+
+```r
+stopwords &lt;- get_stopwords(source = "smart") %&gt;% 
+  select(word) %&gt;% 
+  pull()
+```
+
+.pull-left[
+
+```r
+ariana_lyrics %&gt;%
+  filter(!(word %in% stopwords)) %&gt;%
+  count(word) %&gt;%
+  arrange(desc(n))
+```
+
+```
+## # A tibble: 458 x 2
+##    word           n
+##    &lt;chr&gt;      &lt;int&gt;
+##  1 yeah         193
+##  2 eh            42
+##  3 love          41
+##  4 i'ma          37
+##  5 girlfriend    31
+##  6 imagine       30
+##  7 forget        27
+##  8 make          24
+##  9 space         24
+## 10 bad           19
+## # ... with 448 more rows
+```
+]
+
+.pull-right[
+
+```r
+ariana_lyrics %&gt;%
+  filter(!(word %in% stopwords)) %&gt;%
+  count(word) %&gt;%
+  arrange(desc(n))
+```
+
+```
+## # A tibble: 458 x 2
+##    word           n
+##    &lt;chr&gt;      &lt;int&gt;
+##  1 yeah         193
+##  2 eh            42
+##  3 love          41
+##  4 i'ma          37
+##  5 girlfriend    31
+##  6 imagine       30
+##  7 forget        27
+##  8 make          24
+##  9 space         24
+## 10 bad           19
+## # ... with 448 more rows
+```
+]
+
+---
+
+## What are the most common words?
+
+
+```r
+ariana_lyrics %&gt;%
+  anti_join(get_stopwords(source = "smart")) %&gt;%
+  count(word) %&gt;%
+  arrange(desc(n)) %&gt;%
+  top_n(20) %&gt;%
+  ggplot(aes(fct_reorder(word, n), n)) +
+    geom_col() +
+    coord_flip() + 
+    theme_minimal() +
+    labs(title = "Frequency of 'thank u, next' lyrics",
+         y = "",
+         x = "")
+```
+
+---
+
+## What are the most common words?
+
+![](text-analysis_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
+
+
+---
+
+## What are the most common words?
+
+![](text-analysis_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+
+---
+
+## Sentiment analysis
+
+- One way to analyze the sentiment of a text is to consider the text as a 
+combination of its individual words 
+
+- The sentiment content of the whole text as the sum of the sentiment content of
+the individual words
+
+- The sentiment attached to each word is given by a *lexicon*, which may be 
+downloaded from external sources
+
+---
+
+## Sentiment lexicons
+
+.pull-left[
+
+```r
+get_sentiments("afinn")
+```
+
+```
+## # A tibble: 2,477 x 2
+##    word       value
+##    &lt;chr&gt;      &lt;dbl&gt;
+##  1 abandon       -2
+##  2 abandoned     -2
+##  3 abandons      -2
+##  4 abducted      -2
+##  5 abduction     -2
+##  6 abductions    -2
+##  7 abhor         -3
+##  8 abhorred      -3
+##  9 abhorrent     -3
+## 10 abhors        -3
+## # ... with 2,467 more rows
+```
+]
+.pull-right[
+
+```r
+get_sentiments("bing") 
+```
+
+```
+## # A tibble: 6,786 x 2
+##    word        sentiment
+##    &lt;chr&gt;       &lt;chr&gt;    
+##  1 2-faces     negative 
+##  2 abnormal    negative 
+##  3 abolish     negative 
+##  4 abominable  negative 
+##  5 abominably  negative 
+##  6 abominate   negative 
+##  7 abomination negative 
+##  8 abort       negative 
+##  9 aborted     negative 
+## 10 aborts      negative 
+## # ... with 6,776 more rows
+```
+]
+
+---
+
+## Sentiment lexicons
+
+.pull-left[
+
+```r
+get_sentiments("nrc")
+```
+
+```
+## # A tibble: 13,901 x 2
+##    word        sentiment
+##    &lt;chr&gt;       &lt;chr&gt;    
+##  1 abacus      trust    
+##  2 abandon     fear     
+##  3 abandon     negative 
+##  4 abandon     sadness  
+##  5 abandoned   anger    
+##  6 abandoned   fear     
+##  7 abandoned   negative 
+##  8 abandoned   sadness  
+##  9 abandonment anger    
+## 10 abandonment fear     
+## # ... with 13,891 more rows
+```
+]
+.pull-right[
+
+```r
+get_sentiments("loughran") 
+```
+
+```
+## # A tibble: 4,150 x 2
+##    word         sentiment
+##    &lt;chr&gt;        &lt;chr&gt;    
+##  1 abandon      negative 
+##  2 abandoned    negative 
+##  3 abandoning   negative 
+##  4 abandonment  negative 
+##  5 abandonments negative 
+##  6 abandons     negative 
+##  7 abdicated    negative 
+##  8 abdicates    negative 
+##  9 abdicating   negative 
+## 10 abdication   negative 
+## # ... with 4,140 more rows
+```
+]
+
+---
+
+## Notes about sentiment lexicons
+
+- Not every word is in a lexicon!
+
+
+```r
+get_sentiments("bing") %&gt;% 
+  filter(word == "data")
+```
+
+```
+## # A tibble: 0 x 2
+## # ... with 2 variables: word &lt;chr&gt;, sentiment &lt;chr&gt;
+```
+
+- Lexicons do not account for qualifiers before a word (e.g., "not happy") 
+because they were constructed for one-word tokens only
+
+- Summing up each word's sentiment may result in a neutral sentiment, even if 
+there are strong positive and negative sentiments in the body
+
+---
+
+## Sentiments in lyrics
+
+
+.pull-left[
+
+```r
+ariana_lyrics %&gt;%
+  inner_join(get_sentiments("bing")) %&gt;%
+  count(sentiment, word) %&gt;%
+  arrange(desc(n))
+```
+
+```
+## # A tibble: 95 x 3
+##    sentiment word      n
+##    &lt;chr&gt;     &lt;chr&gt; &lt;int&gt;
+##  1 positive  like     45
+##  2 positive  love     41
+##  3 positive  thank    39
+##  4 negative  bad      19
+##  5 positive  good     19
+##  6 positive  smile    17
+##  7 negative  fake     16
+##  8 positive  woo      13
+##  9 negative  shit     11
+## 10 positive  right    11
+## # ... with 85 more rows
+```
+]
+
+.pull-right[
+
+```r
+national_lyrics %&gt;%
+  inner_join(get_sentiments("bing")) %&gt;%
+  count(sentiment, word) %&gt;%
+  arrange(desc(n))
+```
+
+```
+## # A tibble: 90 x 3
+##    sentiment word        n
+##    &lt;chr&gt;     &lt;chr&gt;   &lt;int&gt;
+##  1 positive  like       14
+##  2 positive  quiet      11
+##  3 positive  easy        9
+##  4 negative  fear        8
+##  5 negative  dust        7
+##  6 negative  hate        7
+##  7 negative  lie         7
+##  8 negative  strange     7
+##  9 positive  fast        7
+## 10 negative  hard        6
+## # ... with 80 more rows
+```
+]
+
+---
+
+## Visualizing sentiments
+
+
+```r
+ariana_lyrics %&gt;%
+  inner_join(get_sentiments("bing")) %&gt;%
+  count(sentiment, word) %&gt;%
+  arrange(desc(n)) %&gt;%
+  group_by(sentiment) %&gt;%
+  top_n(10) %&gt;%
+  ungroup() %&gt;%
+  ggplot(aes(fct_reorder(word, n), n, fill = sentiment)) +
+    geom_col() +
+    coord_flip() +
+    facet_wrap(~ sentiment, scales = "free_y") +
+    theme_minimal() +
+    labs(title = "Sentiments in Ariana Lyrics",
+         x = "")
+```
+
+---
+
+## Visualizing sentiments
+
+![](text-analysis_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
+
+---
+
+## Visualizing sentiments
+
+![](text-analysis_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+
+---
+
+## Ariana word cloud
+
+
+```r
+library(wordcloud)
+set.seed(12345)
+
+ariana_lyrics %&gt;%
+  anti_join(stop_words) %&gt;%
+  count(word) %&gt;%
+  with(wordcloud(word, n, max.words = 100))
+```
+
+---
+
+## Ariana word cloud
+
+![](text-analysis_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
+
+---
+
+## The National word cloud
+
+![](text-analysis_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
+
+---
+
+## Word frequencies, Ariana vs. The National
+
+
+```r
+# combine the lyrics, calculate frequencies
+combined &lt;- bind_rows(ariana_lyrics, national_lyrics) %&gt;%
+  anti_join(get_stopwords(source = "smart")) %&gt;% 
+  group_by(artist) %&gt;% 
+  count(word, sort = T) %&gt;% 
+  mutate(freq = n / sum(n)) %&gt;% 
+  select(artist, word, freq) %&gt;% 
+  spread(artist, freq)
+
+# make into nice plot
+
+ggplot(combined, aes(x = `Ariana Grande`, y = `The National`))+
+  # hide discreteness
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = T, vjust = 1.5)+
+  scale_x_log10()+
+  scale_y_log10()+
+  geom_abline(color = "blue")
+```
+
+---
+
+
+## Word frequencies, Ariana vs. The National
+
+![](text-analysis_files/figure-html/unnamed-chunk-35-1.png)&lt;!-- --&gt;
+
+---
+
+## On your own
+
+Application Exercise, available at
+[https://classroom.github.com/a/hPdnIAFI](https://classroom.github.com/a/hPdnIAFI)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"highlightStyle": "github",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

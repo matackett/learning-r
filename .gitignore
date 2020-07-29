@@ -38,4 +38,8 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
+# Connect dcf files
+*.dcf
+
 .DS_STore
+

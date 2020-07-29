@@ -1,0 +1,236 @@
+---
+title: "Non-continuous outcomes"
+author: ""
+date: "Duke University"
+output:
+  xaringan::moon_reader:
+    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    css: "sta199-slides.css"
+    lib_dir: libs
+    nature: 
+      highlightLines: true
+      highlightStyle: github
+      countIncrementalSlides: false
+---
+
+layout: true
+
+---
+
+```{r packages, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(fmsb)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning=FALSE,
+                      message=FALSE,
+                      fig.height = 2.65, 
+                      dpi = 300) 
+```
+
+### Load data
+
+The `pokemon_cleaned` dataset contains data on 896 Pokemon
+- Includes Sword and Shield!
+- No alternate forms (mega evolutions, regional forms, etc.)
+- Contains information on Pokemon name, baseline battle statistics (base stats),
+and whether they are legendary (broadly defined)
+
+```{r message=FALSE}
+pokemon <- read_csv("data/pokemon_cleaned.csv", na = c("n/a", "", "NA"))
+```
+
+---
+
+### Non-continuous outcomes
+
+- The previous lectures have focused on using linear regression as a tool to
+  + Make predictions about new observations
+  + Describe relationships 
+
+  
+- These examples have all had *continuous* response variables
+
+.question[
+Our goal is to make statements about **categorical** response variables
+]
+
+---
+
+### Research goals
+
+- Predict whether a Pokemon is a legendary based on its base 
+stats
+- Describe the relationship between stats and *probability* of being legendary
+
+.pull-left[
+![non-legendary](img/pidgey.png)
+]
+.pull-right[
+![legendary](img/rayquaza.png)
+]
+.small[
+Pokemon and Pokemon names are trademarks of Nintendo.
+]
+
+---
+
+### Classifying hypothetical Pokemon
+
+Suppose we have some hypothetical Pokemon with the following features. Would we 
+classify them as legendary Pokemon?
+
+Crapistat: HP = 55, ATK = 25, DEF = 30, SPA = 60, SPD = 50, SPE = 102
+
+Mediocra: HP = 90, ATK = 110, DEF = 130, SPA = 75, SPD = 80, SPE = 45
+
+Literally Dragonite: HP: 91, ATK: 134, DEF: 95, SPA: 100, SPD: 100, SPE: 80
+
+Broaken: HP = 104, ATK = 125, DEF = 105, SPA = 148, SPD = 102, SPE = 136
+
+---
+
+class: center, middle
+
+# Logistic regression
+
+---
+
+### Regression difficulties...
+
+Suppose we consider the following model for $p$, the probability of being a legendary Pokemon:
+$${p} = \beta_0 + \beta_1HP + \beta_2ATK + \cdots + \beta_6\times SPE$$
+
+.question[
+What can go wrong here?
+]
+
+---
+
+### Uh oh...
+
+```{r}
+library(broom)
+pokemon <- pokemon %>% 
+  mutate(leg_bin = if_else(legendary == "Yes", 1, 0))
+m2 <- lm(leg_bin~hp + atk + def + spa + spd + spe, data = pokemon)
+
+ggplot(data = augment(m2), aes(x = .fitted, y = .resid)) +
+  geom_point() + 
+  labs(x = "Predicted", y = "Residual", title = "Residual plot")
+```
+
+---
+
+### Predicted legendary status
+
+```{r}
+ggplot(data = augment(m2), aes(x = .fitted)) +
+  geom_histogram() + 
+  labs(x = "Predicted Values", y = "Count", 
+       title = "Histogram of predictions")
+```
+
+---
+
+### From probabilities to log-odds
+
+- Suppose the probability of an event is $p$
+- Then the **odds** that the event occurs is $\frac{p}{1-p}$
+- Taking the (natural) log of the odds, we have the *logit* of $p$:
+$$logit(p) = \log\left(\frac{p}{1-p}\right)$$
+
+--
+
+Note that $p$ is constrained to lie within 0 and 1, but $logit(p)$ can range from $-\infty$ to $\infty$. Let's instead consider the following linear model for the log-odds of $p$:
+
+$${logit(p)} = \beta_0 + \beta_1\times HP + \beta_2\times ATK + \cdots + \beta_6\times SPE$$
+
+---
+
+### Logistic regression
+
+Since there is a one-to-one relationship between probabilities and log-odds, we
+can undo the previous function.
+
+.question[
+If we create a linear model on the **log-odds**, we can "work backwards" to
+obtain predicted probabilities that are guaranteed to lie between 0 and 1
+]
+
+--
+
+To "work backwards," we use the **logistic function**:
+
+$$f(x) = \frac{1}{1 + e^{-x}} = \frac{e^x}{1 + e^x}$$
+
+--
+
+So, our *linear* model for $logit(p)$ is equivalent to
+
+$$p = \frac{e^{\beta_0 + \beta_1HP + \beta_2ATK + \cdots + \beta_6SPE}}{1 + e^{\beta_0 + \beta_1\times HP + \beta_2\times ATK + \cdots + \beta_6\times SPE}}$$
+
+---
+
+### Classification using logistic regression
+
+- With logistic regression, we can obtain predicted *probabilities* of "success"
+for a yes/no variable
+- Mapping those to binary class probabilities, we have the predicted probability
+of being in a class
+- By instituting a cut-off value (say, if the probability is greater than 0.5),
+we can create a classifier
+- This can be extended to more than 2 categories, but that is beyond the scope
+of our course (for the curious: multinomial regression)
+
+---
+
+### Returning to Pokemon...
+
+```{r}
+logit_mod <- glm(leg_bin ~ hp + atk + def + spa + spd + spe, data = pokemon,
+                 family = "binomial")
+
+new_pokemon <- tibble(hp = c(55, 90, 91, 104),
+                      atk = c(25, 110, 134, 125),
+                      def = c(30, 130, 95, 105),
+                      spa = c(60, 75, 100, 148),
+                      spd = c(50, 80, 100, 102),
+                      spe = c(102, 45, 80, 136))
+
+pred_log_odds <- augment(logit_mod, newdata = new_pokemon) %>% 
+  pull(.fitted)
+```
+
+Let's work backwards to get predicted probabilities
+
+```{r}
+pred_probs <- exp(pred_log_odds)/(1 + exp(pred_log_odds))
+round(pred_probs, 3)
+```
+
+.question[
+What can we conclude given these predicted probabilities?
+]
+
+---
+
+### Interpreting coefficients 
+
+Once again, we have a *linear* model on a transformation of the response. We can
+interpret estimated coefficients in a familiar way:
+
+```{r, echo = F}
+tidy(logit_mod) 
+```
+
+Holding all other predictors constant, for each unit increase in base
+speed, we expect the log-odds of being legendary to increase by 0.06. 
+That is, a Pokemon that has a base speed one unit larger than another would have 
+exp(0.06) $\approx$ 1.06 times the odds of being legendary.
+
+.question[
+How might we interpret dummy variables for categorical predictors?
+]

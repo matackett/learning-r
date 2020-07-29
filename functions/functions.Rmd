@@ -1,0 +1,413 @@
+---
+title: "Functions"
+output: 
+  learnr::tutorial:
+    progressive: false
+    css: "css/tutorial.css"
+    theme: "sandstone"
+    allow_skip: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(knitr)
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, exercise.timelimit = 3)
+```
+
+## Introduction
+
+---
+
+### Learning objectives
+
+- Function calls and syntax
+- Writing functions
+- Best practices
+
+---
+
+The ability to write and understand functions will elevate your skill set as a
+data scientist, statistician, and R programmer. By writing and using functions
+you can tackle one big problem by breaking it up into smaller key steps, where
+a set of functions you created is used to complete the 
+necessary tasks. Incorporating functions into your workflow will
+
+- make your work more reproducible,
+- make your code more readable,
+- improve your coding style, and
+- decrease the number of bugs in your code.
+
+### Packages
+
+The following packages have been loaded in this tutorial:
+
+```{r}
+library(tidyverse)
+```
+
+<br/>
+
+Video to go here...
+
+## Function calls
+
+You'll be using functions a lot, from those available in R packages to ones you
+write. Most functions perform some action(s) to some object(s). 
+When using functions
+
+- you can leave out the name of the data argument (generally this is first);
+- write out the names of other arguments;
+- do not write out the default arguments and their values unless you change the
+  values.
+
+```{r eval=FALSE}
+# Good
+mean(1:20)
+ggplot(mtcars, mapping = aes(x = hp, y = mpg)) +
+  geom_point()
+
+# Bad
+mean(1:20, trim = 0, na.rm = FALSE)
+ggplot(data = mtcars, aes(x = hp, y = mpg)) +
+  geom_point()
+```
+
+<div class = "warning">
+**Warning!** In fitting a linear model, function `lm()` has the data argument
+second. Always check the help (`?lm`) when working with a new function to 
+understand its arguments.
+</div>
+
+```{r help_lm, exercise=TRUE}
+?lm
+```
+
+## Writing functions
+
+Functions in programming and data science are not unlike the mathematical
+functions you learned about in pre-calculus. Functions depend on a set of
+inputs. You'll pass values into those inputs and based on the function's
+purpose it will generally return a result.
+
+### Function syntax
+
+A function is comprised of arguments (formals), a body, and an environment. 
+The first two will be our focus as we use and develop these objects.
+
+Below is the syntax for writing your own function in R. 
+
+```{r eval=FALSE}
+fcn_name <- function(arg_1, arg_2) {
+
+  # function's body
+  # code that does the work goes here
+
+}
+```
+
+- `fcn_name` is a name you choose for your function.
+- `function` is a keyword in R that you will use when you create your function.
+- `arg_1`, `arg_2` are the function's arguments. You choose how many, their
+  names, and their purpose. Keep the names short and descriptive.
+- Between the `{` `}` will be the R code for your function's body. Generally,
+  this code will manipulate data based on the values input to the arguments and
+  then return a result.
+
+### Exercise 1 {.tabset .tabset-fade .tabset-pills}
+
+Take a look at the simple function below. Can you identify the function's 
+name, its arguments, and its body?
+
+#### Function
+
+```{r ex_1, exercise=TRUE}
+preview_data <- function(data) {
+  data %>% 
+    sample_n(size = 5)
+}
+```
+
+#### Solution
+
+| Function component           | Value               |
+|:-----------------------------|:--------------------|
+| Name                         | `preview_data`      |
+| Argument                     | `data`              |
+| Contents                     | Code on lines 2 - 3 |
+
+### Function call
+
+Run the code below to see this function in action. We'll always need to load
+the function into our environment before using it. This is as simple as putting
+it in an R chunk in your R Markdown document and hitting the green play button.
+
+```{r preview_data, exercise=TRUE, error=TRUE}
+preview_data <- function(data) {
+  data %>% 
+    sample_n(size = 5)
+}
+
+preview_data(data = mtcars)
+```
+
+<div class = "info">
+**Note!** Here we have `data = mtcars` to be explicit. Typically you would
+make your function call by `preview_data(mtcars)` as the data argument is
+typically first.
+</div>
+
+R automatically returns the result of the last evaluated expression inside a
+function. Alternatively, you can use `return()` explicitly. For example, another
+way to write `preview_data()` is
+
+```{r}
+preview_data <- function(data) {
+  x <- data %>% 
+    sample_n(size = 5)
+    
+  return(x)
+}
+```
+
+### Exercise 2
+
+Consider a function that takes in a vector of numeric data and returns a 
+vector of length three that contains the mean, median, and standard deviation.
+Fill in the missing parts (`---`) below to complete the function below. 
+Once you've finished the function, run the code.
+
+
+```{r get_stats, exercise=TRUE}
+get_stats <- ---(x) {
+  ---
+}
+
+data <- c(3, 0, 1, 5, -4, 10)
+get_stats(x = data)
+```
+
+```{r get_stats-solution}
+get_stats <- function(x) {
+  c(mean(x), median(x), sd(x))
+}
+
+data <- c(3, 0, 1, 5, -4, 10)
+get_stats(x = data)
+```
+
+### Exercise 2
+
+Create a function called `pluck_col()` that will grab a column from a data 
+frame. Test your new function on the `longley` data set available in R. As a 
+reminder,`tidyverse` was loaded when this tutorial was launched.
+
+```{r}
+longley
+```
+
+```{r pluck, exercise=TRUE}
+# build pluck_col here
+
+
+pluck_col(longley, col = "Population")
+```
+
+```{r pluck-solution}
+pluck_col <- function(data, col) {
+  data %>% 
+    select(-col)
+}
+```
+
+## Best practices
+
+Now that you know the syntax of a function in R and the basics, it's time to 
+explore some best practices with regards to writing functions. When should you 
+write a function? What should you name your function? Should you use `return()`?
+
+### When should you write a function?
+
+If you copy the same code more than twice, write a function. For example,
+suppose you have vectors of numeric data you want to standardize. Rather than
+writing this code
+
+```{r standardize_code, exercise=TRUE}
+x <- 1:10
+y <- c(4, 0, -4)
+z <- c(0.01, 0.1, 1, 10, 100, 1000)
+
+(x - mean(x)) / sd(x)
+(y - mean(y)) / sd(y)
+(z - mean(z)) / sd(z)
+```
+
+write a function with a single data argument.
+
+```{r standardize_function, exercise=TRUE}
+standardize <- function(data) {
+  (data - mean(data)) / sd(data)
+}
+
+x <- 1:10
+y <- c(4, 0, -4)
+z <- c(0.01, 0.1, 1, 10, 100, 1000)
+
+
+standardize(x)
+standardize(y)
+standardize(z)
+```
+
+Writing functions will help make your code more readable, and you'll be less
+prone to copy-paste mistakes. Also, if you ever need to revise your 
+standardization procedure, you only need to do so in the function's body. This
+is much more efficient.
+
+### Naming
+
+Functions generally perform some action to a set of data conditional on a
+set of values passed to the function's arguments. When naming your function,
+choose a short and memorable verb. Think about the `dplyr` functions you know:
+`select()`, `filter()`, `group_by()`, `summarize()`. All are short, memorable,
+and give some insight as to what the function does. Strive to accomplish
+this when you name your functions.
+
+Consider a set of functions you would create to scrape and save available jobs 
+from an online job board.
+
+```{r eval=FALSE}
+# Good
+get_jobs()
+clean_jobs()
+write_jobs()
+
+
+# Bad
+jobs_from_online_job_board()
+jobs_cleaned()
+saving_my_jobs()
+```
+
+### Using `return()`
+
+A function written in R will automatically return the last expression evaluated.
+It is recommended that you only use `return()` for early returns. This will
+occur when you start writing more complex functions with control flow. For
+now, rely on R to return the result.
+
+```{r eval=FALSE}
+# Good
+is_letter <- function(l) {
+  l %in% letters
+}
+
+# Bad
+is_letter <- function(l) {
+  return(l %in% letters)
+}
+```
+
+## Check your understanding
+
+Below are some questions to check your understanding on functions.
+
+```{r quiz, echo=FALSE}
+quiz(
+  question("A user-created function can only have 1 or 2 arguments.",
+    answer("True", 
+           message = "Functions can have any number of arguments, 
+                      including 0."),
+    answer("False", 
+           correct = TRUE, 
+           message = "Functions can have any number of arguments, 
+                      including 0."),
+    random_answer_order = TRUE
+  ),
+  
+  question("The R keyword `function` is used to create functions.",
+    answer("True", 
+           correct = TRUE,
+           message = "This is one of the key components in the function
+                      creation syntax."),
+    answer("False", 
+           message = "This is one of the key components in the function
+                      creation syntax."),
+    random_answer_order = TRUE
+  ),
+  
+  question("In general, function names should be",
+    answer("nouns.", 
+           message = "Typically, functions perform some action."),
+    answer("adjectives.",
+           message = "Typically, functions perform some action."),
+    answer("long and descriptive.",
+           message = "Function names should be short and memorable."),
+    answer("verbs.",
+           correct = TRUE,
+           message = "Use an action word if you can."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  ),
+  
+  question("Functions that exist in your main environment or in loaded 
+            packages can be used inside functions you create.",
+    answer("True",
+           correct = TRUE,
+           message = "R has the convention of lexical scoping."),
+    answer("False", 
+           message = "In the example there was a `dplyr` function inside
+                      `preview_data()`."),
+    random_answer_order = TRUE
+  ),
+  
+  question("Consider a function called `compute_area()`, where the first line
+            in this user-defined function is 
+            `compute_area <- function(radius = 1) {`. Argument `radius` has a 
+            default value of 1.",
+    answer("True",
+           correct = TRUE,
+           message = "Setting arguments equal to a value when the function
+                      is created is the way to set default values."),
+    answer("False",
+           message = "This is how default values are set for function
+                      arguments."),
+    random_answer_order = TRUE
+  ),
+  
+  question("The `{` and `}` wrap the function's body. Which statement about
+            the braces is correct?",
+    answer("The braces are not necessary. A single tab is enough to let R know
+            the subsequent code corresponds to the function's body.",
+           message = "Not having the braces will cause problems."),
+    answer("Both braces go on the same line.",
+           message = "This style is not recommended. You may see it for very
+                      small functions."),
+    answer("The opening brace is placed after the function is defined and ends
+            the line. The closing brace is placed on a line by itself at the
+            conclusion of the code for the function's body.",
+           correct = TRUE,
+           message = "This is the best style."),
+    answer("The opening brace is placed on a new line after the function is
+            defined. The closing brace is placed on a line by itself at the
+            conclusion of the code for the function's body.",
+           message = "The opening brace should end the first line in which
+                      the function is defined."),
+    answer("The braces can only wrap up to 80 lines of code in a 
+            single function.",
+           message = "The function's body has no line limit."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+  
+)
+```
+
+## References
+
+1. Grolemund, G., & Wickham, H. (2020). 19 Functions | R for Data Science. 
+   Retrieved from https://r4ds.had.co.nz/functions.html
+   
+2. Wickham, H. (2020). The tidyverse style guide. Retrieved from
+   https://style.tidyverse.org/

@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Linear models</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <link rel="stylesheet" href="sta199-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Linear models
+### Duke University
+
+---
+
+
+
+
+
+
+class: center, middle
+
+### The language of models
+
+---
+
+### Modeling
+
+- We use models to explain the relationship between variables and to make 
+predictions
+
+- For now we will focus on **linear** models (but remember there are other types 
+of models too!)
+
+- Today, we will focus on fitting and interpreting models with a continuous 
+outcome variable and a single predictor
+
+--
+
+.pull-left[
+&lt;img src="img/broom.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+- The broom package takes the messy output of built-in functions in R  and turns 
+them into tidy data frames.
+
+- It integrates well with the tidyverse, especially with data wrangling using
+`dplyr`
+]
+
+---
+
+class: center, middle
+
+# Atmospheric measurements
+
+---
+
+### Today's data
+
+&lt;img src="img/beijing1.png" width="70%" style="display: block; margin: auto;" /&gt;
+&lt;center&gt;
+Series of atmospheric measurements taken at the
+Agriculture Exhibition Hall in Beijing from 2013 - 2017
+&lt;/center&gt;
+---
+
+### `glimpse` the dataset
+
+
+```r
+beijing &lt;- read_csv("data/beijing.csv")
+glimpse(beijing)
+```
+
+```
+## Observations: 1,500
+## Variables: 16
+## $ year  &lt;dbl&gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2...
+## $ month &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3...
+## $ day   &lt;dbl&gt; 2, 3, 3, 3, 4, 4, 6, 6, 6, 6, 6, 11, 12, 14, 15, 16, 18, 18, ...
+## $ hour  &lt;dbl&gt; 21, 0, 5, 23, 5, 10, 0, 9, 10, 15, 22, 16, 22, 0, 16, 2, 0, 1...
+## $ PM2.5 &lt;dbl&gt; 69, 122, 90, 103, 3, 13, 229, 176, 138, 227, 234, 110, 163, 6...
+## $ PM10  &lt;dbl&gt; 90, 142, 109, 138, 6, 20, 232, 177, 170, 245, 257, 140, 137, ...
+## $ SO2   &lt;dbl&gt; 68, 86, 77, 36, 10, 16, 124, 88, 96, 119, 140, 115, 28, 30, 9...
+## $ NO2   &lt;dbl&gt; 116, 106, 102, 128, 22, 32, 182, 116, 114, 153, 158, 84, 94, ...
+## $ CO    &lt;dbl&gt; 2200, 3100, 3100, 2799, 300, 500, 3299, 2500, 2200, 2899, 370...
+## $ O3    &lt;dbl&gt; 6, 8, 5, 5, 74, 68, 48, 35, 35, 35, 14, 86, 14, 93, 59, 59, 1...
+## $ TEMP  &lt;dbl&gt; 0.5, -2.2, -5.2, 7.1, 6.0, 11.5, 5.6, 8.4, 8.8, 14.7, 8.3, 11...
+## $ PRES  &lt;dbl&gt; 1024.8, 1022.3, 1018.5, 1016.7, 1020.1, 1022.3, 1010.4, 1010....
+## $ DEWP  &lt;dbl&gt; -15.1, -12.8, -11.6, -12.2, -14.2, -14.3, -7.0, -6.6, -6.2, -...
+## $ RAIN  &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0...
+## $ wd    &lt;chr&gt; "N", "N", "NE", "N", "NW", "N", "NE", "N", "NE", "SW", "SE", ...
+## $ WSPM  &lt;dbl&gt; 0.2, 0.0, 0.9, 0.4, 2.4, 0.0, 0.8, 0.8, 1.1, 1.3, 1.8, 2.7, 0...
+```
+
+---
+
+class: center, middle
+
+### Modeling the relationship between variables
+
+---
+
+### Dew point
+
+.question[
+Describe the distribution of dew point as measured at this station (in degrees
+Celsius)
+]
+
+![](intro-linear-models_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+
+---
+
+### Wind speed
+
+.question[
+Describe the distribution of barometric pressure as measured at this station
+(in hectopascals)
+]
+
+![](intro-linear-models_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+
+---
+
+
+### Models as functions
+
+- We can represent relationships between variables using functions
+
+- A &lt;font class = "vocab"&gt;function&lt;/font&gt; in the *mathematical* sense is the 
+relationship between one or more inputs and an output created from that (those) 
+input(s). 
+
+- Plug in the inputs and receive back the output
+    
+--
+
+- For instance, the formula `\(y = 3x + 7\)` is a function with input `\(x\)` and 
+output `\(y\)`. When `\(x\)` is `\(5\)`, the output `\(y\)` is `\(22\)`:
+    
+
+```r
+x &lt;- 5
+y &lt;- 3*x + 7
+
+y
+```
+
+```
+## [1] 22
+```
+
+---
+
+### Dew point as a function of pressure
+
+.question[
+Describe the relationship between PM2.5 levels and wind speed. 
+]
+
+![](intro-linear-models_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+
+---
+
+### Visualizing the linear model
+
+.question[
+What is the input/output? Does the line describe the relationship "well"?
+]
+
+![](intro-linear-models_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+
+---
+
+### Vocabulary
+
+- &lt;font class = "vocab"&gt;Response&lt;/font&gt; variable: Variable whose behavior or variation you are trying to
+understand, on the y-axis (dependent variable, or outcome)
+
+--
+
+- &lt;font class = "vocab"&gt;Explanatory&lt;/font&gt; variable: The variable you want to use to explain the 
+variation in the response, on the x-axis (independent variables, or predictors)
+
+--
+
+- &lt;font class = "vocab"&gt;Predicted value&lt;/font&gt;: The output of the &lt;font class = "vocab"&gt;model function&lt;/font&gt;. That is, the 
+expected value of the response *given* a certain value of the explanatory
+variable
+
+--
+
+- **Residual**: The difference between the actual value of the response variable
+*observed* in the dataset vs. the value *predicted* by the model
+
+---
+
+### Residuals
+
+.question[
+What does a negative residual mean? Which points on the plot have 
+have negative residuals?
+]
+
+![](intro-linear-models_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+
+---
+
+class: center, middle
+
+### Fitting and interpreting models
+
+---
+
+### `broom `
+
+.pull-left[
+&lt;img src="img/broom.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+- **`broom`** follows tidyverse principles and tidies up regression output
+- **`tidy`**: Constructs a tidy data frame summarizing model's statistical findings
+- **`glance`**: Constructs a concise one-row summary of the model
+- **`augment`**: Adds columns (e.g. predictions, residuals) to the original data that was modeled
+]
+
+Today, we will focus on making `tidy` regression output for linear models and
+`glance`ing at a model summary.
+
+[https://broom.tidyverse.org/](https://broom.tidyverse.org/)
+
+---
+
+### Fitting our model
+
+Let's create a linear model that predicts the dew point given the current 
+barometric pressure.
+
+We first use the `lm` function to create a **l**inear **m**odel object. Let's
+create and save a model, `mod1`, for use in later downstream analyses:
+
+
+```r
+mod1 &lt;- lm(DEWP ~ PRES, data = beijing)
+```
+
+Now let's take a look at the `tidy` output for our object as provided by the
+`broom` package:
+
+
+```r
+tidy(mod1)
+```
+
+```
+## # A tibble: 2 x 5
+##   term        estimate std.error statistic   p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)  1071.     22.5         47.7 1.68e-302
+## 2 PRES           -1.06    0.0222     -47.6 1.18e-301
+```
+
+---
+
+### Interpreting the slope and intercept
+
+
+```
+## # A tibble: 2 x 5
+##   term        estimate std.error statistic   p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)  1071.     22.5         47.7 1.68e-302
+## 2 PRES           -1.06    0.0222     -47.6 1.18e-301
+```
+
+`$$\widehat{DEWP} = 1071 - 1.08 PRES$$`
+
+The predicted dew point in degrees Celsius is given by 1071 minus 1.08 times the 
+barometric pressure.
+
+- &lt;font class = "vocab"&gt;Intercept&lt;/font&gt;: if the barometric pressure is 0, we 
+would expect the dew point to be 1071 degrees Celsius, on average (is this a 
+meaningful quantity to estimate...?)
+
+- &lt;font class = "vocab"&gt;Slope&lt;/font&gt;: for each additional hectopascal of 
+barometric pressure, we would expect the dew point to decrease by 1.08 degrees 
+Celsius
+
+**Warning**: We "expect" these relationships to hold, but there will be some 
+variability!
+
+---
+
+### The simple linear model
+
+We assume the following underlying linear model:
+
+`$$y_i = \beta_0 + \beta_1x_i + \epsilon_i$$`
+
+- `\(\beta_0\)` and `\(\beta_1\)` are **parameters** which aren't observed (neither is 
+the error, `\(\epsilon_i\)`).
+
+- When we estimate these parameters, we denote these estimates with hats: 
+`\(\hat{\beta}_0\)` and `\(\hat{\beta}_1\)`
+
+- We often use &lt;font class = "vocab"&gt;ordinary least squares&lt;/font&gt; (OLS) to 
+obtain these estimates to get the fitted model
+
+`$$\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1x_i$$`
+
+.question[
+What is different between the underlying linear model and the fitted model?
+]
+
+---
+
+### Ordinary least squares
+
+![](intro-linear-models_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+
+**Review**: Residuals are the differences between the observed response and 
+the predicted response values from the model:
+
+`$$\hat{\epsilon_i} = y_i - (\hat{\beta}_0 + \hat{\beta}_1x_i) = y_i - \hat{y}_i$$`
+
+OLS selects `\(\hat{\beta}_0\)` and `\(\hat{\beta}_1\)` such that the sum of squared 
+residuals is minimized
+
+---
+
+### Statistical inference
+
+
+```
+## # A tibble: 2 x 5
+##   term        estimate std.error statistic   p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)  1071.     22.5         47.7 1.68e-302
+## 2 PRES           -1.06    0.0222     -47.6 1.18e-301
+```
+
+You might have noticed a p-value corresponding to each of the parameter 
+estimates `\(\hat{\beta}_0\)` and `\(\hat{\beta}_1\)`
+
+In regression models, p-values generally correspond to testing the null 
+hypothesis `$$\beta = 0$$` vs. the alternative hypothesis `$$\beta \neq 0$$`.
+.question[
+At the `\(\alpha = 0.05\)` level, is there sufficient evidence to suggest that 
+`\(\beta_0 \neq 0\)`? How about `\(\beta_1\)`?
+]
+
+---
+
+### `glance`ing at a model summary
+
+We can also get model-level summaries by using the `glance` function on our
+model object:
+
+
+```r
+glance(mod1)
+```
+
+```
+## # A tibble: 1 x 11
+##   r.squared adj.r.squared sigma statistic   p.value    df logLik    AIC    BIC
+##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1     0.602         0.601  8.81     2262. 1.18e-301     2 -5391. 10788. 10804.
+## # ... with 2 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;
+```
+
+- `\(R^2\)` (`r.squared` tells us the percentage of variability in the response variable that 
+explained by our predictors
+
+- Here, we see that approximately 60% of the variability in dew point can be 
+explained by its linear relationship with barometric pressure.
+
+.question[
+What does "explained variability" mean here?
+]
+
+---
+
+### What about categorical predictors?
+
+
+```r
+mod2 &lt;- lm(DEWP ~ wd, data = beijing)
+tidy(mod2)
+```
+
+```
+## # A tibble: 8 x 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)    5.93      0.776     7.64  3.92e-14
+## 2 wdN           -8.17      1.39     -5.86  5.77e- 9
+## 3 wdNE          -3.84      1.08     -3.56  3.83e- 4
+## 4 wdNW         -12.6       1.22    -10.2   7.23e-24
+## 5 wdS            1.95      1.38      1.41  1.60e- 1
+## 6 wdSE           0.312     1.36      0.230 8.18e- 1
+## 7 wdSW          -2.10      1.21     -1.73  8.33e- 2
+## 8 wdW           -5.41      1.59     -3.40  6.95e- 4
+```
+
+.question[
+What do these "slopes" correspond to? Why are there only seven wind directions, 
+but eight in total (what happened to wind coming from the east)?
+]
+
+---
+
+### What about categorical predictors?
+
+
+```
+## # A tibble: 8 x 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)    5.93      0.776     7.64  3.92e-14
+## 2 wdN           -8.17      1.39     -5.86  5.77e- 9
+## 3 wdNE          -3.84      1.08     -3.56  3.83e- 4
+## 4 wdNW         -12.6       1.22    -10.2   7.23e-24
+## 5 wdS            1.95      1.38      1.41  1.60e- 1
+## 6 wdSE           0.312     1.36      0.230 8.18e- 1
+## 7 wdSW          -2.10      1.21     -1.73  8.33e- 2
+## 8 wdW           -5.41      1.59     -3.40  6.95e- 4
+```
+
+- When the categorical explanatory variable has many levels, the levels are 
+encoded as &lt;font class = "vocab"&gt;dummy variables&lt;/font&gt;. Dummy variables take 
+values of either 0 or 1, depending on whether the condition it corresponds to is 
+satisfied.
+
+--
+
+- **Example**: `wdS` takes on the value of 1 if the wind comes from the south, 
+and 0 if it does not. 
+
+--
+
+- Each coefficient describes the expected difference in dew point when wind 
+comes from that particular direction compared to the baseline level (east).
+
+---
+
+### What about categorical predictors?
+
+
+```
+## # A tibble: 8 x 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)    5.93      0.776     7.64  3.92e-14
+## 2 wdN           -8.17      1.39     -5.86  5.77e- 9
+## 3 wdNE          -3.84      1.08     -3.56  3.83e- 4
+## 4 wdNW         -12.6       1.22    -10.2   7.23e-24
+## 5 wdS            1.95      1.38      1.41  1.60e- 1
+## 6 wdSE           0.312     1.36      0.230 8.18e- 1
+## 7 wdSW          -2.10      1.21     -1.73  8.33e- 2
+## 8 wdW           -5.41      1.59     -3.40  6.95e- 4
+```
+
+`\begin{align*}
+\widehat{DEWP} &amp;= 5.93 - 8.17N - 3.84NE - 12.55NW + \\
+&amp;\mathrel{\phantom{=}} 1.95S + 0.31SE -2.10SW - 5.41W
+\end{align*}`
+where the predictors correspond to dummy variables for if the wind is blowing 
+from that direction.
+
+.question[
+Is there sufficient evidence to suggest differences in dew point depending on 
+wind direction? What patterns do you see?
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"highlightStyle": "github",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

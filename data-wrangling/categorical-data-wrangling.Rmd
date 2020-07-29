@@ -1,0 +1,281 @@
+---
+title: "Wrangling categorical data"
+author: ""
+date: "Duke University"
+output:
+  xaringan::moon_reader:
+    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    css: "sta199-slides.css"
+    lib_dir: libs
+    nature: 
+      highlightLines: true
+      highlightStyle: github
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      fig.align = "center"
+)
+```
+
+```{r packages-data, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(knitr)
+pokemon <- read_csv("data/pokemon.csv")
+```
+
+class: center, middle
+
+# Tidy data
+
+---
+
+### Tidy data
+
+>*Все счастливые семьи похожи друг на друга, каждая несчастливая семья несчастлива по-своему.*
+
+.pull-left[
+![anna](img/anna.jpg)
+]
+
+.pull-right[
+<br>
+**Characteristics of tidy data:**
+
+- Each variable forms a column.
+- Each observation forms a row.
+- Each type of observational unit forms a table.
+
+**Characteristics of untidy data:**
+
+...each is untidy in its own way.
+
+**Note:** this lecture assumes basic familiarity with `dplyr` and `ggplot`
+]
+
+
+---
+
+### Pokemon dataset
+
+This dataset was posted by Kaggle by Mario Tormo Romero, who scraped the data from [the Pokemon Database](https://pokemondb.net) and [Serebii](https://www.serebii.net). It has been slightly modified for the purposes of this class.
+
+```{r load-data, eval=FALSE}
+library(tidyverse)
+pokemon <- read_csv("data/pokemon.csv")
+```
+
+The dataset contains information on all Pokemon, including alternate forms, through Generation 8 (Pokemon Sword and Shield).
+
+.pull-left[
+![bulbasaur](img/bulbasaur.png)
+]
+
+.pull-right[
+- Pokemon #1: Bulbasaur (Grass/Poison type)
+- Non-legendary, Generation 1 (Red/Blue/Yellow)
+- 0.7 meters, 6.9 kilograms
+- Base stat total 318 
+- 45 HP, 49 ATK, 49 DEF, 65 SPA, 65 SPD, 45 SPE
+]
+
+---
+
+### A `glimpse` of the Pokemon data
+
+```{r}
+glimpse(pokemon)
+```
+
+---
+
+### Casting variables as factors
+
+```{r, eval = F}
+pokemon <- pokemon %>% 
+ {{mutate(generation = as.factor(generation),}}
+         {{leg_status = as.factor(leg_status),}}
+         {{type_1 = as.factor(type_1),}}
+         {{type_2 = as.factor(type_2))}}
+glimpse(pokemon)
+```
+```{r, echo = F}
+pokemon <- pokemon %>% 
+  mutate(generation = as.factor(generation),
+         leg_status = as.factor(leg_status),
+         type_1 = as.factor(type_1),
+         type_2 = as.factor(type_2))
+glimpse(pokemon)
+```
+
+---
+
+### The `forcats` package
+
+.pull-left[
+```{r, out.width = "70%", echo = F, fig.align = "center"}
+include_graphics("img/forcats.png")
+```
+<center>
+<a href = "https://forcats.tidyverse.org/">https://forcats.tidyverse.org/</a>
+</center>
+
+`R` uses factors to handle categorical variables: variables that have a fixed 
+set of possible values.
+]
+
+.pull-right[
+Internally, factor variables are stored as integers that correspond to the
+character values you see the factor is used. 
+
+Part of the core `tidyverse`, the `forcats` 
+package is a suite of tools that perform common data wrangling tasks with 
+factors.
+
+Abilities include:
+- Ordering by frequency
+- Reordering factor levels 
+- Recoding factors 
+- Collapsing levels
+- Lumping categories together 
+- ...and more! 
+]
+
+
+---
+
+### Visualizing legendary status
+
+```{r, eval = F}
+ggplot(data = pokemon, mapping = aes(x = leg_status)) +
+  geom_bar() + 
+  labs(x = "Count", y = "Legendary Status")
+```
+```{r, echo = F, fig.height = 5.4, fig.width = 9}
+ggplot(data = pokemon, mapping = aes(x = leg_status)) +
+  geom_bar() + 
+  labs(x = "Count", y = "Legendary Status") +
+  theme(text=element_text(size=20))
+```
+
+---
+
+### Ordering by frequency: `fct_infreq`
+
+```{r, eval = F}
+{{ggplot(data = pokemon, mapping = aes(x = fct_infreq(leg_status))) +}}
+  geom_bar() + 
+  labs(x = "Count", y = "Legendary Status")
+```
+```{r, echo = F, fig.height = 5.4, fig.width = 9}
+ggplot(data = pokemon, mapping = aes(x = fct_infreq(leg_status))) +
+  geom_bar() + 
+  labs(x = "Count", y = "Legendary Status") +
+  theme(text=element_text(size=20))
+```
+
+---
+
+### Manually reordering levels: `fct_relevel`
+
+```{r, eval = F}
+pokemon <- pokemon %>%
+ {{mutate(leg_status = fct_relevel(leg_status, }}
+                                  {{"Mythical", "Legendary",}}
+                                  {{"Sub Legendary", "Not Legendary"))}}
+ggplot(data = pokemon, etc....)
+```
+```{r, echo = F, fig.height = 5.4, fig.width = 9}
+ggplot(data = pokemon, mapping = aes(x = leg_status)) +
+  geom_bar() +
+  labs(x = "Count", y = "Legendary Status") +
+  theme(text=element_text(size=20))
+
+```
+
+---
+
+### Manually recoding factors: `fct_recode`
+
+```{r} 
+pokemon %>% 
+  count(leg_status)
+```
+
+```{r, eval = F}
+pokemon %>% 
+ {{mutate(leg_status = fct_recode(leg_status,}}
+                              {{"No" = "Not Legendary",}}
+                              {{"No" = "Sub Legendary",}}
+                              {{"Yes" = "Legendary",}}
+                              {{"Yes" = "Mythical")) %>%}}
+  count(leg_status)
+```
+```{r, echo = F}
+pokemon %>% 
+  mutate(leg_status = fct_recode(leg_status,
+                              "No" = "Not Legendary",
+                              "No" = "Sub Legendary" ,
+                              "Yes" = "Legendary",
+                              "Yes" = "Mythical")) %>% 
+  count(leg_status)
+```
+
+---
+
+### Collapsing levels: `fct_collapse`
+
+```{r} 
+pokemon %>% 
+  count(leg_status)
+```
+```{r, eval = F}
+pokemon %>% 
+ {{mutate(leg_status = fct_collapse(leg_status,}}
+                              {{no = c("Not Legendary", "Sub Legendary"),}}
+                              {{yes = c("Legendary", "Mythical"))) %>%}}
+  count(leg_status)
+```
+```{r, echo = F}
+pokemon %>% 
+  mutate(leg_status = fct_collapse(leg_status,
+                              no = c("Not Legendary", "Sub Legendary"),
+                              yes = c("Legendary", "Mythical"))) %>% 
+  count(leg_status)
+```
+
+---
+
+### Lumping categories together: `fct_lump`
+
+```{r, eval = F}
+pokemon %>% 
+ {{mutate(prim_type = fct_lump(type_1, n = 12)) %>%}}
+  count(prim_type) %>% 
+  arrange(desc(n))
+```
+```{r, echo = F}
+pokemon %>% 
+  mutate(prim_type = fct_lump(type_1, n = 12)) %>%
+  count(prim_type) %>% 
+  arrange(desc(n))
+```
+
+---
+
+### Lumping categories together: `fct_lump`
+
+```{r, eval = F}
+pokemon %>% 
+ {{mutate(prim_type = fct_lump(type_1, prop = 0.05)) %>%}}
+  count(prim_type) %>% 
+  arrange(desc(n))
+```
+```{r, echo = F, fig.height = 5.4, fig.width = 9}
+pokemon %>% 
+  mutate(prim_type = fct_lump(type_1, prop = 0.05)) %>%
+  count(prim_type) %>% 
+  arrange(desc(n))
+```
+

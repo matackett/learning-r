@@ -1,0 +1,443 @@
+---
+title: "Linear models"
+author: ""
+date: "Duke University"
+output:
+  xaringan::moon_reader:
+    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    css: "sta199-slides.css"
+    lib_dir: libs
+    nature: 
+      highlightLines: true
+      highlightStyle: github
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      dpi=300,
+                      fig.height = 3,
+                      fig.width = 5
+)
+```
+
+```{r packages-data, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(knitr)
+library(broom)
+beijing <- read_csv("data/beijing.csv")
+```
+
+class: center, middle
+
+### The language of models
+
+---
+
+### Modeling
+
+- We use models to explain the relationship between variables and to make 
+predictions
+
+- For now we will focus on **linear** models (but remember there are other types 
+of models too!)
+
+- Today, we will focus on fitting and interpreting models with a continuous 
+outcome variable and a single predictor
+
+--
+
+.pull-left[
+```{r, out.width = "70%", echo = F, fig.align = "center"}
+include_graphics("img/broom.png")
+```
+]
+
+.pull-right[
+- The broom package takes the messy output of built-in functions in R  and turns 
+them into tidy data frames.
+
+- It integrates well with the tidyverse, especially with data wrangling using
+`dplyr`
+]
+
+---
+
+class: center, middle
+
+# Atmospheric measurements
+
+---
+
+### Today's data
+
+```{r, out.width = "70%", echo = F, fig.align = "center"}
+include_graphics("img/beijing1.png")
+```
+<center>
+Series of atmospheric measurements taken at the
+Agriculture Exhibition Hall in Beijing from 2013 - 2017
+</center>
+---
+
+### `glimpse` the dataset
+
+```{r, message = F, warning = F}
+beijing <- read_csv("data/beijing.csv")
+glimpse(beijing)
+```
+
+---
+
+class: center, middle
+
+### Modeling the relationship between variables
+
+---
+
+### Dew point
+
+.question[
+Describe the distribution of dew point as measured at this station (in degrees
+Celsius)
+]
+
+```{r, fig.height=2.5, echo = F, message = F}
+ggplot(data = beijing, aes(x = DEWP)) +
+  geom_histogram() +
+  labs(y = "Count")
+```
+
+---
+
+### Wind speed
+
+.question[
+Describe the distribution of barometric pressure as measured at this station
+(in hectopascals)
+]
+
+```{r, fig.height=2.5, echo = F, message = F}
+ggplot(data = beijing, aes(x = PRES)) +
+  geom_histogram() +
+  labs(y = "Count")
+```
+
+---
+
+
+### Models as functions
+
+- We can represent relationships between variables using functions
+
+- A <font class = "vocab">function</font> in the *mathematical* sense is the 
+relationship between one or more inputs and an output created from that (those) 
+input(s). 
+
+- Plug in the inputs and receive back the output
+    
+--
+
+- For instance, the formula $y = 3x + 7$ is a function with input $x$ and 
+output $y$. When $x$ is $5$, the output $y$ is $22$:
+    
+```{r}
+x <- 5
+y <- 3*x + 7
+
+y
+```
+
+---
+
+### Dew point as a function of pressure
+
+.question[
+Describe the relationship between PM2.5 levels and wind speed. 
+]
+
+```{r, message = F, warning = F, echo = F}
+ggplot(data = beijing, aes(x = PRES, y = DEWP)) +
+  geom_point() +
+  ylim(c(-40, 30))
+```
+
+---
+
+### Visualizing the linear model
+
+.question[
+What is the input/output? Does the line describe the relationship "well"?
+]
+
+```{r, message = F, warning = F, echo = F}
+ggplot(data = beijing, aes(x = PRES, y = DEWP)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F) +
+  ylim(c(-40, 30))
+```
+
+---
+
+### Vocabulary
+
+- <font class = "vocab">Response</font> variable: Variable whose behavior or variation you are trying to
+understand, on the y-axis (dependent variable, or outcome)
+
+--
+
+- <font class = "vocab">Explanatory</font> variable: The variable you want to use to explain the 
+variation in the response, on the x-axis (independent variables, or predictors)
+
+--
+
+- <font class = "vocab">Predicted value</font>: The output of the <font class = "vocab">model function</font>. That is, the 
+expected value of the response *given* a certain value of the explanatory
+variable
+
+--
+
+- **Residual**: The difference between the actual value of the response variable
+*observed* in the dataset vs. the value *predicted* by the model
+
+---
+
+### Residuals
+
+.question[
+What does a negative residual mean? Which points on the plot have 
+have negative residuals?
+]
+
+```{r, message = F, warning = F, echo = F}
+ggplot(data = beijing, aes(x = PRES, y = DEWP)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F) +
+  ylim(c(-40, 30))
+```
+
+---
+
+class: center, middle
+
+### Fitting and interpreting models
+
+---
+
+### `broom `
+
+.pull-left[
+```{r, out.width = "70%", echo = F, fig.align = "center"}
+include_graphics("img/broom.png")
+```
+]
+
+.pull-right[
+- **`broom`** follows tidyverse principles and tidies up regression output
+- **`tidy`**: Constructs a tidy data frame summarizing model's statistical findings
+- **`glance`**: Constructs a concise one-row summary of the model
+- **`augment`**: Adds columns (e.g. predictions, residuals) to the original data that was modeled
+]
+
+Today, we will focus on making `tidy` regression output for linear models and
+`glance`ing at a model summary.
+
+[https://broom.tidyverse.org/](https://broom.tidyverse.org/)
+
+---
+
+### Fitting our model
+
+Let's create a linear model that predicts the dew point given the current 
+barometric pressure.
+
+We first use the `lm` function to create a **l**inear **m**odel object. Let's
+create and save a model, `mod1`, for use in later downstream analyses:
+
+```{r}
+mod1 <- lm(DEWP ~ PRES, data = beijing)
+```
+
+Now let's take a look at the `tidy` output for our object as provided by the
+`broom` package:
+
+```{r}
+tidy(mod1)
+```
+
+---
+
+### Interpreting the slope and intercept
+
+```{r, echo = F}
+tidy(mod1)
+```
+
+$$\widehat{DEWP} = 1071 - 1.08 PRES$$
+
+The predicted dew point in degrees Celsius is given by 1071 minus 1.08 times the 
+barometric pressure.
+
+- <font class = "vocab">Intercept</font>: if the barometric pressure is 0, we 
+would expect the dew point to be 1071 degrees Celsius, on average (is this a 
+meaningful quantity to estimate...?)
+
+- <font class = "vocab">Slope</font>: for each additional hectopascal of 
+barometric pressure, we would expect the dew point to decrease by 1.08 degrees 
+Celsius
+
+**Warning**: We "expect" these relationships to hold, but there will be some 
+variability!
+
+---
+
+### The simple linear model
+
+We assume the following underlying linear model:
+
+$$y_i = \beta_0 + \beta_1x_i + \epsilon_i$$
+
+- $\beta_0$ and $\beta_1$ are **parameters** which aren't observed (neither is 
+the error, $\epsilon_i$).
+
+- When we estimate these parameters, we denote these estimates with hats: 
+$\hat{\beta}_0$ and $\hat{\beta}_1$
+
+- We often use <font class = "vocab">ordinary least squares</font> (OLS) to 
+obtain these estimates to get the fitted model
+
+$$\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1x_i$$
+
+.question[
+What is different between the underlying linear model and the fitted model?
+]
+
+---
+
+### Ordinary least squares
+
+```{r echo=FALSE, fig.height = 2.5}
+d <- tibble(
+    PRES     = mod1$model$PRES,
+    DEWP    = mod1$model$DEWP,
+    pred         = mod1$fitted.values,
+    res          = mod1$residuals
+  )
+p <- ggplot(data = d, mapping = aes(x = PRES, y = DEWP)) +
+  geom_point(alpha = 0.2) + 
+  theme_bw() +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_point(mapping = aes(y = pred), alpha = 0) +
+  geom_segment(mapping = aes(xend = PRES, yend = pred), alpha = 0.4, color="red") +
+  labs(x = "Pressure (hPa)", y = "Dew point (C)")
+p
+```
+
+**Review**: Residuals are the differences between the observed response and 
+the predicted response values from the model:
+
+$$\hat{\epsilon_i} = y_i - (\hat{\beta}_0 + \hat{\beta}_1x_i) = y_i - \hat{y}_i$$
+
+OLS selects $\hat{\beta}_0$ and $\hat{\beta}_1$ such that the sum of squared 
+residuals is minimized
+
+---
+
+### Statistical inference
+
+```{r, echo = F}
+tidy(mod1)
+```
+
+You might have noticed a p-value corresponding to each of the parameter 
+estimates $\hat{\beta}_0$ and $\hat{\beta}_1$
+
+In regression models, p-values generally correspond to testing the null 
+hypothesis $$\beta = 0$$ vs. the alternative hypothesis $$\beta \neq 0$$.
+.question[
+At the $\alpha = 0.05$ level, is there sufficient evidence to suggest that 
+$\beta_0 \neq 0$? How about $\beta_1$?
+]
+
+---
+
+### `glance`ing at a model summary
+
+We can also get model-level summaries by using the `glance` function on our
+model object:
+
+```{r}
+glance(mod1)
+```
+
+- $R^2$ (`r.squared` tells us the percentage of variability in the response variable that 
+explained by our predictors
+
+- Here, we see that approximately 60% of the variability in dew point can be 
+explained by its linear relationship with barometric pressure.
+
+.question[
+What does "explained variability" mean here?
+]
+
+---
+
+### What about categorical predictors?
+
+```{r}
+mod2 <- lm(DEWP ~ wd, data = beijing)
+tidy(mod2)
+```
+
+.question[
+What do these "slopes" correspond to? Why are there only seven wind directions, 
+but eight in total (what happened to wind coming from the east)?
+]
+
+---
+
+### What about categorical predictors?
+
+```{r, echo = F}
+mod2 <- lm(DEWP ~ wd, data = beijing)
+tidy(mod2)
+```
+
+- When the categorical explanatory variable has many levels, the levels are 
+encoded as <font class = "vocab">dummy variables</font>. Dummy variables take 
+values of either 0 or 1, depending on whether the condition it corresponds to is 
+satisfied.
+
+--
+
+- **Example**: `wdS` takes on the value of 1 if the wind comes from the south, 
+and 0 if it does not. 
+
+--
+
+- Each coefficient describes the expected difference in dew point when wind 
+comes from that particular direction compared to the baseline level (east).
+
+---
+
+### What about categorical predictors?
+
+```{r, echo = F}
+mod2 <- lm(DEWP ~ wd, data = beijing)
+tidy(mod2)
+```
+
+\begin{align*}
+\widehat{DEWP} &= 5.93 - 8.17N - 3.84NE - 12.55NW + \\
+&\mathrel{\phantom{=}} 1.95S + 0.31SE -2.10SW - 5.41W
+\end{align*}
+where the predictors correspond to dummy variables for if the wind is blowing 
+from that direction.
+
+.question[
+Is there sufficient evidence to suggest differences in dew point depending on 
+wind direction? What patterns do you see?
+]
+
+
+
