@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Wrangling categorical data</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <link rel="stylesheet" href="sta199-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Wrangling categorical data
+### Duke University
+
+---
+
+
+
+
+
+
+class: center, middle
+
+# Tidy data
+
+---
+
+### Tidy data
+
+&gt;*Все счастливые семьи похожи друг на друга, каждая несчастливая семья несчастлива по-своему.*
+
+.pull-left[
+![anna](img/anna.jpg)
+]
+
+.pull-right[
+&lt;br&gt;
+**Characteristics of tidy data:**
+
+- Each variable forms a column.
+- Each observation forms a row.
+- Each type of observational unit forms a table.
+
+**Characteristics of untidy data:**
+
+...each is untidy in its own way.
+
+**Note:** this lecture assumes basic familiarity with `dplyr` and `ggplot`
+]
+
+
+---
+
+### Pokemon dataset
+
+This dataset was posted by Kaggle by Mario Tormo Romero, who scraped the data from [the Pokemon Database](https://pokemondb.net) and [Serebii](https://www.serebii.net). It has been slightly modified for the purposes of this class.
+
+
+```r
+library(tidyverse)
+pokemon &lt;- read_csv("data/pokemon.csv")
+```
+
+The dataset contains information on all Pokemon, including alternate forms, through Generation 8 (Pokemon Sword and Shield).
+
+.pull-left[
+![bulbasaur](img/bulbasaur.png)
+]
+
+.pull-right[
+- Pokemon #1: Bulbasaur (Grass/Poison type)
+- Non-legendary, Generation 1 (Red/Blue/Yellow)
+- 0.7 meters, 6.9 kilograms
+- Base stat total 318 
+- 45 HP, 49 ATK, 49 DEF, 65 SPA, 65 SPD, 45 SPE
+]
+
+---
+
+### A `glimpse` of the Pokemon data
+
+
+```r
+glimpse(pokemon)
+```
+
+```
+## Observations: 1,028
+## Variables: 15
+## $ pokedex_number &lt;dbl&gt; 1, 2, 3, 3, 4, 5, 6, 6, 6, 7, 8, 9, 9, 10, 11, 12, 1...
+## $ name           &lt;chr&gt; "Bulbasaur", "Ivysaur", "Venusaur", "Mega Venusaur",...
+## $ generation     &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1...
+## $ leg_status     &lt;chr&gt; "Not Legendary", "Not Legendary", "Not Legendary", "...
+## $ type_1         &lt;chr&gt; "Grass", "Grass", "Grass", "Grass", "Fire", "Fire", ...
+## $ type_2         &lt;chr&gt; "Poison", "Poison", "Poison", "Poison", "None", "Non...
+## $ height_m       &lt;dbl&gt; 0.7, 1.0, 2.0, 2.4, 0.6, 1.1, 1.7, 1.7, 1.7, 0.5, 1....
+## $ weight_kg      &lt;dbl&gt; 6.9, 13.0, 100.0, 155.5, 8.5, 19.0, 90.5, 110.5, 100...
+## $ bst            &lt;dbl&gt; 318, 405, 525, 625, 309, 405, 534, 634, 634, 314, 40...
+## $ hp             &lt;dbl&gt; 45, 60, 80, 80, 39, 58, 78, 78, 78, 44, 59, 79, 79, ...
+## $ atk            &lt;dbl&gt; 49, 62, 82, 100, 52, 64, 84, 130, 104, 48, 63, 83, 1...
+## $ def            &lt;dbl&gt; 49, 63, 83, 123, 43, 58, 78, 111, 78, 65, 80, 100, 1...
+## $ spa            &lt;dbl&gt; 65, 80, 100, 122, 60, 80, 109, 130, 159, 50, 65, 85,...
+## $ spd            &lt;dbl&gt; 65, 80, 100, 120, 50, 65, 85, 85, 115, 64, 80, 105, ...
+## $ spe            &lt;dbl&gt; 45, 60, 80, 80, 65, 80, 100, 100, 100, 43, 58, 78, 7...
+```
+
+---
+
+### Casting variables as factors
+
+
+```r
+pokemon &lt;- pokemon %&gt;% 
+* mutate(generation = as.factor(generation),
+*         leg_status = as.factor(leg_status),
+*         type_1 = as.factor(type_1),
+*         type_2 = as.factor(type_2))
+glimpse(pokemon)
+```
+
+```
+## Observations: 1,028
+## Variables: 15
+## $ pokedex_number &lt;dbl&gt; 1, 2, 3, 3, 4, 5, 6, 6, 6, 7, 8, 9, 9, 10, 11, 12, 1...
+## $ name           &lt;chr&gt; "Bulbasaur", "Ivysaur", "Venusaur", "Mega Venusaur",...
+## $ generation     &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1...
+## $ leg_status     &lt;fct&gt; Not Legendary, Not Legendary, Not Legendary, Not Leg...
+## $ type_1         &lt;fct&gt; Grass, Grass, Grass, Grass, Fire, Fire, Fire, Fire, ...
+## $ type_2         &lt;fct&gt; Poison, Poison, Poison, Poison, None, None, Flying, ...
+## $ height_m       &lt;dbl&gt; 0.7, 1.0, 2.0, 2.4, 0.6, 1.1, 1.7, 1.7, 1.7, 0.5, 1....
+## $ weight_kg      &lt;dbl&gt; 6.9, 13.0, 100.0, 155.5, 8.5, 19.0, 90.5, 110.5, 100...
+## $ bst            &lt;dbl&gt; 318, 405, 525, 625, 309, 405, 534, 634, 634, 314, 40...
+## $ hp             &lt;dbl&gt; 45, 60, 80, 80, 39, 58, 78, 78, 78, 44, 59, 79, 79, ...
+## $ atk            &lt;dbl&gt; 49, 62, 82, 100, 52, 64, 84, 130, 104, 48, 63, 83, 1...
+## $ def            &lt;dbl&gt; 49, 63, 83, 123, 43, 58, 78, 111, 78, 65, 80, 100, 1...
+## $ spa            &lt;dbl&gt; 65, 80, 100, 122, 60, 80, 109, 130, 159, 50, 65, 85,...
+## $ spd            &lt;dbl&gt; 65, 80, 100, 120, 50, 65, 85, 85, 115, 64, 80, 105, ...
+## $ spe            &lt;dbl&gt; 45, 60, 80, 80, 65, 80, 100, 100, 100, 43, 58, 78, 7...
+```
+
+---
+
+### The `forcats` package
+
+.pull-left[
+&lt;img src="img/forcats.png" width="70%" style="display: block; margin: auto;" /&gt;
+&lt;center&gt;
+&lt;a href = "https://forcats.tidyverse.org/"&gt;https://forcats.tidyverse.org/&lt;/a&gt;
+&lt;/center&gt;
+
+`R` uses factors to handle categorical variables: variables that have a fixed 
+set of possible values.
+]
+
+.pull-right[
+Internally, factor variables are stored as integers that correspond to the
+character values you see the factor is used. 
+
+Part of the core `tidyverse`, the `forcats` 
+package is a suite of tools that perform common data wrangling tasks with 
+factors.
+
+Abilities include:
+- Ordering by frequency
+- Reordering factor levels 
+- Recoding factors 
+- Collapsing levels
+- Lumping categories together 
+- ...and more! 
+]
+
+
+---
+
+### Visualizing legendary status
+
+
+```r
+ggplot(data = pokemon, mapping = aes(x = leg_status)) +
+  geom_bar() + 
+  labs(x = "Count", y = "Legendary Status")
+```
+&lt;img src="categorical-data-wrangling_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Ordering by frequency: `fct_infreq`
+
+
+```r
+*ggplot(data = pokemon, mapping = aes(x = fct_infreq(leg_status))) +
+  geom_bar() + 
+  labs(x = "Count", y = "Legendary Status")
+```
+&lt;img src="categorical-data-wrangling_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Manually reordering levels: `fct_relevel`
+
+
+```r
+pokemon &lt;- pokemon %&gt;%
+* mutate(leg_status = fct_relevel(leg_status, 
+*                                  "Mythical", "Legendary",
+*                                  "Sub Legendary", "Not Legendary"))
+ggplot(data = pokemon, etc....)
+```
+&lt;img src="categorical-data-wrangling_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Manually recoding factors: `fct_recode`
+
+
+```r
+pokemon %&gt;% 
+  count(leg_status)
+```
+
+```
+## # A tibble: 4 x 2
+##   leg_status        n
+##   &lt;fct&gt;         &lt;int&gt;
+## 1 Legendary        39
+## 2 Mythical         29
+## 3 Not Legendary   915
+## 4 Sub Legendary    45
+```
+
+
+```r
+pokemon %&gt;% 
+* mutate(leg_status = fct_recode(leg_status,
+*                              "No" = "Not Legendary",
+*                              "No" = "Sub Legendary",
+*                              "Yes" = "Legendary",
+*                              "Yes" = "Mythical")) %&gt;%
+  count(leg_status)
+```
+
+```
+## # A tibble: 2 x 2
+##   leg_status     n
+##   &lt;fct&gt;      &lt;int&gt;
+## 1 Yes           68
+## 2 No           960
+```
+
+---
+
+### Collapsing levels: `fct_collapse`
+
+
+```r
+pokemon %&gt;% 
+  count(leg_status)
+```
+
+```
+## # A tibble: 4 x 2
+##   leg_status        n
+##   &lt;fct&gt;         &lt;int&gt;
+## 1 Legendary        39
+## 2 Mythical         29
+## 3 Not Legendary   915
+## 4 Sub Legendary    45
+```
+
+```r
+pokemon %&gt;% 
+* mutate(leg_status = fct_collapse(leg_status,
+*                              no = c("Not Legendary", "Sub Legendary"),
+*                              yes = c("Legendary", "Mythical"))) %&gt;%
+  count(leg_status)
+```
+
+```
+## # A tibble: 2 x 2
+##   leg_status     n
+##   &lt;fct&gt;      &lt;int&gt;
+## 1 yes           68
+## 2 no           960
+```
+
+---
+
+### Lumping categories together: `fct_lump`
+
+
+```r
+pokemon %&gt;% 
+* mutate(prim_type = fct_lump(type_1, n = 12)) %&gt;%
+  count(prim_type) %&gt;% 
+  arrange(desc(n))
+```
+
+```
+## # A tibble: 13 x 2
+##    prim_type     n
+##    &lt;fct&gt;     &lt;int&gt;
+##  1 Other       179
+##  2 Water       134
+##  3 Normal      115
+##  4 Grass        91
+##  5 Bug          81
+##  6 Psychic      76
+##  7 Fire         65
+##  8 Electric     61
+##  9 Rock         60
+## 10 Dark         44
+## 11 Ghost        41
+## 12 Ground       41
+## 13 Dragon       40
+```
+
+---
+
+### Lumping categories together: `fct_lump`
+
+
+```r
+pokemon %&gt;% 
+* mutate(prim_type = fct_lump(type_1, prop = 0.05)) %&gt;%
+  count(prim_type) %&gt;% 
+  arrange(desc(n))
+```
+
+```
+## # A tibble: 9 x 2
+##   prim_type     n
+##   &lt;fct&gt;     &lt;int&gt;
+## 1 Other       345
+## 2 Water       134
+## 3 Normal      115
+## 4 Grass        91
+## 5 Bug          81
+## 6 Psychic      76
+## 7 Fire         65
+## 8 Electric     61
+## 9 Rock         60
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"highlightStyle": "github",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

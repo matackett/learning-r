@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Tidy data wrangling</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <link rel="stylesheet" href="sta199-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Tidy data wrangling
+### Duke University
+
+---
+
+
+
+
+
+
+class: center, middle
+
+# Tidy data
+
+---
+
+## Tidy data
+
+&gt;*Все счастливые семьи похожи друг на друга, каждая несчастливая семья несчастлива по-своему.*
+
+.pull-left[
+![anna](img/anna.jpg)
+]
+
+--
+
+.pull-right[
+**Characteristics of tidy data:**
+
+- Each variable forms a column.
+- Each observation forms a row.
+- Each type of observational unit forms a table.
+
+**Characteristics of untidy data:**
+
+...each is untidy in its own way.]
+
+
+---
+
+## Pokemon dataset
+
+This dataset was posted by Kaggle by Mario Tormo Romero, who scraped the data from [the Pokemon Database](https://pokemondb.net) and [Serebii](https://www.serebii.net). It has been slightly modified for the purposes of this class.
+
+
+```r
+library(tidyverse)
+pokemon &lt;- read_csv("data/pokemon.csv")
+```
+
+--
+
+The dataset contains information on all Pokemon, including alternate forms, through Generation 8 (Pokemon Sword and Shield).
+
+.pull-left[
+![bulbasaur](img/bulbasaur.png)
+]
+
+.pull-right[
+- Pokemon #1: Bulbasaur (Grass/Poison type)
+- Non-legendary, Generation 1 (Red/Blue/Yellow)
+- 0.7 meters, 6.9 kilograms
+- Base stat total 318 
+- 45 HP, 49 ATK, 49 DEF, 65 SPA, 65 SPD, 45 SPE
+]
+
+---
+
+## Pokemon dataset
+
+
+```
+## # A tibble: 1,028 x 15
+##    pokedex_number name  generation leg_status type_1 type_2 height_m weight_kg
+##             &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1              1 Bulb~          1 Non-legen~ Grass  Poison      0.7       6.9
+##  2              2 Ivys~          1 Non-legen~ Grass  Poison      1        13  
+##  3              3 Venu~          1 Non-legen~ Grass  Poison      2       100  
+##  4              3 Mega~          1 Non-legen~ Grass  Poison      2.4     156. 
+##  5              4 Char~          1 Non-legen~ Fire   None        0.6       8.5
+##  6              5 Char~          1 Non-legen~ Fire   None        1.1      19  
+##  7              6 Char~          1 Non-legen~ Fire   Flying      1.7      90.5
+##  8              6 Mega~          1 Non-legen~ Fire   Dragon      1.7     110. 
+##  9              6 Mega~          1 Non-legen~ Fire   Flying      1.7     100. 
+## 10              7 Squi~          1 Non-legen~ Water  None        0.5       9  
+## # ... with 1,018 more rows, and 7 more variables: bst &lt;dbl&gt;, hp &lt;dbl&gt;,
+## #   atk &lt;dbl&gt;, def &lt;dbl&gt;, spa &lt;dbl&gt;, spd &lt;dbl&gt;, spe &lt;dbl&gt;
+```
+
+---
+
+## Datasets vs. summary tables 
+
+.question[
+What is the difference between the two tables below?
+]
+
+.small[
+.pull-left[
+
+```
+## # A tibble: 1,028 x 3
+##    name             type_1 type_2
+##    &lt;chr&gt;            &lt;chr&gt;  &lt;chr&gt; 
+##  1 Bulbasaur        Grass  Poison
+##  2 Ivysaur          Grass  Poison
+##  3 Venusaur         Grass  Poison
+##  4 Mega Venusaur    Grass  Poison
+##  5 Charmander       Fire   None  
+##  6 Charmeleon       Fire   None  
+##  7 Charizard        Fire   Flying
+##  8 Mega Charizard X Fire   Dragon
+##  9 Mega Charizard Y Fire   Flying
+## 10 Squirtle         Water  None  
+## # ... with 1,018 more rows
+```
+]
+
+.pull-right[
+
+```
+## # A tibble: 18 x 2
+##    type_1   avg_weight
+##    &lt;chr&gt;         &lt;dbl&gt;
+##  1 Bug            34.0
+##  2 Dark           57.6
+##  3 Dragon        125. 
+##  4 Electric       36.1
+##  5 Fairy          40.4
+##  6 Fighting       79.3
+##  7 Fire           65.0
+##  8 Flying         41.2
+##  9 Ghost          64.4
+## 10 Grass          39.8
+## 11 Ground        133. 
+## 12 Ice            93.2
+## 13 Normal         43.5
+## 14 Poison         60.2
+## 15 Psychic        69.9
+## 16 Rock          114. 
+## 17 Steel         231. 
+## 18 Water          58.2
+```
+]
+]
+
+---
+
+class: center, middle
+
+# Data wrangling
+
+---
+
+## A grammar of data manipulation
+
+
+.pull-left[
+![dplyr](img/dplyr-part-of-tidyverse.png)
+]
+
+--
+
+.pull-right[
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+The `dplyr` package introduces functions as verbs that manipulate data frames.
+For instance, we can 
+- `glimpse` the entire dataset 
+- `filter` for rows matching certain criteria
+- `select` columns by name
+- `mutate` new variables 
+- ... and so many more!
+]
+
+---
+
+## Taking a `glimpse` of the dataset
+
+
+```r
+glimpse(pokemon)
+```
+
+```
+## Observations: 1,028
+## Variables: 15
+## $ pokedex_number &lt;dbl&gt; 1, 2, 3, 3, 4, 5, 6, 6, 6, 7, 8, 9, 9, 10, 11, 12, 1...
+## $ name           &lt;chr&gt; "Bulbasaur", "Ivysaur", "Venusaur", "Mega Venusaur",...
+## $ generation     &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1...
+## $ leg_status     &lt;chr&gt; "Non-legendary", "Non-legendary", "Non-legendary", "...
+## $ type_1         &lt;chr&gt; "Grass", "Grass", "Grass", "Grass", "Fire", "Fire", ...
+## $ type_2         &lt;chr&gt; "Poison", "Poison", "Poison", "Poison", "None", "Non...
+## $ height_m       &lt;dbl&gt; 0.7, 1.0, 2.0, 2.4, 0.6, 1.1, 1.7, 1.7, 1.7, 0.5, 1....
+## $ weight_kg      &lt;dbl&gt; 6.9, 13.0, 100.0, 155.5, 8.5, 19.0, 90.5, 110.5, 100...
+## $ bst            &lt;dbl&gt; 318, 405, 525, 625, 309, 405, 534, 634, 634, 314, 40...
+## $ hp             &lt;dbl&gt; 45, 60, 80, 80, 39, 58, 78, 78, 78, 44, 59, 79, 79, ...
+## $ atk            &lt;dbl&gt; 49, 62, 82, 100, 52, 64, 84, 130, 104, 48, 63, 83, 1...
+## $ def            &lt;dbl&gt; 49, 63, 83, 123, 43, 58, 78, 111, 78, 65, 80, 100, 1...
+## $ spa            &lt;dbl&gt; 65, 80, 100, 122, 60, 80, 109, 130, 159, 50, 65, 85,...
+## $ spd            &lt;dbl&gt; 65, 80, 100, 120, 50, 65, 85, 85, 115, 64, 80, 105, ...
+## $ spe            &lt;dbl&gt; 45, 60, 80, 80, 65, 80, 100, 100, 100, 43, 58, 78, 7...
+```
+
+.question[
+What do you notice in the output?
+]
+
+---
+
+## The pipe operator ` %&gt;% ` =
+
+The pipe operator ` %&gt;% ` is used for many data manipulation tasks. You can 
+pronounce it as "and then".
+
+&lt;img src="img/magritte.jpg" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## How does a pipe work?
+
+Think about the following sequence of actions: 
+- Find keys 
+- Unlock car 
+- Start car 
+- Drive to Duke
+- Park
+
+Expressed as a set of nested functions in R pseudocode this would look like:
+
+```r
+park(drive(start_car(find("keys")), to = "campus"))
+```
+
+--
+
+Writing it out using pipes give it a more natural (and easier to read) 
+structure:
+
+
+```r
+find("keys") %&gt;%
+  start_car() %&gt;%
+  drive(to = "campus") %&gt;%
+  park()
+```
+
+---
+
+## `dplyr` rules for functions
+
+- The first argument must *always* be a data frame
+
+- The `%&gt;%` operator "pipes" the output of the previous line of code as the 
+first input of the next line of code
+
+- Subsequent arguments say what to do with that data frame
+
+- `dplyr` functions always return a data frame (unless specifically told not to)
+
+- A good practice is to avoid modifying "in place"
+
+---
+
+## Logical operators in R
+
+operator    | definition                   
+------------|------------------------------
+`&lt;`         | less than                    
+`&lt;=`        |	less than or equal to        
+`&gt;`         | greater than                 
+`&gt;=`        |	greater than or equal to     
+`==`        |	exactly equal to             
+`!=`        |	not equal to                 
+`x &amp; y`     | `x` AND `y`                  
+`x`&amp;nbsp;&amp;#124;&amp;nbsp;`y`     | `x` OR `y`  
+`is.na(x)`  | test if `x` is `NA`          
+`x %in% y`  | test if `x` is in `y`        
+`!x`        | not `x`                      
+
+---
+
+class: center, middle
+
+# Data wrangling examples
+
+---
+
+## `filter` to select a subset of rows
+
+
+```r
+pokemon %&gt;%
+* filter(leg_status == "Legendary")
+```
+
+```
+## # A tibble: 39 x 15
+##    pokedex_number name  generation leg_status type_1 type_2 height_m weight_kg
+##             &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1            150 Mewt~          1 Legendary  Psych~ None        2        122 
+##  2            150 Mega~          1 Legendary  Psych~ Fight~      2.3      127 
+##  3            150 Mega~          1 Legendary  Psych~ None        1.5       33 
+##  4            249 Lugia          2 Legendary  Psych~ Flying      5.2      216 
+##  5            250 Ho-oh          2 Legendary  Fire   Flying      3.8      199 
+##  6            382 Kyog~          3 Legendary  Water  None        4.5      352 
+##  7            382 Prim~          3 Legendary  Water  None        9.8      430 
+##  8            383 Grou~          3 Legendary  Ground None        3.5      950 
+##  9            383 Prim~          3 Legendary  Ground Fire        5       1000.
+## 10            384 Rayq~          3 Legendary  Dragon Flying      7        206.
+## # ... with 29 more rows, and 7 more variables: bst &lt;dbl&gt;, hp &lt;dbl&gt;, atk &lt;dbl&gt;,
+## #   def &lt;dbl&gt;, spa &lt;dbl&gt;, spd &lt;dbl&gt;, spe &lt;dbl&gt;
+```
+
+---
+
+## `filter` to select a subset of rows
+
+
+```r
+pokemon %&gt;%
+* filter(type_1 == "Grass" | type_2 == "Grass")
+```
+
+```
+## # A tibble: 117 x 15
+##    pokedex_number name  generation leg_status type_1 type_2 height_m weight_kg
+##             &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1              1 Bulb~          1 Non-legen~ Grass  Poison      0.7       6.9
+##  2              2 Ivys~          1 Non-legen~ Grass  Poison      1        13  
+##  3              3 Venu~          1 Non-legen~ Grass  Poison      2       100  
+##  4              3 Mega~          1 Non-legen~ Grass  Poison      2.4     156. 
+##  5             43 Oddi~          1 Non-legen~ Grass  Poison      0.5       5.4
+##  6             44 Gloom          1 Non-legen~ Grass  Poison      0.8       8.6
+##  7             45 Vile~          1 Non-legen~ Grass  Poison      1.2      18.6
+##  8             46 Paras          1 Non-legen~ Bug    Grass       0.3       5.4
+##  9             47 Para~          1 Non-legen~ Bug    Grass       1        29.5
+## 10             69 Bell~          1 Non-legen~ Grass  Poison      0.7       4  
+## # ... with 107 more rows, and 7 more variables: bst &lt;dbl&gt;, hp &lt;dbl&gt;, atk &lt;dbl&gt;,
+## #   def &lt;dbl&gt;, spa &lt;dbl&gt;, spd &lt;dbl&gt;, spe &lt;dbl&gt;
+```
+
+---
+
+## `select` to keep variables
+
+
+```r
+pokemon %&gt;%
+  filter(type_1 == "Grass" | type_2 == "Grass") %&gt;% 
+* select(name, type_1, type_2, height_m, weight_kg)
+```
+
+```
+## # A tibble: 117 x 5
+##    name          type_1 type_2 height_m weight_kg
+##    &lt;chr&gt;         &lt;chr&gt;  &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1 Bulbasaur     Grass  Poison      0.7       6.9
+##  2 Ivysaur       Grass  Poison      1        13  
+##  3 Venusaur      Grass  Poison      2       100  
+##  4 Mega Venusaur Grass  Poison      2.4     156. 
+##  5 Oddish        Grass  Poison      0.5       5.4
+##  6 Gloom         Grass  Poison      0.8       8.6
+##  7 Vileplume     Grass  Poison      1.2      18.6
+##  8 Paras         Bug    Grass       0.3       5.4
+##  9 Parasect      Bug    Grass       1        29.5
+## 10 Bellsprout    Grass  Poison      0.7       4  
+## # ... with 107 more rows
+```
+
+---
+
+## `select` to exclude variables
+
+
+```r
+pokemon %&gt;%
+  filter(type_1 == "Grass" | type_2 == "Grass") %&gt;% 
+* select(-pokedex_number, -generation, -leg_status, -type_1, -type_2)
+```
+
+```
+## # A tibble: 117 x 10
+##    name          height_m weight_kg   bst    hp   atk   def   spa   spd   spe
+##    &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 Bulbasaur          0.7       6.9   318    45    49    49    65    65    45
+##  2 Ivysaur            1        13     405    60    62    63    80    80    60
+##  3 Venusaur           2       100     525    80    82    83   100   100    80
+##  4 Mega Venusaur      2.4     156.    625    80   100   123   122   120    80
+##  5 Oddish             0.5       5.4   320    45    50    55    75    65    30
+##  6 Gloom              0.8       8.6   395    60    65    70    85    75    40
+##  7 Vileplume          1.2      18.6   490    75    80    85   110    90    50
+##  8 Paras              0.3       5.4   285    35    70    55    45    55    25
+##  9 Parasect           1        29.5   405    60    95    80    60    80    30
+## 10 Bellsprout         0.7       4     300    50    75    35    70    30    40
+## # ... with 107 more rows
+```
+
+---
+
+## `select` a range of variables
+
+
+```r
+pokemon %&gt;%
+  filter(type_1 == "Grass" | type_2 == "Grass") %&gt;% 
+* select(name, bst:spe)
+```
+
+```
+## # A tibble: 117 x 8
+##    name            bst    hp   atk   def   spa   spd   spe
+##    &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 Bulbasaur       318    45    49    49    65    65    45
+##  2 Ivysaur         405    60    62    63    80    80    60
+##  3 Venusaur        525    80    82    83   100   100    80
+##  4 Mega Venusaur   625    80   100   123   122   120    80
+##  5 Oddish          320    45    50    55    75    65    30
+##  6 Gloom           395    60    65    70    85    75    40
+##  7 Vileplume       490    75    80    85   110    90    50
+##  8 Paras           285    35    70    55    45    55    25
+##  9 Parasect        405    60    95    80    60    80    30
+## 10 Bellsprout      300    50    75    35    70    30    40
+## # ... with 107 more rows
+```
+
+---
+
+## `slice` certain row indices
+
+
+```r
+pokemon %&gt;%
+  filter(type_1 == "Grass" | type_2 == "Grass") %&gt;% 
+  select(name, bst:spe) %&gt;% 
+* slice(1, 23)
+```
+
+```
+## # A tibble: 2 x 8
+##   name        bst    hp   atk   def   spa   spd   spe
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 Bulbasaur   318    45    49    49    65    65    45
+## 2 Jumpluff    460    75    55    70    55    95   110
+```
+
+
+```r
+pokemon %&gt;%
+  filter(type_1 == "Grass" | type_2 == "Grass") %&gt;% 
+  select(name, bst:spe) %&gt;% 
+* slice(2, 5:8)
+```
+
+```
+## # A tibble: 5 x 8
+##   name        bst    hp   atk   def   spa   spd   spe
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 Ivysaur     405    60    62    63    80    80    60
+## 2 Oddish      320    45    50    55    75    65    30
+## 3 Gloom       395    60    65    70    85    75    40
+## 4 Vileplume   490    75    80    85   110    90    50
+## 5 Paras       285    35    70    55    45    55    25
+```
+
+---
+
+## `pull` a column as a vector
+
+
+```r
+pokemon %&gt;%
+  slice(1:3) %&gt;%
+* pull(name)
+```
+
+```
+## [1] "Bulbasaur" "Ivysaur"   "Venusaur"
+```
+
+vs.
+
+
+```r
+pokemon %&gt;%
+  slice(1:3) %&gt;%
+* select(name)
+```
+
+```
+## # A tibble: 3 x 1
+##   name     
+##   &lt;chr&gt;    
+## 1 Bulbasaur
+## 2 Ivysaur  
+## 3 Venusaur
+```
+
+---
+
+## `sample_n` observations
+
+
+```r
+pokemon %&gt;%
+  select(name, type_1, type_2) %&gt;% 
+* sample_n(5, replace = FALSE)
+```
+
+```
+## # A tibble: 5 x 3
+##   name                type_1  type_2  
+##   &lt;chr&gt;               &lt;chr&gt;   &lt;chr&gt;   
+## 1 Dracovish           Water   Dragon  
+## 2 Ducklett            Water   Flying  
+## 3 Kingler             Water   None    
+## 4 Dawn Wings Necrozma Psychic Ghost   
+## 5 Mega Lopunny        Normal  Fighting
+```
+
+---
+
+## `sample_frac` observations
+
+
+```r
+pokemon %&gt;% 
+  select(name, type_1, type_2) %&gt;% 
+* sample_frac(0.01, replace = FALSE)
+```
+
+```
+## # A tibble: 10 x 3
+##    name                 type_1   type_2
+##    &lt;chr&gt;                &lt;chr&gt;    &lt;chr&gt; 
+##  1 Castform Rainy Form  Water    None  
+##  2 Deoxys Defense Forme Psychic  None  
+##  3 Kabutops             Rock     Water 
+##  4 Garchomp             Dragon   Ground
+##  5 Meganium             Grass    None  
+##  6 Zeraora              Electric None  
+##  7 Phantump             Ghost    Grass 
+##  8 Alolan Muk           Poison   Dark  
+##  9 Celebi               Psychic  Grass 
+## 10 Hoppip               Grass    Flying
+```
+
+---
+
+## Look for `distinct` observations
+
+
+```r
+pokemon %&gt;% 
+  select(type_1) %&gt;% 
+* distinct()
+```
+
+```
+## # A tibble: 18 x 1
+##    type_1  
+##    &lt;chr&gt;   
+##  1 Grass   
+##  2 Fire    
+##  3 Water   
+##  4 Bug     
+##  5 Normal  
+##  6 Dark    
+##  7 Poison  
+##  8 Electric
+##  9 Ground  
+## 10 Ice     
+## 11 Fairy   
+## 12 Steel   
+## 13 Fighting
+## 14 Psychic 
+## 15 Rock    
+## 16 Ghost   
+## 17 Dragon  
+## 18 Flying
+```
+
+---
+
+## `arrange` observations
+
+
+```r
+pokemon %&gt;% 
+  select(type_1) %&gt;% 
+  distinct() %&gt;% 
+* arrange(type_1)
+```
+
+```
+## # A tibble: 18 x 1
+##    type_1  
+##    &lt;chr&gt;   
+##  1 Bug     
+##  2 Dark    
+##  3 Dragon  
+##  4 Electric
+##  5 Fairy   
+##  6 Fighting
+##  7 Fire    
+##  8 Flying  
+##  9 Ghost   
+## 10 Grass   
+## 11 Ground  
+## 12 Ice     
+## 13 Normal  
+## 14 Poison  
+## 15 Psychic 
+## 16 Rock    
+## 17 Steel   
+## 18 Water
+```
+
+---
+
+## `arrange` in descending order
+
+
+```r
+pokemon %&gt;% 
+  select(type_1) %&gt;% 
+  distinct() %&gt;% 
+* arrange(desc(type_1))
+```
+
+```
+## # A tibble: 18 x 1
+##    type_1  
+##    &lt;chr&gt;   
+##  1 Water   
+##  2 Steel   
+##  3 Rock    
+##  4 Psychic 
+##  5 Poison  
+##  6 Normal  
+##  7 Ice     
+##  8 Ground  
+##  9 Grass   
+## 10 Ghost   
+## 11 Flying  
+## 12 Fire    
+## 13 Fighting
+## 14 Fairy   
+## 15 Electric
+## 16 Dragon  
+## 17 Dark    
+## 18 Bug
+```
+
+---
+
+## `summarize` statistics in the dataset
+
+
+```r
+pokemon %&gt;%
+* summarize(avg_ht = mean(height_m, na.rm = T),
+*           avg_wt = mean(weight_kg, na.rm = T))
+```
+
+```
+## # A tibble: 1 x 2
+##   avg_ht avg_wt
+##    &lt;dbl&gt;  &lt;dbl&gt;
+## 1   1.37   69.8
+```
+
+---
+
+## `group_by` certain variables
+
+
+```r
+pokemon %&gt;%
+* group_by(leg_status) %&gt;%
+  summarise(avg_ht = mean(height_m, na.rm = T),
+            avg_wt = mean(weight_kg, na.rm = T))
+```
+
+```
+## # A tibble: 4 x 3
+##   leg_status    avg_ht avg_wt
+##   &lt;chr&gt;          &lt;dbl&gt;  &lt;dbl&gt;
+## 1 Legendary       6.89  381. 
+## 2 Mythical        1.26   86.8
+## 3 Non-legendary   1.10   51.7
+## 4 Sub Legendary   2.10  162.
+```
+
+---
+
+## `count` observations in groups
+
+
+```r
+pokemon %&gt;%
+* count(leg_status)
+```
+
+```
+## # A tibble: 4 x 2
+##   leg_status        n
+##   &lt;chr&gt;         &lt;int&gt;
+## 1 Legendary        39
+## 2 Mythical         29
+## 3 Non-legendary   915
+## 4 Sub Legendary    45
+```
+
+---
+
+## `mutate` new variables to the dataset
+
+
+```r
+pokemon %&gt;% 
+* mutate(bmi = weight_kg/height_m^2) %&gt;%
+  slice(1:5) %&gt;% 
+  select(name, bmi) %&gt;% 
+  arrange(bmi)
+```
+
+```
+## # A tibble: 5 x 2
+##   name            bmi
+##   &lt;chr&gt;         &lt;dbl&gt;
+## 1 Ivysaur        13  
+## 2 Bulbasaur      14.1
+## 3 Charmander     23.6
+## 4 Venusaur       25  
+## 5 Mega Venusaur  27.0
+```
+
+---
+
+## Save new variables for later
+
+
+```r
+*pokemon &lt;- pokemon %&gt;% 
+  mutate(bmi = weight_kg/height_m^2)}}
+
+glimpse(pokemon)
+```
+
+```
+## Observations: 1,028
+## Variables: 16
+## $ pokedex_number &lt;dbl&gt; 1, 2, 3, 3, 4, 5, 6, 6, 6, 7, 8, 9, 9, 10, 11, 12, 1...
+## $ name           &lt;chr&gt; "Bulbasaur", "Ivysaur", "Venusaur", "Mega Venusaur",...
+## $ generation     &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1...
+## $ leg_status     &lt;chr&gt; "Non-legendary", "Non-legendary", "Non-legendary", "...
+## $ type_1         &lt;chr&gt; "Grass", "Grass", "Grass", "Grass", "Fire", "Fire", ...
+## $ type_2         &lt;chr&gt; "Poison", "Poison", "Poison", "Poison", "None", "Non...
+## $ height_m       &lt;dbl&gt; 0.7, 1.0, 2.0, 2.4, 0.6, 1.1, 1.7, 1.7, 1.7, 0.5, 1....
+## $ weight_kg      &lt;dbl&gt; 6.9, 13.0, 100.0, 155.5, 8.5, 19.0, 90.5, 110.5, 100...
+## $ bst            &lt;dbl&gt; 318, 405, 525, 625, 309, 405, 534, 634, 634, 314, 40...
+## $ hp             &lt;dbl&gt; 45, 60, 80, 80, 39, 58, 78, 78, 78, 44, 59, 79, 79, ...
+## $ atk            &lt;dbl&gt; 49, 62, 82, 100, 52, 64, 84, 130, 104, 48, 63, 83, 1...
+## $ def            &lt;dbl&gt; 49, 63, 83, 123, 43, 58, 78, 111, 78, 65, 80, 100, 1...
+## $ spa            &lt;dbl&gt; 65, 80, 100, 122, 60, 80, 109, 130, 159, 50, 65, 85,...
+## $ spd            &lt;dbl&gt; 65, 80, 100, 120, 50, 65, 85, 85, 115, 64, 80, 105, ...
+## $ spe            &lt;dbl&gt; 45, 60, 80, 80, 65, 80, 100, 100, 100, 43, 58, 78, 7...
+## $ bmi            &lt;dbl&gt; 14.08163, 13.00000, 25.00000, 26.99653, 23.61111, 15...
+```
+
+---
+
+## `mutate` new variables to the dataset
+
+
+```r
+pokemon %&gt;%
+* mutate(bmi_cat = case_when(bmi &lt; 25             ~ "Non-overweight",
+*                            bmi &gt;= 25 &amp; bmi &lt; 30 ~ "Overweight",
+*                            bmi &gt;= 30            ~ "Obese")) %&gt;% 
+  count(bmi_cat)
+```
+
+```
+## # A tibble: 4 x 2
+##   bmi_cat            n
+##   &lt;chr&gt;          &lt;int&gt;
+## 1 Non-overweight   419
+## 2 Obese            487
+## 3 Overweight       121
+## 4 &lt;NA&gt;               1
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"highlightStyle": "github",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
