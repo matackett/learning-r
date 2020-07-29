@@ -16,6 +16,8 @@ knitr::opts_chunk$set(echo = FALSE,
                       fig.align = "center")
 ```
 
+[GitHub.com](www.github.com) is an online platform that is commonly used in industry and academia for collaboration. You will use GitHub in your statistics / data science class to complete individual and team assignments. This is the first of two tutorials to walk you through the steps you will need to successfully use GitHub in your classes. 
+
 By the end of this tutorial, you will be able to 
 
 - Understand commonly used GitHub terms
@@ -25,11 +27,9 @@ By the end of this tutorial, you will be able to
 
 
 
-## Terms
+## Terminology
 
-Below are terms that are commonly used to describe the set up and actions when using GitHub.^[Definitions from Beckman, M., C¸ etinkaya-Rundel M., Horton, N., Rundel, C., Sullivan, A., Tackett, M. *Implementing version control with Git as a learning objective in statistics courses.* [arxiv.org/abs/2001.01988](https://arxiv.org/abs/2001.01988).] 
-
-### General GitHub terms
+Below are terms that are commonly used when talking about GitHub.^[Definitions from Beckman, M., C¸ etinkaya-Rundel M., Horton, N., Rundel, C., Sullivan, A., Tackett, M. *Implementing version control with Git as a learning objective in statistics courses.* [arxiv.org/abs/2001.01988](https://arxiv.org/abs/2001.01988).] 
 
 | Term   | Definition |
 |--------|------------|
@@ -41,7 +41,7 @@ Below are terms that are commonly used to describe the set up and actions when u
 | push | Upload local files to the remote repo        |
 | merge conflict | Contradictory changes that cannot be integrated until they are reconciled by a user       |
 
-## Advanced GitHub terms
+<br>
 
 As you begin to use GitHub more, you may also come across terms describing more advanced GitHub actions.
 
@@ -56,9 +56,9 @@ As you begin to use GitHub more, you may also come across terms describing more 
 
 ## Clone a GitHub repo
 
-Most of your assignments will be done using GitHub and RStudio. You'll begin with a starter repo on GitHub (mostly likely provided by your instructor) that contains templates and other materials needed to complete the assignment. As you work on the assignment, you'll do the work in RStudio and "push" the updates back to the repo on GitHub. In this tutorial, we will focus on the steps to get started on an assignment - specifically cloning a repo and starting a new project in RStudio.
+Most of your assignments will be done using GitHub and RStudio. You'll begin with a starter repo on GitHub (mostly likely provided by your instructor) that contains templates and other materials needed to complete the assignment. You'll conduct your analysis and type your responses in RStudio and "push" the updates back to the repo on GitHub. In this tutorial, we will focus on the steps to get started on an assignment - specifically cloning a repo and starting a new project in RStudio.
 
-We will use the [example-assignment repo](https://github.com/DukeStatSci/example-assignment) in the DukeStatSci organization on GitHub for this tutorial. You can use this repo to practice the steps in this tutorial; however, note that you **<u>cannot</u>** push to the repo (we'll talk more about pushing in the next tutorial). 
+We'll use the [example-assignment repo](https://github.com/DukeStatSci/example-assignment) in the [DukeStatSci GitHub organization](https://github.com/DukeStatSci) on for this tutorial. You can use this repo to practice the steps in this tutorial; however, note that you **<u>cannot</u>** push to the repo (we'll talk more about pushing in the next tutorial). 
 
 ## Clone a repo + create new project
 
@@ -82,7 +82,7 @@ knitr::include_graphics("clone-new-project-img/clone-repo.png")
 
 6. Go to *File* `r emo::ji("arrow_right")` *New Project* `r emo::ji("arrow_right")` *Version Control* `r emo::ji("arrow_right")` *Git*. 
 
-7. Copy and paste the URL of your assignment repo into the dialog box *Repository URL*. You can leave *Project Directory Name* empty. It will default to the name of the GitHub repo.
+7. Copy and paste the URL of your assignment repo into the dialog box *Repository URL*. You can leave *Project directory name* empty. It will default to the name of the GitHub repo.
 
 ```{r new-project-from-gh,out.width = "60%"}
 knitr::include_graphics("clone-new-project-img/paste-url.png")
@@ -97,26 +97,26 @@ knitr::include_graphics("clone-new-project-img/create-project.png")
 
 ## Configure git 
 
-There is one more piece of housekeeping to take care of before you start completing the assignment. You need to configure git so that RStudio can communicate with GitHub. To do so, you will use the `use_git_config()` function from the `usethis` package. 
+There is one thing to take care of before you start completing the assignment. You need to configure git so that RStudio can communicate with GitHub. To do so, you will use the `use_git_config()` function from the `usethis` package. 
 
 Type the following lines of code in the **console** in RStudio filling in your GitHub username and the email address tied to your GitHub account.
 
 
-```{r eval=FALSE}
+```{r echo = T, eval=FALSE}
 library(usethis)
 use_git_config(user.name = "your GitHub username", user.email="your email")
 ```
 
 If you get the error message
 
-```{r eval=FALSE}
+```{r echo = T, eval=FALSE}
 Error in library(usethis) : there is no package called ‘usethis’
 ```
 
 then you need to install the `usethis` package by running the code below in the console: 
 
 
-```{r eval=FALSE}
+```{r echo = T, eval=FALSE}
 install.package("usethis")
 library(usethis)
 ```
@@ -125,4 +125,4 @@ Then, rerun the `use_git_config` function with your GitHub username and email ad
 
 <br>
 
-**That's it! You've cloned a repo, started a new project in RStudio, and configured your git. You're now ready to start your analysis in RStudio!**
+**That's it! You've cloned a repo, started a new project in RStudio, and configured git. You're now ready to start your analysis in RStudio!**
