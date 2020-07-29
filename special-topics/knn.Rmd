@@ -11,27 +11,20 @@ output:
 knitr::opts_chunk$set(echo = TRUE, 
                       warning = FALSE, 
                       message = FALSE)
+
+library(tidyverse)
 ```
 
 By the end of this tutorial, you be able to:
 
-- Use `dplyr` to create training and test data sets
-- Use R to conduct knn
-- Compare actual and predicted classifications
-
-The following packages are used in this tutorial:
-
-```{r load-packages}
-library(tidyverse)
-library(class)
-library(palmerpenguins)
-```
+- Use R to conduct k-nearest neighbor
 
 ## The Data
 
-For this tutorial, we are using the `penguins` dataset from the [`palmerpenguins` R package](https://allisonhorst.github.io/palmerpenguins/index.html) maintained by Dr. Allison Horst. This data contains measurements and other characteristics for 344 penguins observed near Palmer Station Antartica. The data were originally collected by Dr. Kristen Gorman. Click [here](https://allisonhorst.github.io/palmerpenguins/reference/penguins.html) to view the codebook for this data set.
+For this tutorial, we are using the `penguins` dataset from the [`palmerpenguins` R package](https://allisonhorst.github.io/palmerpenguins/index.html) maintained by Dr. Allison Horst. This data contains measurements and other characteristics for 344 penguins observed near Palmer Station Antarctica. The data were originally collected by Dr. Kristen Gorman. Click [here](https://allisonhorst.github.io/palmerpenguins/reference/penguins.html) to view the codebook for this data set.
 
 ```{r}
+library(palmerpenguins)
 glimpse(penguins)
 ```
 
@@ -46,66 +39,79 @@ penguins <- penguins %>%
 
 We will use k-nearest neighbor to classify the penguins into three groups based on their measurements. Before performing the classification, let's do a brief exploratory data analysis to take a look at the data. 
 
+We will use `body_mass_g`, `bill_length_mm`, `bill_depth_mm`, and `flipper_length_mm` to classify the penguins, so we'll focus on these variables. 
+
+
 ```{r}
 ggplot(data = penguins, aes(x = species)) +
   geom_bar(fill = "cyan4") +
   labs(title = "Distribution of Penguin Species")
 ```
+We can use the `ggpairs` function in the `GGally` package to quickly view the relationship between the measurements we'll use for classification.
+
+```{r}
+library(GGally)
+penguins %>%
+  select(species, body_mass_g, bill_length_mm, bill_depth_mm, flipper_length_mm) %>%
+  ggpairs(aes(color = species))
+```
 
 ## k-nearest neighbor
 
-We will use the `knn` function from the `class` package. Let's start by splitting the data into training and test sets using `dplyr` functions.
+Suppose we have the measurements for 3 new penguins but we don't know their species. We can use k-nearest neighbors to predict the class for the new penguins by taking the plurality vote of its *k* nearest neighbors in terms of their class (species) memberships.
+
+
+Here is the data for the three new penguins: 
+
+|           | Body Mass | Bill Length | Bill Depth | Flipper Length |
+|-----------|-----------|-------------|------------|----------------|
+| Penguin 1 |  3706     |  38.8       |  18.3      |  190           |
+| Penguin 2 |  3733     |  46.3       |  17.5      |  191           |
+| Penguin 3 |  3950     |  47.4       |  15        |  216           |
 
 ```{r}
-set.seed(072020) #set a seed since we will use random sampling
-
-# shuffle the observations
-penguins_shuffle <- penguins %>%
-  sample_n(nrow(penguins), replace = FALSE)
-
-n <- nrow(penguins_shuffle)
-
-train <- penguins_shuffle %>%
-  slice(1:(n-10))
-
-test <- penguins_shuffle %>%
-  slice((n-9):nrow(penguins_shuffle))
+new_penguins <- tibble(body_mass_g = c(3706, 3733, 3950), 
+                       bill_length_mm = c(38.8, 46.3, 47.4), 
+                       bill_depth_mm = c(18.3, 17.5, 15), 
+                       flipper_length_mm = c(190, 191, 216))
 ```
 
+
+We will use the `knn()` function from the `class` package. 
+
+For the `knn` we need to create a vector of the species in our data. 
+
 ```{r}
-train_species <- train %>%
+species <- penguins %>%
   select(species) %>%
   pull()
-
-test_species <- test %>%
-  select(species) %>%
-  pull()
 ```
+
+We will also create a new data frame that only contains the measurements we're using for the k-nearest neighbor. By using the `ends_with` option in the `select` function, we can select `bill_length_mm`, `bill_depth_mm`, and `flipper_length_mm` without typing each variable name individually.
 
 ```{r}
-train <- train %>%
-  select(body_mass_g, ends_with("_mm"))
-
-test <- test %>%
+penguins_knn <- penguins %>%
   select(body_mass_g, ends_with("_mm"))
 ```
 
-Let's perform k-nearest neighbor
+Now we're ready to perform k-nearest neighbor. Since we know there are three species of penguins in the data set, we will set `k = 3` to specify there are three classes.
+
 ```{r}
 library(class)
 
-knn_species <- knn(train, test, train_species, k = 3, prob = FALSE)
+knn_species <- knn(penguins_knn, new_penguins, species, k = 3, prob = FALSE)
 ```
 
-Let's compare the actual values of species with the ones produced by knn for the penguins in the test set. 
+We assign the function output to the object `knn_species`. This is a vector of the predicted species for our three new penguins. 
 
 ```{r}
-results <- tibble(actual = test_species, 
-                  predicted = knn_species)
-
-results %>%
-  count(actual, predicted)
+knn_species
 ```
 
+Using k-nearest neighbors, 
+
+- Penguin 1 is predicted to be in the Adelie species. 
+- Penguin 2 is predicted to be in the Adelie species. 
+- Penguin 3 is predicted to be in the Chinstrap species.
 
 
