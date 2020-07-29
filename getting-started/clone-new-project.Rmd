@@ -1,6 +1,7 @@
 ---
-title: "Clone Repo + Start New Project"
-author: "Maria Tackett"
+title: "Getting Started with GitHub"
+subtitle: "Clone Repo + Start New RStudio Project"
+author: ""
 output: 
   html_document: 
     toc: true
@@ -9,60 +10,101 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE, 
+                      message = FALSE, 
+                      fig.align = "center")
 ```
 
-## Clone the repo & start new RStudio project
+By the end of this tutorial, you will be able to 
 
-- Go to the sta210-sp20 organization on GitHub (http://www.github.com/sta210-sp20). Click on the repo with the prefix **lab-01-review-r-**. It contains the starter documents you need to complete the lab.
+- Understand commonly used GitHub terms
+- Clone a GitHub repo
+- Start a new project in an RStudio docker container
+- Connect the RStudio project to your GitHub repo
 
-```{r clone-repo-link, fig.margin = TRUE, echo = FALSE, fig.width=3}
-knitr::include_graphics("clone-new-project-img/clone-repo-link.png")
+
+
+## Terms
+
+Below are terms that are commonly used to describe the set up and actions when using GitHub.^[Definitions from Beckman, M., C¸ etinkaya-Rundel M., Horton, N., Rundel, C., Sullivan, A., Tackett, M. *Implementing version control with Git as a learning objective in statistics courses.* [arxiv.org/abs/2001.01988](https://arxiv.org/abs/2001.01988).] 
+
+### General GitHub terms
+
+| Term   | Definition |
+|--------|------------|
+| Git    | An open source version control software system |
+| Github | A remote commercial hosting service for Git repositories       |
+| Git repository (or repo) | Similar to a project directory or folder in Google Drive, Dropbox, etc. It tracks changes to files.         |
+| commit | Save changes to a local repo        |
+| pull | Update a local repo        |
+| push | Upload local files to the remote repo        |
+| merge conflict | Contradictory changes that cannot be integrated until they are reconciled by a user       |
+
+## Advanced GitHub terms
+
+As you begin to use GitHub more, you may also come across terms describing more advanced GitHub actions.
+
+| Term   | Definition |
+|--------|------------|
+| forking   | Create a copy of a repository in your local profile |
+| pull request | Submit changes to a remote repo       |
+| branching | Keeping multiple snapshot of a repo |
+| gh-pages | Special branch which allows creation of a webpage from within GitHub        |
+| github actions | Mechanism for continuous integration |
+
+
+## Clone a GitHub repo
+
+Most of your assignments will be done using GitHub and RStudio. You'll begin with a starter repo on GitHub (mostly likely provided by your instructor) that contains templates and other materials needed to complete the assignment. As you work on the assignment, you'll do the work in RStudio and "push" the updates back to the repo on GitHub. In this tutorial, we will focus on the steps to get started on an assignment - specifically cloning a repo and starting a new project in RStudio.
+
+We will use the [example-assignment repo](https://github.com/DukeStatSci/example-assignment) in the DukeStatSci organization on GitHub for this tutorial. You can use this repo to practice the steps in this tutorial; however, note that you **<u>cannot</u>** push to the repo (we'll talk more about pushing in the next tutorial). 
+
+## Clone a repo + create new project
+
+1. Go to your course organization on GitHub. The URL for the course organization is provided by your instructor. In this tutorial, the organization is DukeStatSci at [www.github.com/DukeStatSci](https://github.com/DukeStatSci).
+
+2. Click on the relevant assignment repo. Ours is the [example-assignment](https://github.com/DukeStatSci/example-assignment) repo. This contains the starter documents and other materials required for the assignment. 
+
+```{r clone-repo, fig.width=3}
+knitr::include_graphics("clone-new-project-img/starter-repo.png")
 ```
 
-- Click on the green **Clone or download** button, select **Use HTTPS** (this might already be selected by default, and if it is, you'll see the text **Clone with HTTPS** as in the image below). Click on the clipboard icon to copy the repo URL.
+3. Click on the green **Code** button and make sure it says "Clone with HTTPS" (this is the default option). Click on the clipboard icon to copy the repo URL.
 
-```{r new-project-from-gh, fig.margin = TRUE, echo = FALSE, fig.width=3, eval = F}
-knitr::include_graphics("clone-new-project-img/new-project-from-gh.png")
+```{r clone-repo-link, fig.width=3}
+knitr::include_graphics("clone-new-project-img/clone-repo.png")
 ```
 
-- Go to https://vm-manage.oit.duke.edu/containers and login with your Duke NetId and Password.
+4. Go to the Docker containers at https://vm-manage.oit.duke.edu/containers and log in with your Duke NetId and Password.
 
-- Click to log into the Docker container **STA 210 - Regression Analysis**. You should now see the RStudio environment. 
+5. Click to log into the Docker container for your course. You should now see the RStudio environment.
 
-```{r paste-gh-repo-url, fig.margin = TRUE, echo = FALSE, fig.width=5}
-knitr::include_graphics("clone-new-project-img/paste-gh-repo-url.png")
+6. Go to *File* `r emo::ji("arrow_right")` *New Project* `r emo::ji("arrow_right")` *Version Control* `r emo::ji("arrow_right")` *Git*. 
+
+7. Copy and paste the URL of your assignment repo into the dialog box *Repository URL*. You can leave *Project Directory Name* empty. It will default to the name of the GitHub repo.
+
+```{r new-project-from-gh,out.width = "60%"}
+knitr::include_graphics("clone-new-project-img/paste-url.png")
 ```
 
-- Go to *File* `r emo::ji("arrow_right")` *New Project* `r emo::ji("arrow_right")` *Version Control* `r emo::ji("arrow_right")` *Git*. 
+8. Click *Create Project*, and the files from your GitHub repo will be displayed the *Files* pane in RStudio. 
 
-- Copy and paste the URL of your assignment repo into the dialog box *Repository URL*. You can leave *Project Directory Name* empty. It will default to the name of the GitHub repo.
+```{r create-project, fig.width=3}
+knitr::include_graphics("clone-new-project-img/create-project.png")
+```
 
-
-- Click *Create Project*, and the files from your GitHub repo will be displayed the *Files* pane in RStudio. 
 
 ## Configure git 
 
-There is one more piece of housekeeping we need to take care of before we get started. Specifically,  we need to configure your git so that RStudio can communicate with GitHub. This requires two pieces of information: your name and email address.
+There is one more piece of housekeeping to take care of before you start completing the assignment. You need to configure git so that RStudio can communicate with GitHub. To do so, you will use the `use_git_config()` function from the `usethis` package. 
 
-To do so, you will use the `use_git_config()` function from the `usethis` package. 
+Type the following lines of code in the **console** in RStudio filling in your GitHub username and the email address tied to your GitHub account.
 
-Type the following lines of code in the **console** in RStudio filling in your name and email address.
-
-```{marginfigure}
-The email address is the one tied to your GitHub account. 
-```
 
 ```{r eval=FALSE}
 library(usethis)
-use_git_config(user.name = "GitHub username", user.email="your email")
-```
-
-For example, mine would be 
-
-```{r eval=FALSE}
-library(usethis)
-use_git_config(user.name="matackett", user.email="maria.tackett@duke.edu")
+use_git_config(user.name = "your GitHub username", user.email="your email")
 ```
 
 If you get the error message
@@ -71,10 +113,16 @@ If you get the error message
 Error in library(usethis) : there is no package called ‘usethis’
 ```
 
-then you need to install the `usethis` package. Run the following code in the console to install the package. Then, rerun the `use_git_config` function with your GitHub username and email address associated with your GitHub account.
+then you need to install the `usethis` package by running the code below in the console: 
+
 
 ```{r eval=FALSE}
 install.package("usethis")
+library(usethis)
 ```
 
-Once you run the configuration code, your values for `user.name` and `user.email` will display in the console. If your `user.name` and `user.email` are correct, you're good to go! Otherwise, run the code again with the necessary changes.
+Then, rerun the `use_git_config` function with your GitHub username and email address.
+
+<br>
+
+**That's it! You've cloned a repo, started a new project in RStudio, and configured your git. You're now ready to start your analysis in RStudio!**
