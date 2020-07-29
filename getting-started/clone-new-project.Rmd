@@ -34,7 +34,7 @@ Below are terms that are commonly used to describe the set up and actions when u
 | Term   | Definition |
 |--------|------------|
 | Git    | An open source version control software system |
-| Github | A remote commercial hosting service for Git repositories       |
+| GitHub | A remote commercial hosting service for Git repositories       |
 | Git repository (or repo) | Similar to a project directory or folder in Google Drive, Dropbox, etc. It tracks changes to files.         |
 | commit | Save changes to a local repo        |
 | pull | Update a local repo        |
@@ -51,7 +51,7 @@ As you begin to use GitHub more, you may also come across terms describing more 
 | pull request | Submit changes to a remote repo       |
 | branching | Keeping multiple snapshot of a repo |
 | gh-pages | Special branch which allows creation of a webpage from within GitHub        |
-| github actions | Mechanism for continuous integration |
+| GitHub actions | Mechanism for continuous integration |
 
 
 ## Clone a GitHub repo
