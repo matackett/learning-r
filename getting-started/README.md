@@ -9,3 +9,4 @@
 ## Getting started with GitHub
 
 - Clone repo + start new project
+- Commit + Push and Pull
