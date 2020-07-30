@@ -1,6 +1,6 @@
 ---
 title: "Customizing Data Visualizations"
-author: "Maria Tackett"
+author: ""
 output: 
   html_document:
     toc: true
@@ -10,10 +10,11 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, 
                       warning = FALSE, 
-                      message = FALSE)
+                      message = FALSE, 
+                      fig.align = "center")
 ```
 
-```{r load-packages}
+```{r load-packages, echo = F}
 library(tidyverse)
 library(patchwork)
 library(flair)
@@ -21,7 +22,7 @@ library(flair)
 
 In the [DATA VIZ - INSERT LINK] tutorial, you learned the basics of `ggplot2`, the tidyverse's primary package for creating data visualizations. In this tutorial, we will focus on different ways you can customize your data visualizations. 
 
-By the end of this tutorial, you be able to:
+By the end of this tutorial, you be able to
 
 - Add aesthetics to a plot
 - Change the limits on the x and y axis
@@ -43,15 +44,12 @@ To learn more about the data set and the variable definitions, type the followin
 mtcars <- mtcars %>%
   mutate(am = factor(am),
          cyl = factor(cyl), 
-         vs = factor(vs)
-         )
+         vs = factor(vs))
 ```
 
-We create data visualizations using the `ggplot2` package. It is one of the core `tidyverse` packages, so it loads automatically when we load `tidyverse`.
+We create data visualizations using the `ggplot2` package. It is one of the core `tidyverse` packages, so it loads automatically when we run the code below.
 
-*Notice `ggplot2` in the list of packages loaded in the code below.*
-
-```{r, message = T, warning = T}
+```{r}
 library(tidyverse)
 ```
 
@@ -67,8 +65,7 @@ ggplot(data = mtcars, aes(x = hp, y = mpg)) +
        title = "Horsepower vs. Miles per gallon")
 ```
 
-Using this as a baseline, let's customize the plot. 
-
+Using this as a baseline, let's customize the plot! 
 
 ## Aesthetics 
 
@@ -101,21 +98,24 @@ p2 <- ggplot(data = mtcars, aes(x = hp, y = mpg)) +
        y = "Miles per gallon",
        title = "Horsepower vs. Miles per gallon")
 
-p1 / p2 + plot_annotation(tag_levels = c('A'))
+p1 / p2 + plot_annotation(tag_levels = c("A"), tag_prefix = "Plot ")
 ```
 
-Notice in **Plot A** that the color of the points is based on the type of transmission (`am`). Using color in this way, we have added additional information to the plot, so instead of just doing a bivariate analysis of the relationship between miles per gallon and horsepower, the visualization displays a multivariate relationship between horsepower, miles per gallon and transmission. 
+Notice in **Plot A** that the color of the points is based on the type of transmission (`am`). Using color in this way, we have added additional information to the plot, as we can now see the relationship between miles per gallon and horsepower for each transmission type.
 
 Let's look at the code for **Plot A**. 
 
-```{r aes-var, eval = F}
+Notice how the code used to define the color is inside of the `aes` function. This tells R to color the points based on the type of transmission (`am`). In other words, the color aesthetic is assigned to `am`. We have also added a label the legend and a subtitle.
+
+
+```{r aes-var, eval = F, echo = F}
 ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) + 
   geom_point() +
   labs(x = "Horsepower", 
        y = "Miles per gallon", 
        color = "Transmission",
-       subtitle = "by Transmission",
-       title = "Horsepower vs. Miles per gallon")
+       title = "Horsepower vs. Miles per gallon",
+       subtitle = "by Transmission")
 ```
 
 ```{r echo = F}
@@ -125,9 +125,11 @@ decorate("aes-var") %>%
   flair("color = \"Transmission\"", background = "pink")
 ```
 
-Notice how the code used to define the color is inside of the `aes()` function. This tells R to color the points based on the type of transmission (`am`). We also label the legend and add a subtitle to the plot. 
+<br>
 
-Now, let's take a look at the code for **Plot B**. 
+Now, let's take a look at the code for **Plot B**.  
+
+Here, we have assigned the same color aesthetic to all points on the plot. Since we want to use the same color for all points, we define the color in the `geom_**` outside of the `aes` function. In this case, we haven't added any new information, but we're just using color to change how the plot looks.
 
 ```{r aes-all, echo = F, eval = F}
 ggplot(data = mtcars, aes(x = hp, y = mpg)) +
@@ -142,9 +144,34 @@ decorate("aes-all") %>%
   flair("color = \"blue\"", background = "pink")
 ```
 
-Here, we have applied the same aesthetic to all observations. Since we don't color the points based on the value of a variable, we define the color in the `geom_**` outside of the `aes()` function. In this case, we haven't added any additional information to the basic plot, but we have used the aesthetic to make the plot more visually appealing.
+### Your turn!
 
-## Change axes limits
+
+1. Fill in the code below to create a scatterplot such that the shape of the points is based on the number of cylinders (`cyl`) and all points are a size 2.
+
+```{r eval = F}
+ggplot(data = mtcars, aes(x = hp, y = mpg, _______)) +
+  geom_point(_______) +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon",
+       ____________,
+       title = "Horsepower vs. Miles per gallon")
+```
+
+2. Fill in the code below to create a scatterplot of miles per gallon versus horsepower such that all points have an alpha of 0.5 and the size is determined by the number of forward gears (`gear`).
+
+
+```{r eval = F}
+ggplot(data = mtcars, aes(x = ___, y = ___, _______)) +
+  geom_point(_______) +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon",
+       __________,
+       title = "Horsepower vs. Miles per gallon")
+```
+
+
+## Change axis limits
 
 Let's stick with **Plot A** for now. 
 
@@ -156,8 +183,8 @@ ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) +
   labs(x = "Horsepower", 
        y = "Miles per gallon", 
        color = "Transmission",
-       subtitle = "by Transmission",
-       title = "Horsepower vs. Miles per gallon") +
+       title = "Horsepower vs. Miles per gallon",
+       subtitle = "by Transmission") +
   xlim(c(100, 300)) +
   ylim(c(15, 25))
 ```
@@ -168,9 +195,9 @@ decorate("change-axis") %>%
   flair("ylim(c(15, 25))", background = "pink")
 ```
 
-## Change scale / color palette - come back to this!
+## Change color palette
 
-We can change the color palette used for the visualization. The default color palette used in `ggplot2` is not color-blind safe, so we can change the color palette to make our plots more accessible to all readers. 
+Another way to customize a plot is to change the color palette. The default color palette used in `ggplot2` is not color-blind safe, so it is good practice to change the color palette if you wish to present your results to a large audience. 
 
 Let's look at a plot of the Miles per gallon vs. Horsepower colored by the cylinders.
 
@@ -180,13 +207,13 @@ ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) +
   labs(x = "Horsepower", 
        y = "Miles per gallon", 
        color = "Cylinder",
-       subtitle = "by Cylinder",
-       title = "Horsepower vs. Miles per gallon") 
+       title = "Horsepower vs. Miles per gallon",
+       subtitle = "by Cylinder") 
 ```
 
-This is the default color palette in `ggplot2`; however,we may want to use a different color palette. One way to do this is by using the `scale_color_brewer()` function. Using this function, we can indicate which RColorBrewer palette we wish to use. 
+This is the default color palette in `ggplot2`; however, we may want to use something different. One way to do this is by using the `scale_color_brewer` function. Using this function, we specify a palette from [RColorBrewer](https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html).
 
-Here is the same plot above using the "Set1" color palette: 
+Here is the same plot above using the "Dark2" color palette: 
 
 ```{r set1-color, eval = F, echo = F}
 ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) + 
@@ -196,15 +223,15 @@ ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) +
        color = "Cylinder",
        title = "Horsepower vs. Miles per gallon",
        subtitle = "by Cylinder") + 
-  scale_colour_brewer(palette = "Set1")
+  scale_color_brewer(palette = "Dark2")
 ```
 
 ```{r echo = F}
 decorate("set1-color") %>%
-  flair("scale_colour_brewer(palette = \"Set1\")", background = "pink")
+  flair("scale_color_brewer(palette = \"Dark2\")", background = "pink")
 ```
 
-Another option for color palettes are those available in the `viridis` package. These palettes are good to make your plots more readable by those with colorblindness. 
+Another option for color palettes are those available in the `viridis` package. All palettes in this package are colorblind safe.
 
 ```{r viridis, echo = F, eval = F}
 library(viridis)  
@@ -218,6 +245,7 @@ ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) +
        subtitle = "by Cylinder") + 
    scale_color_viridis(discrete = TRUE) # for discrete color scale
 ```
+
 ```{r echo = F}
 decorate("viridis") %>%
   flair("library(viridis)", background = "pink") %>%
@@ -225,16 +253,45 @@ decorate("viridis") %>%
 ```
 
 
-You can find a full list of color palettes to use in `scale_color_brewer` and `scale_color_viridis` [here](https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/).
+Click [here](https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/) to find a full list of color palettes available to use in `scale_color_brewer` and `scale_color_viridis`. 
+
+### Your turn!
+
+1. Fill in the code below to try different color palettes available in [RColorBrewer](https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html).
+
+```{r eval = F}
+ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) + 
+  geom_point() +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon", 
+       color = "Cylinder",
+       title = "Horsepower vs. Miles per gallon",
+       subtitle = "by Cylinder") + 
+  scale_color_brewer(palette = "______")
+```
 
 
-## Change theme
+2. Fill in the code below to try different palettes available in the [`scale_color_viridis`] (https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/) function.
 
-We may want to change the overall look of the visualization, e.g. the background, gridlines, etc. One way to do this is by applying a theme to the visualization. 
+```{r eval = F}
+ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) + 
+  geom_point() +
+  labs(x = "Horsepower", 
+       y = "Miles per gallon", 
+       color = "Cylinder",
+       title = "Horsepower vs. Miles per gallon",
+       subtitle = "by Cylinder") + 
+  scale_colour_viridis(palette = "______")
+```
+
+
+## Themes
+
+We may want to change the overall look of the visualization, e.g. the background, grid lines, etc. One way to do this is by applying a theme to the visualization. 
 
 ### Themes in `ggplot2` package
 
-Let's look at two different themes that are available in `ggplot2` package.
+There is a collection of [complete themes](https://ggplot2.tidyverse.org/reference/ggtheme.html) available in the `ggplot2` package. Let's take a look at two the themes: `theme_dark` and `theme_classic`.
 
 ```{r theme-dark, echo = F, eval = F}
 ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) + 
@@ -242,8 +299,8 @@ ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) +
   labs(x = "Horsepower", 
        y = "Miles per gallon", 
        color = "Transmission",
-       subtitle = "by Transmission",
-       title = "Horsepower vs. Miles per gallon") +
+       title = "Horsepower vs. Miles per gallon",
+       subtitle = "by Transmission") +
  theme_dark()
 ```
 
@@ -258,8 +315,8 @@ ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) +
   labs(x = "Horsepower", 
        y = "Miles per gallon", 
        color = "Transmission",
-       subtitle = "by Transmission",
-       title = "Horsepower vs. Miles per gallon") +
+       title = "Horsepower vs. Miles per gallon",
+       subtitle = "by Transmission") +
  theme_classic()
 ```
 
@@ -270,7 +327,7 @@ decorate("theme-classic") %>%
 
 A list of complete themes available in the `ggplot2` package can be found [here](https://ggplot2.tidyverse.org/reference/ggtheme.html). 
 
-You can also customize the elements of a visualization individually by using the `theme()` function. One instance in which this function is especially useful is to update the font size for the labels on plots. 
+You can also customize individual elements of a visualization by using the `theme` function. One instance in which this function is especially useful is to update the font size of the axis labels and title. 
 
 ```{r font-size, echo = F, eval = F}
 ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) + 
@@ -293,13 +350,13 @@ decorate("font-size") %>%
   flair("axis.title.y = element_text(size = 16))", background = "pink")
 ```
 
-See the [`theme()` reference page](https://ggplot2.tidyverse.org/reference/theme.html) to learn more about customizing themes. 
+See the [`theme` reference page](https://ggplot2.tidyverse.org/reference/theme.html) to learn more about customizing individual elements of a plot.
 
 ### `ggthemes` package
 
-The `ggthemes` package has a selection of custom themes and color palettes to help you customize your plot. You can find all of the themes and palettes on the [`ggthemes` webpage](https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/). 
+The `ggthemes` package has a selection of custom themes and color palettes. You can find all of the themes and palettes on the [`ggthemes` webpage](https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/). 
 
-You will need to load the `ggthemes` package. Here is an example of one of their themes: 
+Here is an example of their FiveThirtyEight theme. Note that you need to load the `ggthemes` package.
 
 ```{r ggthemes, eval = F, echo = F}
 library(ggthemes)
@@ -321,31 +378,35 @@ decorate("ggthemes") %>%
 ```
 
 
+### Your turn!
+
+Apply a new theme to a plot of your choice. You can create your own plot or use code from one of the plots in this tutorial. Try a few different themes - from `ggplot2` and from `ggthemes`. 
+
 ### Patchwork 
 
-Sometimes we want to organize multiple plots in a grid to more neatly format our document / presentation. This is especially helpful if you have a lot of plots (e.g. when doing exploratory data analysis). 
+Sometimes we want to organize multiple plots in a grid to more neatly format them in a write up or presentation. This can be especially helpful if you have a lot of plots to display (for example, when doing exploratory data analysis). 
 
-We can use the `patchwork` package to more neatly organize plots in a grid. To do so, you can assign an object name to each plot, then use those names to organize the plots. 
+We can use the `patchwork` package to arrange plots in rows and columns. 
 
 Let's suppose we have the following three plots assigned to names `p1`, `p2`, and `p3`: 
 
 ```{r}
-p1 <- ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) + 
+p1 <- ggplot(data = mtcars, aes(x = cyl)) + 
+  geom_bar() +
+  labs(x = "Number of Cylinders")
+
+p2 <- ggplot(data = mtcars, aes(x = hp)) + 
+  geom_histogram() +
+  labs(x = "Horsepower")
+
+p3 <- ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) +
   geom_point() +
   labs(x = "Horsepower", 
        y = "Miles per gallon", 
        color = "Transmission")
-
-p2 <- ggplot(data = mtcars, aes(x = cyl)) + 
-  geom_bar() +
-  labs(x = "Number of Cylinders")
-
-p3 <- ggplot(data = mtcars, aes(x = hp)) + 
-  geom_histogram() +
-  labs(x = "Horsepower")
 ```
 
-First, let's use the code below to load the patchwork package: 
+First, we need to load the patchwork package. 
 
 ```{r echo = F}
 library(patchwork)
@@ -363,31 +424,35 @@ Use `+` to put a plot in a new column:
 p1 + p2 + p3
 ```
 
-You can combine the `/` and `+` to arrange the plots by row and column. Let's put `p1` and `p2` on the first row and `p3` on the second row: 
+Use a combination of `/` and `+` to arrange the plots in rows and columns. Let's put `p1` and `p2` on the first row and `p3` on the second row: 
 
 ```{r}
 (p1 + p2) / p3
 ```
-Just like in "order of operations", the `/` will be applied before `+`, so use parentheses (as in the code above) if you want the `+` to apply first. 
 
-Let's repeat the code above without the parentheses: 
+
+Let's repeat the code above without the parentheses. Notice how the arrangement these plots differ from the arrangement above.
 
 ```{r}
 p1 + p2 / p3
 ```
 
-Notice how the plots differ. 
+Just like the "order of operations" from math, the `/` will be applied before `+`. Use parentheses (as in the code above) to apply the  `+` first.
 
-Finally, you can use the `plot_annotation()` function to add labels and other text annotations to patchwork objects. Using the code below, we can use letters to label the plots: 
+Finally, we can use the `plot_annotation()` function to add labels and other text annotations to patchwork objects. Using the code below, we use letters to label each plot.
 
 ```{r}
 (p1 + p2) / p3 +
-  plot_annotation(tag_levels = "A")
+  plot_annotation(tag_levels = "A", tag_prefix = "Figure ")
 ```
 
-## Practice: Put it all together
+### Your turn!
 
-[ADD ACTIVITIES]
+Use the patchwork function to arrange `p1`, `p2`, and `p3` in the following configuration: 
+
+```{r echo = F}
+p1 / (p2 + p3)
+```
 
 ## Resources
 
