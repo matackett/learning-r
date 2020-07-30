@@ -1,0 +1,731 @@
+---
+title: Tidy data wrangling
+output:
+  rmarkdown::html_document:
+    css: "tutorial.css"
+    toc: TRUE
+    toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      dpi=300,
+                      fig.height = 3,
+                      fig.width = 5
+)
+```
+
+```{r packages-data, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(knitr)
+pokemon <- read_csv("data/pokemon.csv")
+```
+
+## Tidy data
+
+>*Все счастливые семьи похожи друг на друга, каждая несчастливая семья несчастлива по-своему.*
+
+As Tolstoy write in Anna Karenina, "all happy families are alike; each unhappy 
+family is unhappy in its own way." The same is true of tidy data. All *tidy* 
+datasets are alike; each untidy dataset is untidy in its own way. The three
+characteristics of tidy datasets are as follows:
+
+- Each variable forms a column,
+- Each observation forms a row, and
+- Each type of observational unit forms a table.
+
+Today's dataset was posted to Kaggle by Mario Tormo Romero, who scraped the data 
+from [the Pokemon Database](https://pokemondb.net) and 
+[Serebii](https://www.serebii.net). It has been slightly modified for the 
+purposes of this tutorial class. 
+
+The dataset contains information on all Pokemon, including alternate forms,
+through Generation 8 (Pokemon Sword and Shield). Pokemon have various
+characteristics unique to each one. The variables in the `pokemon` dataset are
+listed below.
+
+- `pokedex_number`: a catelogue number of each Pokemon
+- `generation`: which video game generation the Pokemon is from
+- `leg_status`: whether a Pokemon is sub-legendary, legendary, mythical, or none
+- `type_1`, `type_2`: what "type" a Pokemon is (fire, water, electric, etc.)
+- `bst`: the base stat total of a Pokemon (a proxy for its effectiveness in 
+combat)
+- `hp`, `atk`, `def`, `spa`, `spd`, `spe`: a Pokemon's battle statistics (HP,
+attack, defense, special attack, special defense, and speed, respectively)
+
+```{r, out.width = "30%", echo = F, fig.align = "center"}
+include_graphics("img/bulbasaur.png")
+```
+
+The Pokemon depicted above is "Bulbasaur," and is the first Pokemon listed in 
+the National Pokedex. It is from Generation 1 (the first set of video games)
+and is a non-legendary Grass/Poison Pokemon. It is 0.7 meters tall, weights 6.9
+kilograms, and has 318 total base stats (45 HP, 49 attack, 49 defense, 65 
+special attack, 65 special defense, and 45 speed).
+
+## Introducing dplyr
+
+```{r, out.width = "30%", echo = F, fig.align = "center"}
+include_graphics("img/dplyr.png")
+```
+
+The `dplyr` package introduces functions as verbs that manipulate data frames.
+For instance, we can 
+- `glimpse` the entire dataset 
+- `filter` for rows matching certain criteria
+- `select` columns by name
+- `mutate` new variables 
+- ... and so much more!
+
+Let's start by taking a `glimpse` of the dataset:
+
+```{r}
+glimpse(pokemon)
+```
+
+The `glimpse` gives us a quick glimpse into the main features of the dataset:
+the number of observations and variables, as well as each variable, what type it
+is, and the first few observations in the dataset.
+
+## The %>% operator
+
+The pipe operator ` %>% ` is used for many data manipulation tasks. You can 
+pronounce it as "and then".
+
+Think about the following sequence of actions: 
+- Find keys 
+- Unlock car 
+- Start car 
+- Drive to Duke
+- Park
+
+Expressed as a set of nested functions in R pseudocode this would look like:
+```{r eval=FALSE}
+park(drive(start_car(find("keys")), to = "campus"))
+```
+
+Writing it out using pipes give it a more natural (and easier to read) 
+structure:
+
+```{r eval=FALSE}
+find("keys") %>%
+  start_car() %>%
+  drive(to = "campus") %>%
+  park()
+```
+
+When writing functions with `dplyr`, there are a set of rules that must be
+followed. The first argument must *always* be a data frame, and `dplyr` 
+functions always return data frames (unless specifically told not to). In each
+step, we use a series of pipes (`%>%`), which pipe the output of the previous 
+line of code as the first input of the next line of code. 
+
+## Logical operators in R
+
+You will commonly need to use the following operators in R to compare different
+variables against values or each other:
+
+Operator    | Definition                   
+------------|------------------------------
+`<`         | less than                    
+`<=`        |	less than or equal to        
+`>`         | greater than                 
+`>=`        |	greater than or equal to     
+`==`        |	exactly equal to             
+`!=`        |	not equal to                 
+`x & y`     | `x` AND `y`                  
+`x`&nbsp;&#124;&nbsp;`y`     | `x` OR `y`  
+`is.na(x)`  | test if `x` is `NA`          
+`x %in% y`  | test if `x` is in `y`        
+`!x`        | not `x`                      
+
+
+## Diving into dplyr
+
+Now, let's take a look at some of the most commonly used `dplyr` functions. In
+each example, try to read the code in "plain English," and see if the output
+matches your expectation. The functions in `dplyr` are designed to "make sense,"
+if you will. If you do still do not know what each function does after looking
+at the code and output, check the documentation by typing in `?` followed by the
+function in order to look at the documentation. For instance, `?slice`. As well, 
+note the use of the logical operators introduced in the previous section.
+
+#### `filter` to select a subset of rows based on variables in the dataset
+
+<div id="filter" style="display:none">
+```{r}
+pokemon %>%
+  filter(leg_status == "Legendary")
+```
+</div>
+
+<button title="See example" type="button"
+   onclick="if(document.getElementById('filter') .style.display=='none')
+              {document.getElementById('filter') .style.display=''}
+            else{document.getElementById('filter') .style.display='none'}">
+  See example
+</button>
+
+#### `filter` to select a subset of rows
+
+<div id="filter2" style="display:none">
+```{r}
+pokemon %>%
+  filter(type_1 == "Grass" | type_2 == "Grass")
+```
+</div>
+
+<button title="See example" type="button"
+   onclick="if(document.getElementById('filter2') .style.display=='none')
+              {document.getElementById('filter2') .style.display=''}
+            else{document.getElementById('filter2') .style.display='none'}">
+  See example
+</button>
+
+#### `select` to keep variables
+
+<div id="select" style="display:none">
+```{r}
+pokemon %>%
+  filter(type_1 == "Grass" | type_2 == "Grass") %>% 
+  select(name, type_1, type_2, height_m, weight_kg)
+```
+</div>
+
+<button title="See example" type="button"
+   onclick="if(document.getElementById('select') .style.display=='none')
+              {document.getElementById('select') .style.display=''}
+            else{document.getElementById('select') .style.display='none'}">
+  See example
+</button>
+
+#### `select` to exclude variables
+
+<div id="select2" style="display:none">
+```{r}
+pokemon %>%
+  filter(type_1 == "Grass" | type_2 == "Grass") %>% 
+  select(-pokedex_number, -generation, -leg_status, -type_1, -type_2)
+```
+</div>
+
+<button title="See example" type="button"
+   onclick="if(document.getElementById('select2') .style.display=='none')
+              {document.getElementById('select2') .style.display=''}
+            else{document.getElementById('select2') .style.display='none'}">
+  See example
+</button>
+
+#### `select` a range of variables
+
+<div id="select3" style="display:none">
+```{r}
+pokemon %>%
+  filter(type_1 == "Grass" | type_2 == "Grass") %>% 
+  select(name, bst:spe)
+```
+</div>
+
+<button title="See example" type="button"
+   onclick="if(document.getElementById('select3') .style.display=='none')
+              {document.getElementById('select3') .style.display=''}
+            else{document.getElementById('select3') .style.display='none'}">
+  See example
+</button>
+
+#### `slice` certain row indices
+
+<div id="slice" style="display:none">
+```{r}
+pokemon %>%
+  filter(type_1 == "Grass" | type_2 == "Grass") %>% 
+  select(name, bst:spe) %>% 
+  slice(1, 23)
+```
+
+```{r}
+pokemon %>%
+  filter(type_1 == "Grass" | type_2 == "Grass") %>% 
+  select(name, bst:spe) %>% 
+  slice(2, 5:8)
+```
+</div>
+
+<button title="See example" type="button"
+   onclick="if(document.getElementById('slice') .style.display=='none')
+              {document.getElementById('slice') .style.display=''}
+            else{document.getElementById('slice') .style.display='none'}">
+  See example
+</button>
+
+#### `pull` a column as a vector
+
+<div id="pull" style="display:none">
+```{r}
+pokemon %>%
+  slice(1:3) %>%
+  pull(name)
+```
+
+vs.
+
+```{r}
+pokemon %>%
+  slice(1:3) %>%
+  select(name)
+```
+</div>
+
+<button title="See example" type="button"  
+onclick="if(document.getElementById('pull') .style.display=='none')
+              {document.getElementById('pull') .style.display=''}
+            else{document.getElementById('pull') .style.display='none'}">
+  See example
+</button>
+
+#### `sample_n` observations
+
+<div id="samplen" style="display:none">
+```{r}
+set.seed(1)
+pokemon %>%
+  select(name, type_1, type_2) %>% 
+  sample_n(5, replace = FALSE)
+```
+</div>
+
+<button title="See example" type="button" 
+onclick="if(document.getElementById('samplen') .style.display=='none')
+              {document.getElementById('samplen') .style.display=''}
+            else{document.getElementById('samplen') .style.display='none'}">
+  See example
+</button>
+
+#### `sample_frac` observations
+
+<div id="samplefrac" style="display:none">
+```{r}
+set.seed(123)
+pokemon %>% 
+  select(name, type_1, type_2) %>% 
+  sample_frac(0.01, replace = FALSE)
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('samplefrac') .style.display=='none')
+              {document.getElementById('samplefrac') .style.display=''}
+            else{document.getElementById('samplefrac') .style.display='none'}">
+  See example
+</button>
+
+#### Look for `distinct` observations
+
+<div id="distinct" style="display:none">
+```{r, eval = F}
+pokemon %>% 
+  select(type_1) %>% 
+ {{distinct()}}
+```
+```{r, echo = F}
+pokemon %>% 
+  select(type_1) %>% 
+  distinct()
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('distinct') .style.display=='none')
+              {document.getElementById('distinct') .style.display=''}
+            else{document.getElementById('distinct') .style.display='none'}">
+  See example
+</button>
+
+#### `arrange` observations
+
+<div id="arrange" style="display:none">
+```{r}
+pokemon %>% 
+  select(type_1) %>% 
+  distinct() %>% 
+  arrange(type_1)
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('arrange') .style.display=='none')
+              {document.getElementById('arrange') .style.display=''}
+            else{document.getElementById('arrange') .style.display='none'}">
+  See example
+</button>
+
+#### `arrange` in descending order
+
+<div id="arrangedesc" style="display:none">
+```{r}
+pokemon %>% 
+  select(type_1) %>% 
+  distinct() %>% 
+  arrange(desc(type_1))
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('arrangedesc') .style.display=='none')
+              {document.getElementById('arrangedesc') .style.display=''}
+            else{document.getElementById('arrangedesc') .style.display='none'}">
+  See example
+</button>
+
+#### `summarize` statistics in the dataset
+
+<div id="summarize" style="display:none">
+```{r}
+pokemon %>%
+  summarize(avg_ht = mean(height_m, na.rm = T),
+            avg_wt = mean(weight_kg, na.rm = T))
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('summarize') .style.display=='none')
+              {document.getElementById('summarize') .style.display=''}
+            else{document.getElementById('summarize') .style.display='none'}">
+  See example
+</button>
+
+#### `group_by` certain variables
+
+<div id="groupby" style="display:none">
+```{r}
+pokemon %>%
+  group_by(leg_status) %>%
+  summarise(avg_ht = mean(height_m, na.rm = T),
+            avg_wt = mean(weight_kg, na.rm = T))
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('groupby') .style.display=='none')
+              {document.getElementById('groupby') .style.display=''}
+            else{document.getElementById('groupby') .style.display='none'}">
+  See example
+</button>
+
+#### `count` observations in groups
+
+<div id="count" style="display:none">
+```{r}
+pokemon %>%
+  count(leg_status)
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('count') .style.display=='none')
+              {document.getElementById('count') .style.display=''}
+            else{document.getElementById('count') .style.display='none'}">
+  See example
+</button>
+
+#### `mutate` new variables to the dataset
+
+We can create new variables in the dataset by using the `mutate` function. 
+Examine the following pipeline of variables. How would you read it in plain
+English? We might say
+
+- First, start with pokemon, *and then*
+- mutate a new variable `bmi` equal to `weight_kg` divided by `height_m` 
+squared, *and then*
+- arrange by `bmi` from smallest to largest, *and then*
+- slice the first five observations, *and then*
+- select the `name` and `bmi` variables
+
+<div id="mutate" style="display:none">
+```{r}
+pokemon %>% 
+  mutate(bmi = weight_kg/height_m^2) %>% 
+  arrange(bmi) %>% 
+  slice(1:5) %>% 
+  select(name, bmi)
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('mutate') .style.display=='none')
+              {document.getElementById('mutate') .style.display=''}
+            else{document.getElementById('mutate') .style.display='none'}">
+  See example
+</button>
+
+Is the output as you expect?
+
+Note that you can `mutate` many variables into your dataset by separating them
+with commas.
+
+#### Save new variables for later
+
+It's often the case when when creating new variables, you want to use them in
+further analyses down the line. We can use the `<-` operator in R to assign
+values. For instance, the following example `mutate`s a new variable `bmi`, and
+then overwrites the original `pokemon` dataset.
+
+<div id="mutate2" style="display:none">
+```{r}
+pokemon <- pokemon %>% 
+  mutate(bmi = weight_kg/height_m^2)
+
+glimpse(pokemon)
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('mutate2') .style.display=='none')
+              {document.getElementById('mutate2') .style.display=''}
+            else{document.getElementById('mutate2') .style.display='none'}">
+  See example
+</button>
+
+#### `mutate` new variables to the dataset
+
+We can also use the `case_when` function to create a new variable with certain
+values based on *cases* of another variable *when* it satisfies certain 
+conditions. For instance, examine the following example. What is the code
+doing?
+
+<div id="mutate3" style="display:none">
+```{r}
+pokemon %>%
+  mutate(bmi_cat = case_when(bmi < 25             ~ "Non-overweight",
+                             bmi >= 25 & bmi < 30 ~ "Overweight",
+                             bmi >= 30            ~ "Obese")) %>% 
+  count(bmi_cat)
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('mutate3') .style.display=='none')
+              {document.getElementById('mutate3') .style.display=''}
+            else{document.getElementById('mutate3') .style.display='none'}">
+  See example
+</button>
+
+## On your own!
+
+The following exercises are designed to familiarize you with using logical
+operators and `dplyr` pipelines. Try each of the tasks below using a `dplyr`
+pipeline and check your answers against the key provided.
+
+Load in the `pokemon` dataset with the following code. As well, load in the
+`tidyverse`, which contains `dplyr` as part of it.
+
+```{r eval = F}
+library(tidyverse)
+pokemon <- read_csv("data/pokemon.csv")
+```
+
+1. Create a table that displays the number of Pokemon by their legendary status
+
+<div id="ex1" style="display:none">
+```{r, eval = F}
+pokemon %>%
+  count(leg_status)
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('ex1') .style.display=='none')
+              {document.getElementById('ex1') .style.display=''}
+            else{document.getElementById('ex1') .style.display='none'}">
+ Ex. 1 answer
+</button>
+
+2. Create a table that lists all unique type combinations (note that "None" is a
+valid secondary type). Arrange the list in alphabetical order by primary type
+and then by secondary type.
+
+<div id="ex2" style="display:none">
+```{r, eval = F}
+pokemon %>%
+  distinct(type_1, type_2) %>% 
+  arrange(type_1, type_2)
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('ex2') .style.display=='none')
+              {document.getElementById('ex2') .style.display=''}
+            else{document.getElementById('ex2') .style.display='none'}">
+  Ex. 2 answer
+</button>
+
+3. Create a table that displays the number of "Legendary" Pokemon by their 
+primary type (`type_1`)
+
+<div id="ex3" style="display:none">
+```{r, eval = F}
+pokemon %>%
+  filter(leg_status == "Legendary") %>% 
+  count(type_1)
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('ex3') .style.display=='none')
+              {document.getElementById('ex3') .style.display=''}
+            else{document.getElementById('ex3') .style.display='none'}">
+  Ex. 3 answer
+</button>
+
+4. Create a table that displays the "Legendary" Pokemon from generation 4. Only
+display their names, primary type, and secondary type
+
+<div id="ex4" style="display:none">
+```{r, eval = F}
+pokemon %>%
+  filter(leg_status == "Legendary",
+         generation == 3) %>% 
+  select(name, type_1, type_2)
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('ex4') .style.display=='none')
+              {document.getElementById('ex4') .style.display=''}
+            else{document.getElementById('ex4') .style.display='none'}">
+  Ex. 4 answer
+</button>
+
+5. Create a table that displays all Pokemon with base stat totals of 600 or 
+more that are NOT "Legendary" or "Mythical." Only display the names of the 
+Pokemon and their base stat totals, and arrange from highest base stat totals
+to lowest.
+
+<div id="ex5" style="display:none">
+```{r, eval = F}
+pokemon %>%
+  filter(leg_status != "Legendary" & 
+         leg_status != "Mythical" &
+         bst >= 600) %>% 
+  select(name, bst) %>% 
+  arrange(desc(bst))
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('ex5') .style.display=='none')
+              {document.getElementById('ex5') .style.display=''}
+            else{document.getElementById('ex5') .style.display='none'}">
+  Ex. 5 answer
+</button>
+
+6. Create a table that displays the mean base stat total of Pokemon by their
+primary type. Arrange in order of highest mean base stat total to lowest.
+
+<div id="ex6" style="display:none">
+```{r, eval = F}
+pokemon %>%
+  group_by(type_1) %>% 
+  summarize(mean_bst = mean(bst)) %>% 
+  arrange(desc(mean_bst))
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('ex6') .style.display=='none')
+              {document.getElementById('ex6') .style.display=''}
+            else{document.getElementById('ex6') .style.display='none'}">
+  Ex. 6 answer
+</button>
+
+7. Create a new variable named `special` that denotes whether a Pokemon is
+special ("Legendary" or "Mythical") or not special ("Not Legendary" or "Sub
+Legendary"), then create a table which displays the number of special
+Pokemon by their primary type, arranged from least to most.
+
+<div id="ex7" style="display:none">
+```{r, eval = F}
+pokemon %>%
+  mutate(special = case_when(leg_status %in% c("Legendary", "Mythical") ~ "Special",
+                             leg_status %in% c("Not Legendary", "Sub Legendary") ~ "Not special")) %>% 
+  group_by(type_1) %>% 
+  count(special) %>% 
+  filter(special == "Special") %>% 
+  arrange(n)
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('ex7') .style.display=='none')
+              {document.getElementById('ex7') .style.display=''}
+            else{document.getElementById('ex7') .style.display='none'}">
+  Ex. 7 answer
+</button>
+
+8. Create a new variable which depicts whether a pokemon is "offensive," 
+"defensive," or "balanced." An offensive Pokemon has attack + special attack
+greater than defense + special defense, and vice-versa for a defense Pokemon.
+A balanced Pokemon has attack + special attack equal to defense + special 
+defense. Save this new variable into your dataset (we will be using it
+again later!). <br><br>
+In a separate pipeline, create a table which counts the number
+of offensive, defensive, and balanced Pokemon.
+
+```{r, echo = F}
+pokemon <- pokemon %>%
+  mutate(odb = case_when(atk + spa > def + spd ~ "Offensive",
+                         atk + spa < def + spd ~ "Defensive",
+                         atk + spa == def + spd ~ "Balanced"))
+```
+
+<div id="ex8" style="display:none">
+```{r, eval = F}
+pokemon <- pokemon %>%
+  mutate(odb = case_when(atk + spa > def + spd ~ "Offensive",
+                         atk + spa < def + spd ~ "Defensive",
+                         atk + spa == def + spd ~ "Balanced"))
+pokemon %>% 
+  count(odb)
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('ex8') .style.display=='none')
+              {document.getElementById('ex8') .style.display=''}
+            else{document.getElementById('ex8') .style.display='none'}">
+  Ex. 8 answer
+</button>
+
+9. Suppose all Pokemon are perfect spheres with diameter equal to their heights.
+Calculate each Pokemon's density. Create a table which lists only the Pokemon
+whose spherical forms would sink in water (density of 1000 kilograms/cubic 
+meter), arranged from the most dense to the least dense. In your table, display
+only the Pokemon's name, its density, and primary and secondary types. The 
+formula for the volume of a sphere is $\frac{4}{3}\pi r^3$.<br><br>
+Is anything surprising?
+
+<div id="ex9" style="display:none">
+```{r, eval = F}
+pokemon %>%
+  mutate(vol = 4/3*pi*(height_m/2)^3,
+         density = weight_kg/vol) %>% 
+  filter(density > 1000) %>% 
+  arrange(desc(density)) %>% 
+  select(name, density, type_1, type_2)
+```
+
+As it turns out, all Pokemon, if they were spherical, would float on water, with
+the exception of the 14 Pokemon displayed in the table given by the above code!
+Yes, Cosmoem is *that* dense (and is actually pretty spherical!).
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('ex9') .style.display=='none')
+              {document.getElementById('ex9') .style.display=''}
+            else{document.getElementById('ex9') .style.display='none'}">
+  Ex. 9 answer
+</button>
+
+10. Use `dplyr` pipelines to perform an investigation of your choice in the
+`pokemon` dataset. What insight(s) or observation(s) can you find as a result
+of your data wrangling?
