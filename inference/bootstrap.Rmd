@@ -1,5 +1,5 @@
 ---
-title: "The Bootstrap"
+title: "(Rough) The Bootstrap with Infer"
 output: 
   learnr::tutorial:
     progressive: false
@@ -7,6 +7,9 @@ output:
     allow_skip: true
 runtime: shiny_prerendered
 ---
+
+This is still a bit rough! Gaps I plan to fill in are outlined below.
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, 
@@ -16,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE,
 ```
 
 
-```{r, include=FALSE}
+```{r include=FALSE}
 library(learnr)
 library(knitr)
 ```

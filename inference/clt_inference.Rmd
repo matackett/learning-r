@@ -1,0 +1,166 @@
+---
+title: "(Rough) CLT-Based Inference using Infer"
+output: 
+  learnr::tutorial:
+    progressive: false
+    theme: "cerulean"
+    allow_skip: true
+runtime: shiny_prerendered
+---
+
+This is still a bit rough! Gaps I plan to fill in are outlined below.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      warning = FALSE, 
+                      message = FALSE)
+```
+
+```{r include=FALSE}
+library(learnr)
+library(knitr)
+```
+
+## Introduction
+
+Learning Objectives.
+
+In this tutorial you will learn the basics of CLT-based inference.
+To begin we load the necessary packages.
+
+```{r load-packages}
+library(tidyverse)
+library(infer)
+```
+
+## The Central Limit Theorem
+
+Recall the **Central Limit Theorem**. For a population with mean $\mu$ and 
+standard deviation $\sigma$ the distribution of $\bar{X}$ is normal, centered 
+at $\mu$, and with variability inversely proportional to the square root of the
+sample size.
+
+$$Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \sim N(0,1)$$ 
+We often never know $\sigma$ so we estimate from our data using $s$. The test 
+statistic below as a $t$-distribution with $n-1$ degrees of freedom.
+
+$$T = \frac{\bar{X} - \mu}{s/\sqrt{n}} \sim t_{n-1}$$ 
+Relative to the normal distribution, the $t$ distribution has thicker tails to
+make up for the additional variability incurred by using $s$ to estimate 
+$\sigma$.
+
+We will use the `gss` data from the infer package. This data set contains a 
+sample of 500 entries from the General Social Survey, a national survey of 
+American society and opinions conducted since 1972.
+
+Remember to familiarize yourself with the data set and variables using the code
+below.
+
+```{r}
+?gss
+```
+
+We will focus on the hours variable, the number of hours worked in the week 
+before the survey, truncated at 89. Does the sample data provide convincing
+evidence that Americans, on average, work more than 40 hours per week?
+
+We first conduct a brief exploratory data analysis.
+
+```{r}
+hours_summary <- gss %>% 
+  summarize(xbar = mean(hours),
+            s = sd(hours),
+            n = n())
+hours_summary
+
+ggplot(data = gss, aes(x = hours)) + 
+  geom_histogram(binwidth = 2) + 
+  labs(x = "Hours Worked Per Week", y = "Count")
+```
+
+We next write out the appropriate null and alternative hypothesis. 
+
+- $H_o: \mu = 40$
+- $H_a: \mu > 40$
+
+Next we calculate our test statistic.
+
+First pull our summary data.
+
+```{r}
+n <- hours_summary %>% pull(n)
+s <- hours_summary %>% pull(s)
+xbar <- hours_summary %>% pull(xbar)
+```
+
+Calculate the standard error.
+
+```{r}
+se <- s / sqrt(n)
+```
+
+Calculate the test statistic.
+
+```{r}
+t <- (xbar - 40) / se
+```
+
+Degrees of freedom.
+
+```{r}
+df <- n - 1
+```
+
+Finally, find the $p$-value.
+
+```{r}
+pt(t, df, lower.tail = FALSE)
+```
+
+The $p$-value is small, so we reject the null hypothesis. These data provide
+sufficient evidence at $\alpha = 0.05$ to conclude that Americans, on average,
+work more than 40 hours per week.
+
+Is the difference practically significant?
+
+Now construct a confidence interval for the mean. Do you expect the confidence
+interval to include 40?
+
+```{r}
+t_star <- qt(.95, df)
+xbar + c(-1,1) * t_star * se
+```
+
+We can easily use the `t_test` function in the infer package to conduct a 
+$t$-test. To do this we need to specify the following:
+
+- `x`: a tibble
+- `response`: the variable in `x` that serves as the response
+- `mu`: the hypothesized null mean value
+- `conf_int`: a logical value indicating whether to include a confidence 
+interval
+- `conf_level`: the confidence level
+
+
+```{r}
+t_test(x = gss,
+       response = hours,
+       mu = 40,
+       conf_int = TRUE,
+       conf_level = 0.95)
+```
+
+
+## Practice
+
+Another mean example interpreting results from `t_test`.
+
+1. Write out the null and alternative hypothesis.
+2. Summarize your sample with an appropriate statistic.
+3. Use t_test to do a hypothesis test
+4. Use t_test to construct a confidence interval
+5. Write a conclusion in context.
+
+
+## Resources
+
