@@ -1,0 +1,271 @@
+---
+title: Tidy data wrangling
+output:
+  rmarkdown::html_document:
+    css: "tutorial.css"
+    toc: TRUE
+    toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      dpi=300,
+                      fig.height = 3,
+                      fig.width = 5
+)
+```
+
+```{r packages-data, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(knitr)
+library(forcats)
+pokemon <- read_csv("data/pokemon.csv")
+```
+
+## Tidy data
+
+>*Все счастливые семьи похожи друг на друга, каждая несчастливая семья несчастлива по-своему.*
+
+As Tolstoy write in Anna Karenina, "all happy families are alike; each unhappy 
+family is unhappy in its own way." The same is true of tidy data. All *tidy* 
+datasets are alike; each untidy dataset is untidy in its own way. The three
+characteristics of tidy datasets are as follows:
+
+- Each variable forms a column,
+- Each observation forms a row, and
+- Each type of observational unit forms a table.
+
+Today's dataset was posted to Kaggle by Mario Tormo Romero, who scraped the data 
+from [the Pokemon Database](https://pokemondb.net) and 
+[Serebii](https://www.serebii.net). It has been slightly modified for the 
+purposes of this tutorial class. 
+
+The dataset contains information on all Pokemon, including alternate forms,
+through Generation 8 (Pokemon Sword and Shield). Pokemon have various
+characteristics unique to each one. The variables in the `pokemon` dataset are
+listed below.
+
+- `pokedex_number`: a catelogue number of each Pokemon
+- `generation`: which video game generation the Pokemon is from
+- `leg_status`: whether a Pokemon is sub-legendary, legendary, mythical, or none
+- `type_1`, `type_2`: what "type" a Pokemon is (fire, water, electric, etc.)
+- `bst`: the base stat total of a Pokemon (a proxy for its effectiveness in 
+combat)
+- `hp`, `atk`, `def`, `spa`, `spd`, `spe`: a Pokemon's battle statistics (HP,
+attack, defense, special attack, special defense, and speed, respectively)
+
+```{r, out.width = "30%", echo = F, fig.align = "center"}
+include_graphics("img/bulbasaur.png")
+```
+
+The Pokemon depicted above is "Bulbasaur," and is the first Pokemon listed in 
+the National Pokedex. It is from Generation 1 (the first set of video games)
+and is a non-legendary Grass/Poison Pokemon. It is 0.7 meters tall, weights 6.9
+kilograms, and has 318 total base stats (45 HP, 49 attack, 49 defense, 65 
+special attack, 65 special defense, and 45 speed).
+
+## Factors in R
+
+`R` uses factors to handle categorical variables: variables that have a fixed 
+set of possible values. Internally, factor variables are stored as integers that 
+correspond to the character values you see the factor is used. To cast a 
+variable as a factor variable, you can use the `as.factor()` function that is a
+part of base R. Take a look at the data types for the variables in the following
+example, before and after we cast `generation`, `leg_status`, `type_1`, and
+`type_2` as factors:
+
+<div id="factors1" style="display:none">
+```{r}
+pokemon %>% 
+  select(name, generation, type_1) %>% 
+  slice(1:3)
+
+pokemon <- pokemon %>% 
+  mutate(generation = as.factor(generation),
+         leg_status = as.factor(leg_status),
+         type_1 = as.factor(type_1),
+         type_2 = as.factor(type_2))
+
+pokemon %>% 
+  select(name, generation, type_1) %>% 
+  slice(1:3)
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('factors1') .style.display=='none')
+              {document.getElementById('factors1') .style.display=''}
+            else{document.getElementById('factors1') .style.display='none'}">
+  See example
+</button>
+
+The tools for manipulating factors in base R are often unwieldy to use,
+and it is sometimes difficult to perform even basic factor-related tasks. 
+Luckily, we can use the `forcats` package, a suite of tools in the `tidyverse` 
+that perform common data wrangling tasks with factors in a tidy-data-conscious
+way.
+
+Abilities include:
+
+- Ordering by frequency
+- Reordering factor levels 
+- Recoding factors 
+- Collapsing levels
+- Lumping categories together 
+- ...and more! 
+
+```{r, out.width = "30%", echo = F, fig.align = "center"}
+include_graphics("img/forcats.png")
+```
+
+## Diving into forcats
+
+Let's begin by visualizing legendary status. Keep in mind that we have already
+casted this variable as a factor by using `as.factor()` in an earlier `dplyr`
+pipeline.
+
+```{r, echo = F, fig.height = 5.4, fig.width = 9}
+ggplot(data = pokemon, mapping = aes(x = leg_status)) +
+  geom_bar() + 
+  labs(x = "Count", y = "Legendary Status") +
+  theme(text=element_text(size=20))
+```
+
+#### Ordering by frequency: `fct_infreq`
+
+Note that by default, the bars are ordered alphabetically. One common data
+visualization task is to order our plot by frequency. We can easily do this
+using the `fct_infreq()` function. Examine the code used to create the 
+following plot:
+
+```{r, eval = F}
+ggplot(data = pokemon, mapping = aes(x = fct_infreq(leg_status))) +
+  geom_bar() + 
+  labs(x = "Count", y = "Legendary Status")
+```
+```{r, echo = F, fig.height = 5.4, fig.width = 9}
+ggplot(data = pokemon, mapping = aes(x = fct_infreq(leg_status))) +
+  geom_bar() + 
+  labs(x = "Count", y = "Legendary Status") +
+  theme(text=element_text(size=20))
+```
+
+#### Manually reordering levels: `fct_relevel`
+
+We can also manually reorder the levels using the `fct_relevel()` function. For
+instance, let's say we wanted to relevel the factor levels in order of 
+decreasing "specialness." We would use the following code:
+
+```{r}
+pokemon <- pokemon %>%
+ mutate(leg_status = fct_relevel(leg_status, 
+                                 "Mythical", 
+                                 "Legendary",
+                                 "Sub Legendary",
+                                 "Not Legendary"))
+```
+
+And now any plot will now show those factor levels as the default order:
+
+```{r, echo = F, fig.height = 5.4, fig.width = 9}
+ggplot(data = pokemon, mapping = aes(x = leg_status)) +
+  geom_bar() +
+  labs(x = "Count", y = "Legendary Status") +
+  theme(text=element_text(size=20))
+```
+
+#### Manually recoding factors: `fct_recode`
+
+Another common task is to manually recode factor levels. That is, change 
+existing factor levels to new labels. For instance, let's suppose we wanted to
+recode the `leg_status` variable such that legendary and mythical Pokemon are
+tagged as legendary, and non- or sub-legendary Pokemon are not. We may use
+the following code to do so:
+
+```{r}
+pokemon <- pokemon %>% 
+ mutate(binary_leg = fct_recode(leg_status,
+                              "No" = "Not Legendary",
+                              "No" = "Sub Legendary",
+                              "Yes" = "Legendary",
+                              "Yes" = "Mythical")) 
+```
+
+Let's verify it worked:
+
+```{r, echo = FALSE}
+pokemon %>% 
+  count(binary_leg)
+```
+
+#### Collapsing levels: `fct_collapse`
+
+Similarly, we can combine many factor levels into one by using the
+`fct_collapse()` function. Let's do the same task as the previous example, this
+time using `fct_collapse()`:
+
+```{r}
+pokemon <- pokemon %>% 
+ mutate(collapse_leg = fct_collapse(leg_status,
+                              no = c("Not Legendary", "Sub Legendary"),
+                              yes = c("Legendary", "Mythical")))
+```
+
+And let's verify that the code worked here as well:
+
+```{r, echo = F}
+pokemon %>% 
+  count(collapse_leg)
+```
+
+#### Lumping categories together: `fct_lump`
+
+A final often-performed command is to lump less common categories together
+(perhaps in an "Other" category). `fct_lump()` allows us to do so by either 
+defining the absolute number of categories or by looking at relative proportions 
+of the whole. For instance, the following code would allow us to lump all 
+Pokemon whose primary types (`type_1`) that aren't in the top 5 most common as 
+"Other" (and create a new variable called `prim_type` along the way):
+
+```{r, eval = F}
+pokemon %>% 
+ mutate(prim_type = fct_lump(type_1, n = 5)) 
+```
+
+Similarly, the following code allows us to lump any Pokemon whose primary type
+(`type_1`) doesn't comprise at least 5% of the whole into a separate "Other"
+category. Once again, we're creating a new variable, `prim_type`:
+
+```{r, eval = F}
+pokemon %>% 
+ mutate(prim_type = fct_lump(type_1, prop = 0.05))
+```
+
+## On your own!
+
+The following exercises are designed to familiarize you with operations on
+categorical variables in R.
+
+Load in the `pokemon` dataset with the following code. As well, load in the
+`tidyverse`, which contains `dplyr` as part of it.
+
+```{r eval = F}
+library(tidyverse)
+pokemon <- read_csv("data/pokemon.csv")
+```
+
+1. Placeholder
+
+<div id="ex1" style="display:none">
+```{r, eval = F}
+pokemon %>%
+  count(leg_status)
+```
+</div>
+
+<button title="See example" type="button"
+onclick="if(document.getElementById('ex1') .style.display=='none')
+              {document.getElementById('ex1') .style.display=''}
+            else{document.getElementById('ex1') .style.display='none'}">
+ Ex. 1 answer
+</button>
