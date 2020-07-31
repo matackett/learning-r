@@ -24,3 +24,7 @@
 |   Special topics   |   Text analysis                      |   Yue-J        |   Joan        |   Bob         |
 |   Special topics   |   Intro to Shiny                     |   Shawn        |   Maria       |   Jacob       |
 |   Special topics   |   knn classification                 |   Maria        |   Jacob       |   Yue         |
+
+
+
+[ADD INSTRUCTIONS ABOUT CONNECTING TO VPN TO ACCESS LEARNR TUTORIALS]

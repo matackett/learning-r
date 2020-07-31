@@ -1,0 +1,153 @@
+/* * Customizing tufte.css * */
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@import 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700';
+@import 'https://fonts.googleapis.com/css?family=Source+Code+Pro';
+@import 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700';
+@import 'https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700';
+@import 'https://fonts.googleapis.com/icon?family=Material+Icons)';
+@import 'https://fonts.googleapis.com/css?family=Inconsolata';
+
+
+@charset "UTF-8";
+
+/* Tufte CSS styles */
+
+html {
+	font-size: 13px;
+}
+
+body {
+	font-family: 'Roboto', sans-serif;
+	font-weight: 350;
+	background-color: #fefefe;
+	color: #222;
+	counter-reset: li;
+	line-height: 1.8;
+
+}
+
+h1.title {
+	font-weight: 650;
+	font-family: 'Roboto', sans-serif;
+	color: #012169;
+}
+
+h1 {
+	font-style: normal;
+	font-family: 'Roboto', sans-serif;
+	color: #012169;
+}
+
+h2 {
+	font-style: normal;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 400;
+	color: #012169;
+}
+
+h3.subtitle {
+	font-style: normal;
+	color: #012169;
+}
+
+h4 {
+	font-style: normal;
+	font-weight: 400;
+	font-family: 'Roboto', sans-serif;
+	margin-top: 1.5rem;
+	margin-bottom: 0;
+	line-height: 1;
+}
+
+h4.author,
+h4.date {
+	font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+}
+
+
+td { 
+  font-size: 10pt;
+}
+.numeral {
+	font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+}
+
+em {
+	font-style: italic;
+	font-weight: 300;
+	font-family: 'Roboto', sans-serif;
+}
+
+strong {
+	font-style: bold;
+	font-weight: 600;
+	font-family: 'Roboto', sans-serif;
+}
+
+/* Code formatting */
+
+@media screen and (max-width: 760px) {
+	pre {
+		width: 100%;
+		font-size: 16px;
+	}
+}
+
+code {
+	font-family: 'Source Code Pro', Consolas, "Liberation Mono", Menlo, Courier, monospace;
+	font-size: 15px;
+	line-height: 1.6;
+}
+
+pre code {
+	font-size: 15px;
+}
+
+.marginnote code,
+.sidenote code {
+	font-size: 1rem;
+}
+
+pre {
+		width: 100%;
+		font-size: 16px;
+		overflow-x: auto;
+}
+
+/* Exercise counter */
+
+ol {
+	/* Remove the default left padding */
+	padding-left: 0;
+}
+
+ol>li {
+	/* Create a positioning context */
+	position: relative;
+	/* Disable the normal item numbering */
+	list-style: none;
+	width: 90%;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-right: 0px;
+	padding-left: 95px;
+}
+
+ol>li:before {
+	/* Use the counter as content */
+	content: "Exercise " counter(li)".";
+	/* Increment the counter by 1 */
+	counter-increment: li;
+	position: absolute;
+	color: #012169;
+	left: -0.5px;
+	font-weight: bold;
+	margin-right: 10px;
+}
+
+ol ol {
+	counter-reset: subitem;
+}
