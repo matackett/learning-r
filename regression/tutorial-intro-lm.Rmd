@@ -1,0 +1,279 @@
+---
+title: Intro to linear models
+output:
+  rmarkdown::html_document:
+    css: "tutorial.css"
+    toc: TRUE
+    toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      dpi=300,
+                      fig.height = 3,
+                      fig.width = 5
+)
+```
+```{r packages-data, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(knitr)
+library(broom)
+beijing <- read_csv("data/beijing.csv")
+```
+
+We use models to explain the relationship between variables and to make 
+predictions. For now we will focus on **linear** models (but remember there are 
+other types of models too!)
+
+Today, we will focus on fitting and interpreting models with a continuous 
+outcome variable and a single predictor. To do so, we will use the `broom` 
+package, which takes the messy output of built-in functions in R and turns 
+them into tidy data frames. As expected, it integrates well with the tidyverse, especially with data wrangling using `dplyr`.
+
+```{r, out.width = "30%", echo = F, fig.align = "center"}
+include_graphics("img/broom.png")
+```
+
+## Today's data
+
+```{r, out.width = "50%", echo = F, fig.align = "center"}
+include_graphics("img/beijing1.png")
+```
+Today's data are come from a series of atmospheric measurements taken at the
+Agriculture Exhibition Hall in Beijing from 2013 - 2017. The following variables
+are in the dataset:
+
+- `year`, `month`, `day`, and `hour`: when the observation was taken
+- `PM2.5` and `PM10`: levels of fine particulate matter in the atmosphere, in
+$\mu$g/m$^3$
+- `SO2`, `NO2`, `CO`, `O3`: sulfur dioxide, nitrogen dioxide, carbon monoxide,
+and ozone concentrations, in $\mu$g/m$^3$, respectivel
+- `TEMP`: temperature, in degrees C
+- `PRES`: barometric pressure, in hPa
+- `DEWP`: dew point temperature, in degrees C
+- `RAIN`: precipitation levels, in mm
+- `wd`: wind direction (eight compass directions)
+- `SWPM`: wind speed, in m/s
+
+These data are adapted from a dataset released by Song Xi Chen as referenced in
+Zhang S., et al (2017), Proc. Royal Soc. A. Let's explore some of these data. 
+
+1. Describe the distribution of dew point as measured at this station (in 
+degrees C):
+
+```{r, fig.height=2.5, echo = F, message = F}
+ggplot(data = beijing, aes(x = DEWP)) +
+  geom_histogram() +
+  labs(y = "Count")
+```
+
+2. Describe the distribution of barometric pressure (in hectopascals):
+
+```{r, fig.height=2.5, echo = F, message = F}
+ggplot(data = beijing, aes(x = PRES)) +
+  geom_histogram() +
+  labs(y = "Count")
+```
+
+## Models as functions
+
+We can represent relationships between variables using **functions**. A function
+in the *mathematical* sense is the relationship between one or more inputs and 
+an output created from that (those) input(s). Essentially, we can "plug in" the 
+inputs and receive back the output.
+    
+For instance, the formula $y = 3x + 7$ is a function with input $x$ and output 
+$y$. When $x$ is $5$, the output $y$ is $22$:
+    
+```{r}
+x <- 5
+y <- 3*x + 7
+
+y
+```
+
+In statistical models, the **response variable** (dependent variable, or outcome
+variable) is the variable whose behavior or variation we are trying to 
+understand, and is generally denoted by $y$. The **explanatory variable** 
+(independent variable, or predictor variable) is the variable we want to use to
+explain the variation in the response, generally denoted by $x$.
+
+3. Examine the following plot, which depicts the relationship between PM2.5 
+levels and wind speed. Describe the relationship between these two variables.
+
+```{r, message = F, warning = F, echo = F}
+ggplot(data = beijing, aes(x = PRES, y = DEWP)) +
+  geom_point() +
+  ylim(c(-40, 30))
+```
+
+4. Now let's overlay a line on this relationship. What are the response and 
+explanatory variables?  Does the line describe the relationship between these 
+two variables "well"?
+
+```{r, message = F, warning = F, echo = F}
+ggplot(data = beijing, aes(x = PRES, y = DEWP)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F) +
+  ylim(c(-40, 30))
+```
+
+The blue line is a function that we can use to obtain **predicted values** of
+our response given values of our predictors. These predicted values are the 
+output of the **model function**. That is, the expected value of the response 
+*given* a certain value of the explanatory variable. However, we know that there
+is variability around our prediction (compare the line to the actual values).
+The **residual** is the difference between the actual observed value of the
+response variable *observed* in the dataset vs. the value *predicted* by the 
+model. It is essentially the vertical distance between each point and the line.
+
+5. What does a negative residual mean? Which points on the plot above have 
+negative residuals?
+
+## Interpreting linear models
+
+As previously mentioned, we will be using the 
+[`broom` package](https://broom.tidyverse.org/). Some of the most commonly used 
+functions are as follows:
+
+- **`tidy`**: Constructs a tidy data frame summarizing model's statistical findings
+- **`glance`**: Constructs a concise one-row summary of the model
+- **`augment`**: Adds columns (e.g. predictions, residuals) to the original data that was modeled
+
+Today, we will focus on making `tidy` regression output for linear models and
+`glance`ing at a model summary.
+
+Let's create a linear model that predicts the dew point given the current 
+barometric pressure. We first use the `lm` function to create a **l**inear 
+**m**odel object. Let's create and save a model, `mod1`, for use in later 
+downstream analyses:
+
+```{r}
+mod1 <- lm(DEWP ~ PRES, data = beijing)
+```
+
+Now let's take a look at the `tidy` output for our object as provided by the
+`broom` package:
+
+```{r}
+tidy(mod1)
+```
+
+We write the fitted model as follows:
+
+$$\widehat{DEWP} = 1071 - 1.08 PRES$$
+
+That is, the predicted dew point in degrees Celsius is given by 1071 minus 1.08 
+times the barometric pressure. We can interpret the intercept and slope 
+coefficients as follows:
+
+- **Intercept**: if the barometric pressure is 0, we would expect the dew point 
+to be 1071 degrees Celsius, on average (is this a meaningful quantity to 
+estimate...?)
+
+- **Slope**: for each additional hectopascal of barometric pressure, we would 
+expect the dew point to decrease by 1.08 degrees Celsius
+
+Note that we "expect" these relationships to hold, but there will be some 
+variability!
+
+In general, we assume the following underlying simple linear model for a single
+predictor and a single continuous outcome:
+
+$$y_i = \beta_0 + \beta_1x_i + \epsilon_i$$
+
+$\beta_0$ and $\beta_1$ are **parameters** which aren't observed (neither is 
+the error, $\epsilon_i$). When we estimate these parameters, we denote these 
+estimates with hats: $\hat{\beta}_0$ and $\hat{\beta}_1$. We often use 
+**ordinary least squares** (OLS) to obtain these estimates to get the **fitted** 
+model
+
+$$\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1x_i$$
+
+6. What is different between the underlying linear model and the fitted model?
+
+Remember that residuals are the differences between the observed response and 
+the predicted response values from the model:
+
+$$\hat{\epsilon_i} = y_i - (\hat{\beta}_0 + \hat{\beta}_1x_i) = y_i - \hat{y}_i$$
+
+OLS selects $\hat{\beta}_0$ and $\hat{\beta}_1$ such that the sum of squared 
+residuals is minimized. The residuals are given by the red segments in the 
+graphic below:
+
+```{r echo=FALSE, fig.height = 2.5}
+d <- tibble(
+    PRES     = mod1$model$PRES,
+    DEWP    = mod1$model$DEWP,
+    pred         = mod1$fitted.values,
+    res          = mod1$residuals
+  )
+p <- ggplot(data = d, mapping = aes(x = PRES, y = DEWP)) +
+  geom_point(alpha = 0.2) + 
+  theme_bw() +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_point(mapping = aes(y = pred), alpha = 0) +
+  geom_segment(mapping = aes(xend = PRES, yend = pred), alpha = 0.4, color="red") +
+  labs(x = "Pressure (hPa)", y = "Dew point (C)")
+p
+```
+
+
+## Statistical inference
+
+```{r, echo = F}
+tidy(mod1)
+```
+
+You might have noticed a p-value corresponding to each of the parameter 
+estimates $\hat{\beta}_0$ and $\hat{\beta}_1$ In regression models, p-values 
+generally correspond to testing the null hypothesis $$H_0: \beta = 0$$ vs. the 
+alternative hypothesis $$H_1: \beta \neq 0$$. 
+
+7. At the $\alpha = 0.05$ level, is there sufficient evidence to suggest that 
+$\beta_0 \neq 0$? How about $\beta_1$?
+
+We can also get model-level summaries by using the `glance` function on our
+model object:
+
+```{r}
+glance(mod1)
+```
+
+$R^2$ (`r.squared` in the `glance` output) tells us the percentage of 
+variability in the response variable that explained by our predictors. In our 
+example, We see that approximately 60% of the variability in dew point can be 
+explained by its linear relationship with barometric pressure.
+
+## Categorical predictors?
+
+Let's fit a linear regression model using the categorical variable `wd` (wind
+direction), which takes on eight values corresponding to the compass points.
+
+```{r}
+mod2 <- lm(DEWP ~ wd, data = beijing)
+tidy(mod2)
+```
+
+8. What do you think these "slopes" correspond to? Why are there only seven wind 
+directions in the output but eight in total? what happened to wind coming from 
+the east?
+
+When the categorical explanatory variable has many levels, the levels are 
+encoded as **dummy variables**. Dummy variables take values of either 0 or 1, 
+depending on whether the condition it corresponds to is satisfied. For instance,
+`wdS` takes on the value of 1 if the wind comes from the south, and 0 if it does 
+not. Each coefficient describes the expected difference in dew point when wind 
+comes from that particular direction compared to the baseline level (east).
+
+Our fitted/predicted model is given by
+
+\begin{align*}
+\widehat{DEWP} &= 5.93 - 8.17N - 3.84NE - 12.55NW + \\
+&\mathrel{\phantom{=}} 1.95S + 0.31SE -2.10SW - 5.41W
+\end{align*}
+where the predictors correspond to dummy variables for if the wind is blowing 
+from that direction.
+
+9. Using the tidy model output above, is there sufficient evidence to suggest 
+differences in dew point depending on wind direction? What patterns do you see?
