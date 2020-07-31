@@ -10,61 +10,38 @@ runtime: shiny_prerendered
 
 This is still a bit rough! Gaps I plan to fill in are outlined below.
 
-
 ```{r setup, include=FALSE}
+library(learnr)
+library(knitr)
 knitr::opts_chunk$set(echo = TRUE, 
                       warning = FALSE, 
                       message = FALSE,
                       exercise.timelimit = 3)
 ```
 
-
-```{r include=FALSE}
-library(learnr)
-library(knitr)
-```
-
 ## Introduction
 
 ---
 
-This tutorial will introduce you to the basics of bootstrapping, and how to
-bootstrap in R using the infer package.  Load the packages below before 
-starting this tutorial.
+This brief tutorial will help you understand the bootstrap and learn how to 
+construct bootstrap confidence intervals using the infer package in R. To start, 
+load the tidyverse and infer packages.
 
-```{r}
-library(infer)
+```{r load-packages}
 library(tidyverse)
+library(infer)
 ```
 
-Before we begin, let's review some statistical inference 
-terminology.
-
-### Statistical Inference
-
-**Statistical inference** refers to the process of generalizing 
-from a sample to a population. The **population** is some collection of objects
-of interest and the **parameter** is an unknown number derived from the 
-population. The **sample** is a subset of the population and the **statistic** 
-is a number calculated from the sample.
-
-<center>
-<img src="images/inference.png" width="300px">
-</center>
-
-We can use a single number called a point estimate as our best guess of the 
-population parameter, but we often prefer a range of plausible values. This 
-is called an interval estimate. A point estimate is not likely to exactly
-hit the population parameter, while a range of plausible parameters has a
-pretty good chance of capturing it. We will work with a type of interval 
-estimate called a confidence interval.
-
-## The Bootstrap Idea
+Recall first that statistical inference refers to the process of generalizing
+from a sample to a population. We could use a single number (a 
+point estimate) as our best guess of the population parameter but we often 
+prefer a range of plausible values (an interval estimate).
 
 To construct a confidence interval we need to quantify the variability of 
 our sample statistic. We can do this using the Central Limit Theorem but
-today we will focus on a simulation-based resampling method called the 
-bootstrap.
+today we will focus on a simulation-based method called the bootstrap. Invented 
+in 1979 by Brad Efron, the bootstrap allows us to construct confidence intervals
+based on our sample data using resampling.
 
 In general, bootstrap methods
 
@@ -72,101 +49,76 @@ In general, bootstrap methods
 - give more accurate answers
 - are more flexible and easily applied to new settings
 
-The basic idea of the bootstrap is as follows: our sample is representative of 
+The basic idea is as follows: our sample is representative of 
 the population we drew from, so if we resample from our original sample many 
 times, this is representative of what we would obtain if we took many samples 
 from the population.
 
 To bootstrap we follow the steps outlined below:
 
-1. Take a random sample with replacement from our original sample using the 
-same sample size as our original sample. This is the bootstrap sample.
-2. Calculate the bootstrap statistic for this sample. This is a statistic such
-as the median, mean, proportion, slope, etc.
-3. Repeat (1) and (2) many times using a computer to create a bootstrap 
-distribution. This is the distribution of bootstrap statistics.
-4. Calculate a confidence interval using your bootstrap distribution.
-
-(add small toy example here?)
+1. Take a bootstrap sample: randomly sample **with replacement** from the 
+original sample using the same sample size as the original sample.
+2. Calculate the bootstrap statistic: calculate the statistic of interest using 
+the resampled data. This can be the mean, median, proportion, slope, etc.
+3. Create the bootstrap distribution: Repeat steps (1) and (2) many times using 
+a computer.
+4. Construct a confidence interval using the bootstrap distribution.
 
 ## Bootstrapping with Infer
 
-The `mtcars` data set contains attributes of 32 cars. We will consider these 
-32 cars to be a random sample from a population of interest. Suppose we want to construct an interval estimate for the true median mpg. 
+The telecommunications conglomerate Verizon is both a local telephone company 
+that maintains land-line phone services, called an Incument Local Exchance 
+Carrier (ILEC), and a Competitive Local Exchance Carrier (CLEC), which means it
+sells long-distance services. If there is a service outage and a repair is 
+needed, Verizon is obligated by law to make repairs as quickly for CLEC 
+customers as their own. We will investigate the repair times (in hours) for the
+two types of customers.
 
-Remember, to learn more about the data set and variables, type the following 
-code into the console:
-
-```{r}
-?mtcars
-```
-
-First examine a histogram of miles per gallon. 
+The data is in the `Verizon.csv` file. 
 
 ```{r}
-ggplot(data = mtcars, aes(x = mpg)) + 
-  geom_histogram() +
-  labs(x = "Miles Per Gallon")
+verizon <- read_csv("data/verizon.csv")
 ```
 
-We will use the infer package to construct a bootstrap confidence interval for
-the median mpg.
+Examine some summary plots and statistics. What do you notice?
 
-<center>
-<img src="images/infer-graphic.png" width="500px">
-</center>
+**add exercise code chunk with solution**
 
-To generate the bootstrap distribution:
+To generate the bootstrap distribution using the infer package we:
 
-1. `specify()` the variable of interest.
-2. `generate()` the bootstrap samples.
-3. `calculate()` the bootstrap statistics.
+- `specify()` the variable of interest
+- `generate()` the bootstrap samples
+- `calculate()` the bootstrap statistics
 
-We do this in the code chunk below using the `set.seed()` function to control
-the random number generator in R. This makes our simulation reproducible.
+Let's follow these steps to construct a bootstrap confidence interval for the 
+mean time for CLEC customers. We use the `set.seed()` function to control the
+random number generator and make our simulation reproducible.
+
+```{r}
+verizon_ilec <- verizon %>% filter(Group == "ILEC")
+verizon_clec <- verizon %>% filter(Group == "CLEC")
+```
 
 ```{r}
 set.seed(42)
-boot_dist <- mtcars %>%
-  specify(response = mpg) %>%
+boot_dist <- verizon_clec %>%
+  specify(response = Time) %>%
   generate(reps = 10000, type = "bootstrap") %>%
-  calculate(stat = "median")
+  calculate(stat = "mean")
 ```
 
+This generates our bootstrap distribution and stores the results in boot_dist.
 
-```{r quiz2, echo=FALSE}
-quiz(
-  question("How many observations are in boot_dist?",
-    answer("10000", 
-           correct = TRUE,
-           message = "Correct"),
-    answer("32", 
-           message = "Incorrect"),
-    answer("42", 
-           message = "Incorrect"),
+**add question: how many rows are in boot_dist?**
 
-    random_answer_order = TRUE
-  ),
-  
-  question("What does each row in boot_dist represent?",
-    answer("Incorrect Answer"), 
-    answer("Another Incorrect Answer"),
-    answer("Correct Answer",
-           correct = TRUE),
-    answer("Yet Another Incorrect Answer"),
-    answer("Final Incorrect Answer"),
-    random_answer_order = TRUE,
-    allow_retry = TRUE
-  )
-)
-```
+**add question: what does each row in boot_dist represent?**
 
 Let's visualize the bootstrap distribution.
 
 ```{r}
 ggplot(data = boot_dist, aes(x = stat)) + 
-  geom_histogram() +
-  labs(x = "Median MPG")
+  geom_histogram(binwidth = 1) +
+  labs(x = "Mean Time")
 ```
 
 To construct a 95\% bootstrap confidence interval, just find the middle 95\% of
@@ -194,24 +146,48 @@ upper_bound <- boot_dist %>%
   summarize(upper_bound = quantile(stat, 0.975)) %>% pull()
 
 ggplot(data = boot_dist, aes(x = stat)) + 
-  geom_histogram() + 
+  geom_histogram(binwidth = 1) + 
   geom_vline(xintercept = c(lower_bound, upper_bound), linetype = "dotted")
 ```
 
-We are 95\% confident that the median mpg of all cars in the population is 
+We are 95\% confident that the mean mpg of all cars in the population is 
 between `r lower_bound` and `r upper_bound`.
 
-## Practice!
+## Your turn!
 
-Need to add..
+1. Fill in the blanks in the code chunk below to generate the bootstrap
+distribution of the median waiting time for ILEC customers.
 
-Have students
+```{r eval = FALSE}
+set.seed(10)
+boot_dist <- _______ %>%
+  specify(response = _______) %>%
+  generate(reps = _______, type = "bootstrap") %>%
+  calculate(stat = _______)
+```
 
-1. Read in data
-2. Summarize data
-3. Construct a X% confidence interval using infer (interesting statistic)
-4. Interpret in context.
+2. Fill in the blanks in the code chunk below to construct the 80\% bootstrap 
+confidence interval. Provide an interpretation of your interval in context.
+
+```{r}
+### question here
+```
+
+3. Construct a 90% bootstrap confidence interval using the ILEC waiting time 
+data using a statisticof your choosing other than the median or mean and
+provide a one-sentence interpretation of your interval. 
+
+```{r}
+### question here
+```
+
+4. **add question but word better: for each bootstrap sample, how many times did you resample from the original sample?**
 
 ## Resources
 
-Need to add.
+- Computer Intensive Methods in Physics by Persi Diaconis and Bradley Efron
+- Statistical Inference using Bootstrap Confidence Intervals by Michael Wood
+
+## References
+
+- Bootstrap Methods and Permutation Tests by Tim Hesterberg

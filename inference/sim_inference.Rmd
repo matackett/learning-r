@@ -1,5 +1,5 @@
 ---
-title: "(Rough) Simulated-Based Inference using Infer"
+title: "(Rough) Simulation-Based Inference using Infer"
 output: 
   learnr::tutorial:
     progressive: false
