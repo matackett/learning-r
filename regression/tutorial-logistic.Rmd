@@ -1,0 +1,202 @@
+---
+title: Logistic regression
+output:
+  rmarkdown::html_document:
+    css: "tutorial.css"
+    toc: TRUE
+    toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      dpi=300,
+                      fig.height = 3,
+                      fig.width = 5
+)
+```
+```{r packages-data, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(knitr)
+library(broom)
+```
+
+## Today's data
+
+The `pokemon_cleaned` dataset contains data on 896 Pokemon, including from 
+Sword and Shield (generation 8), but does not include alternate forms. The
+dataset contains information on a Pokemon's name, baseline battle statistics 
+(base stats), and whether they are "legendary" (broadly defined). Pokemon are
+fantastic creatures with unique characteristics, and may be used to battle each 
+other in combat. The battle-effectiveness of a Pokemon is in part determined by 
+their "base stats," which consist of HP (hit points), attack, defense, special 
+attack, special defense, and speed. Some Pokemon are considered "legendary" 
+Pokemon if they are exceptionally rare in some sense. Legendary Pokemon are
+often, but not always, more powerful than their non-legendary counterparts. The 
+variables in the dataset are listed below:
+
+- `n_dex_num`: a catalogue number of each Pokemon
+- `name`: the name of the Pokemon
+- `hp`, `atk`, `def`, `spa`, `spd`, `spe`: a Pokemon's battle statistics (HP,
+attack, defense, special attack, special defense, and speed, respectively)
+- `total`: the total base stats of the Pokemon
+- `legendary`: whether the Pokemon is legendary
+
+(Pokemon and Pokemon names are trademarks of Nintendo.)
+
+```{r echo = F}
+pokemon <- read_csv("data/pokemon_cleaned.csv", na = c("n/a", "", "NA"))
+```
+
+## Non-continuous outcomes
+
+In previous tutorials, we've focused on using linear regression as a tool to
+
+- Make predictions about new observations
+- Describe relationships 
+- Perform statistical inference
+
+These examples have all had *continuous* response variables. But can we do 
+similar tasks for **binary categorical** response variables too? Today's goals
+are to predict whether a Pokemon is a legendary based on its base stats and 
+describe the relationship between stats and *probability* of being legendary.
+
+```{r, out.width = "70%", echo = F, fig.align = "center"}
+include_graphics("img/pidgey.png")
+include_graphics("img/rayquaza.png")
+```
+
+Suppose we have some hypothetical Pokemon with the following base stats. Would 
+we classify them as legendary Pokemon based on these characteristics?
+
+- Crapistat: HP = 55, ATK = 25, DEF = 30, SPA = 60, SPD = 50, SPE = 102
+- Mediocra: HP = 90, ATK = 110, DEF = 130, SPA = 75, SPD = 80, SPE = 45
+- Literally Dragonite: HP: 91, ATK: 134, DEF: 95, SPA: 100, SPD: 100, SPE: 80
+- Broaken: HP = 104, ATK = 125, DEF = 105, SPA = 148, SPD = 102, SPE = 136
+
+## Problems with linear models
+
+Suppose we consider the following model for $p$, the probability of being a legendary Pokemon:
+$${p} = \beta_0 + \beta_1HP + \beta_2ATK + \cdots + \beta_6\times SPE$$
+
+1. What can go wrong using this model?
+
+Let's run this model and find out. Check out the residual plot from the linear
+model specified above:
+
+```{r, message = F, warning = F}
+library(broom)
+pokemon <- pokemon %>% 
+  mutate(leg_bin = if_else(legendary == "Yes", 1, 0))
+m2 <- lm(leg_bin~hp + atk + def + spa + spd + spe, data = pokemon)
+
+ggplot(data = augment(m2), aes(x = .fitted, y = .resid)) +
+  geom_point() + 
+  labs(x = "Predicted", y = "Residual", title = "Residual plot")
+```
+
+We see that the linear model assumptions are definitely not satisfied. Also,
+looking at the predicted values, many of the Pokemon are predicted to have
+*negative* probabilities of being legendary (which doesn't make sense at all!).
+Similarly, it's possible to get predicted probabilities greater than 1 in such
+a linear probability model.
+
+The following histogram of predicted values drives home this point:
+
+```{r}
+ggplot(data = augment(m2), aes(x = .fitted)) +
+  geom_histogram() + 
+  labs(x = "Predicted Values", y = "Count")
+```
+
+## Introducing log-odds
+
+We see that a major problem with a linear model is the fact that linear models
+can predict any value from $-\infty$ to $\infty$, but probabilities are 
+restricted to lie between 0 and 1. Is there a way to create a model for a
+*transformation* of the probabilitiy in a principled way such that it's not a
+problem if we make predictions that can take on any value?
+
+Suppose the probability of an event is $p$ Then the **odds** that the event 
+occurs is $\frac{p}{1-p}$. Taking the natural log of the odds, we have the 
+**logit** (or log-odds) of $p$:
+$$logit(p) = \log\left(\frac{p}{1-p}\right)$$
+Note that in statistics, when we say "log" we always mean a logarithm with the
+natural base $e$. By taking this **logit transformation**, although $p$ is 
+constrained tolie within 0 and 1, $logit(p)$ can range from $-\infty$ to 
+$\infty$. 
+
+## Logistic regression
+
+Let's instead consider the following linear model for the log-odds of 
+$p$:
+
+$${logit(p)} = \beta_0 + \beta_1\times HP + \beta_2\times ATK + \cdots + \beta_6\times SPE$$
+
+Since there is a one-to-one relationship between probabilities and log-odds, we
+can undo the previous function. If we create a linear model on the **log-odds**, 
+we can "work backwards" to obtain predicted probabilities that are guaranteed to 
+lie between 0 and 1. To "work backwards," we use the **logistic function**:
+
+$$f(x) = \frac{1}{1 + e^{-x}} = \frac{e^x}{1 + e^x}$$
+
+So, our *linear* model for $logit(p)$ is equivalent to
+
+$$p = \frac{e^{\beta_0 + \beta_1HP + \beta_2ATK + \cdots + \beta_6SPE}}{1 + e^{\beta_0 + \beta_1\times HP + \beta_2\times ATK + \cdots + \beta_6\times SPE}}$$
+
+## Model fitting
+
+We fit the logistic regression model using the `glm` function, which stands for
+generalized linear model. We need to additionally tell R that we want a logistic
+model, and so we include the argument `family = "binomial"`. Let's fit the 
+model and look at the output:
+
+```{r}
+logit_mod <- glm(leg_bin ~ hp + atk + def + spa + spd + spe, data = pokemon,
+                 family = "binomial")
+tidy(logit_mod)
+```
+
+We have a *linear* model on a transformation of the response. Thus, we can
+interpret estimated coefficients analogously to what we've learned before for
+linear models:
+
+Holding all other predictors constant, for each unit increase in base
+speed, we expect the log-odds of being legendary to increase by 0.06. If we
+exponentiate this, then we have the multiplicative effect on the **odds** scale
+(instead of the additive effect on the log-odds scale). Thus, an equivalent
+interpretation might be that a Pokemon that has a base speed one unit larger 
+than another would have exp(0.06) $\approx$ 1.062 times the *odds* of being 
+legendary.
+
+2. How might we interpret dummy variables for categorical predictors?
+
+We can also use familiar functions from `augment` to create predicted
+probabilities. In general, we can use our model to predict the log-odds of
+an event's occurrence. We can then back-transform in order to obtain the
+predicted probatilities by instituting a cut-off value (say, if the probability 
+is greater than 0.5).
+
+Take a look at the following code, which will classify the four hypothetical
+Pokemon above as being legendary or not, based on their base stats:
+
+```{r}
+new_pokemon <- tibble(hp = c(55, 90, 91, 104),
+                      atk = c(25, 110, 134, 125),
+                      def = c(30, 130, 95, 105),
+                      spa = c(60, 75, 100, 148),
+                      spd = c(50, 80, 100, 102),
+                      spe = c(102, 45, 80, 136))
+
+pred_log_odds <- augment(logit_mod, newdata = new_pokemon) %>% 
+  pull(.fitted)
+```
+
+Let's work backwards to get predicted probabilities
+
+```{r}
+pred_probs <- exp(pred_log_odds)/(1 + exp(pred_log_odds))
+round(pred_probs, 3)
+```
+
+3. What can we conclude given these predicted probabilities?
+
