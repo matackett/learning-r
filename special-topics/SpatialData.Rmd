@@ -45,7 +45,6 @@ nearestneighbors <-knn2nb(knearneigh(coord_data.set, k=10))
 weight <- nb2listw(nearestneighbors, style="W")
 moran.test(elect80$pc_turnout, weight)
 geary.test(elect80$pc_turnout, weight)
-
 ```
 
 ## Running a Spatial Regression Model

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
     <title>Multiple predictors</title>
     <meta charset="utf-8" />
@@ -67,24 +67,24 @@ glimpse(beijing)
 ```
 
 ```
-## Observations: 1,500
-## Variables: 16
-## $ year  &lt;dbl&gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2...
-## $ month &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3...
-## $ day   &lt;dbl&gt; 2, 3, 3, 3, 4, 4, 6, 6, 6, 6, 6, 11, 12, 14, 15, 16, 18, 18, ...
-## $ hour  &lt;dbl&gt; 21, 0, 5, 23, 5, 10, 0, 9, 10, 15, 22, 16, 22, 0, 16, 2, 0, 1...
-## $ PM2.5 &lt;dbl&gt; 69, 122, 90, 103, 3, 13, 229, 176, 138, 227, 234, 110, 163, 6...
-## $ PM10  &lt;dbl&gt; 90, 142, 109, 138, 6, 20, 232, 177, 170, 245, 257, 140, 137, ...
-## $ SO2   &lt;dbl&gt; 68, 86, 77, 36, 10, 16, 124, 88, 96, 119, 140, 115, 28, 30, 9...
-## $ NO2   &lt;dbl&gt; 116, 106, 102, 128, 22, 32, 182, 116, 114, 153, 158, 84, 94, ...
-## $ CO    &lt;dbl&gt; 2200, 3100, 3100, 2799, 300, 500, 3299, 2500, 2200, 2899, 370...
-## $ O3    &lt;dbl&gt; 6, 8, 5, 5, 74, 68, 48, 35, 35, 35, 14, 86, 14, 93, 59, 59, 1...
-## $ TEMP  &lt;dbl&gt; 0.5, -2.2, -5.2, 7.1, 6.0, 11.5, 5.6, 8.4, 8.8, 14.7, 8.3, 11...
-## $ PRES  &lt;dbl&gt; 1024.8, 1022.3, 1018.5, 1016.7, 1020.1, 1022.3, 1010.4, 1010....
-## $ DEWP  &lt;dbl&gt; -15.1, -12.8, -11.6, -12.2, -14.2, -14.3, -7.0, -6.6, -6.2, -...
-## $ RAIN  &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0...
-## $ wd    &lt;chr&gt; "N", "N", "NE", "N", "NW", "N", "NE", "N", "NE", "SW", "SE", ...
-## $ WSPM  &lt;dbl&gt; 0.2, 0.0, 0.9, 0.4, 2.4, 0.0, 0.8, 0.8, 1.1, 1.3, 1.8, 2.7, 0...
+## Rows: 1,500
+## Columns: 16
+## $ year  &lt;dbl&gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 201…
+## $ month &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, …
+## $ day   &lt;dbl&gt; 2, 3, 3, 3, 4, 4, 6, 6, 6, 6, 6, 11, 12, 14, 15, 16, 18, 18, 19…
+## $ hour  &lt;dbl&gt; 21, 0, 5, 23, 5, 10, 0, 9, 10, 15, 22, 16, 22, 0, 16, 2, 0, 13,…
+## $ PM2.5 &lt;dbl&gt; 69, 122, 90, 103, 3, 13, 229, 176, 138, 227, 234, 110, 163, 65,…
+## $ PM10  &lt;dbl&gt; 90, 142, 109, 138, 6, 20, 232, 177, 170, 245, 257, 140, 137, 10…
+## $ SO2   &lt;dbl&gt; 68, 86, 77, 36, 10, 16, 124, 88, 96, 119, 140, 115, 28, 30, 91,…
+## $ NO2   &lt;dbl&gt; 116, 106, 102, 128, 22, 32, 182, 116, 114, 153, 158, 84, 94, 65…
+## $ CO    &lt;dbl&gt; 2200, 3100, 3100, 2799, 300, 500, 3299, 2500, 2200, 2899, 3700,…
+## $ O3    &lt;dbl&gt; 6, 8, 5, 5, 74, 68, 48, 35, 35, 35, 14, 86, 14, 93, 59, 59, 107…
+## $ TEMP  &lt;dbl&gt; 0.5, -2.2, -5.2, 7.1, 6.0, 11.5, 5.6, 8.4, 8.8, 14.7, 8.3, 11.0…
+## $ PRES  &lt;dbl&gt; 1024.8, 1022.3, 1018.5, 1016.7, 1020.1, 1022.3, 1010.4, 1010.8,…
+## $ DEWP  &lt;dbl&gt; -15.1, -12.8, -11.6, -12.2, -14.2, -14.3, -7.0, -6.6, -6.2, -4.…
+## $ RAIN  &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+## $ wd    &lt;chr&gt; "N", "N", "NE", "N", "NW", "N", "NE", "N", "NE", "SW", "SE", "S…
+## $ WSPM  &lt;dbl&gt; 0.2, 0.0, 0.9, 0.4, 2.4, 0.0, 0.8, 0.8, 1.1, 1.3, 1.8, 2.7, 0.9…
 ```
 
 ---
@@ -115,6 +115,16 @@ Let's add some more predictors to our model:
 ```r
 mod3 &lt;- lm(DEWP ~ PRES + TEMP + RAIN, data = beijing)
 tidy(mod3)
+```
+
+```
+## Warning: `...` is not empty.
+## 
+## We detected these problematic arguments:
+## * `needs_dots`
+## 
+## These dots only exist to allow future extensions and should be empty.
+## Did you misspecify an argument?
 ```
 
 ```
@@ -153,6 +163,16 @@ in our model.
 
 
 ```
+## Warning: `...` is not empty.
+## 
+## We detected these problematic arguments:
+## * `needs_dots`
+## 
+## These dots only exist to allow future extensions and should be empty.
+## Did you misspecify an argument?
+```
+
+```
 ## # A tibble: 4 x 5
 ##   term        estimate std.error statistic   p.value
 ##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
@@ -185,6 +205,16 @@ increase in dew point (on average),
 
 
 ```
+## Warning: `...` is not empty.
+## 
+## We detected these problematic arguments:
+## * `needs_dots`
+## 
+## These dots only exist to allow future extensions and should be empty.
+## Did you misspecify an argument?
+```
+
+```
 ## # A tibble: 4 x 5
 ##   term        estimate std.error statistic   p.value
 ##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
@@ -212,11 +242,21 @@ with dew point, while adjusting for temperature and precipitation?
 
 
 ```
+## Warning: `...` is not empty.
+## 
+## We detected these problematic arguments:
+## * `needs_dots`
+## 
+## These dots only exist to allow future extensions and should be empty.
+## Did you misspecify an argument?
+```
+
+```
 ## # A tibble: 1 x 11
 ##   r.squared adj.r.squared sigma statistic p.value    df logLik    AIC    BIC
 ##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
 ## 1     0.708         0.707  7.55     1209.       0     4 -5158. 10327. 10353.
-## # ... with 2 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;
+## # … with 2 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;
 ```
 
 We see that approximately 70% of the variability in dew point explained by its
@@ -243,6 +283,16 @@ non-smokers. To model such a relationship, we create an &lt;font class = "vocab"
 
 We fit interaction terms in the model by multiplying predictors together:
 
+
+```
+## Warning: `...` is not empty.
+## 
+## We detected these problematic arguments:
+## * `needs_dots`
+## 
+## These dots only exist to allow future extensions and should be empty.
+## Did you misspecify an argument?
+```
 
 ```
 ## # A tibble: 5 x 5
@@ -329,6 +379,16 @@ augment(mod3) %&gt;%
 ```
 
 ```
+## Warning: `...` is not empty.
+## 
+## We detected these problematic arguments:
+## * `needs_dots`
+## 
+## These dots only exist to allow future extensions and should be empty.
+## Did you misspecify an argument?
+```
+
+```
 ## # A tibble: 5 x 11
 ##    DEWP  PRES  TEMP  RAIN .fitted .se.fit .resid    .hat .sigma .cooksd
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
@@ -337,7 +397,7 @@ augment(mod3) %&gt;%
 ## 3 -11.6 1018.  -5.2     0  -13.4    0.471  1.81  3.89e-3   7.55 5.64e-5
 ## 4 -12.2 1017.   7.1     0   -3.86   0.225 -8.34  8.92e-4   7.55 2.73e-4
 ## 5 -14.2 1020.   6       0   -5.89   0.242 -8.31  1.02e-3   7.55 3.11e-4
-## # ... with 1 more variable: .std.resid &lt;dbl&gt;
+## # … with 1 more variable: .std.resid &lt;dbl&gt;
 ```
 
 We will focus on the `.fitted` and `.resid` variables in this data frame
@@ -351,6 +411,16 @@ We will focus on the `.fitted` and `.resid` variables in this data frame
 augment(mod3) %&gt;% 
   slice(1:5) %&gt;% 
   select(.fitted, .resid)
+```
+
+```
+## Warning: `...` is not empty.
+## 
+## We detected these problematic arguments:
+## * `needs_dots`
+## 
+## These dots only exist to allow future extensions and should be empty.
+## Did you misspecify an argument?
 ```
 
 ```
@@ -462,6 +532,16 @@ class: center, middle
 
 
 ```
+## Warning: `...` is not empty.
+## 
+## We detected these problematic arguments:
+## * `needs_dots`
+## 
+## These dots only exist to allow future extensions and should be empty.
+## Did you misspecify an argument?
+```
+
+```
 ## # A tibble: 4 x 5
 ##   term        estimate std.error statistic   p.value
 ##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
@@ -492,6 +572,16 @@ Let's revisit the `augment`ed model output.
 
 
 ```
+## Warning: `...` is not empty.
+## 
+## We detected these problematic arguments:
+## * `needs_dots`
+## 
+## These dots only exist to allow future extensions and should be empty.
+## Did you misspecify an argument?
+```
+
+```
 ## # A tibble: 1,500 x 11
 ##     DEWP  PRES  TEMP  RAIN .fitted .se.fit  .resid    .hat .sigma .cooksd
 ##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
@@ -505,7 +595,7 @@ Let's revisit the `augment`ed model output.
 ##  8  -6.6 1011.   8.4     0  -0.772   0.294  -5.83  1.52e-3   7.55 2.27e-4
 ##  9  -6.2 1010.   8.8     0  -0.337   0.295  -5.86  1.53e-3   7.55 2.31e-4
 ## 10  -4.6 1007   14.7     0   5.17    0.261  -9.77  1.19e-3   7.55 5.00e-4
-## # ... with 1,490 more rows, and 1 more variable: .std.resid &lt;dbl&gt;
+## # … with 1,490 more rows, and 1 more variable: .std.resid &lt;dbl&gt;
 ```
 
 Notice that the `augment` function provides fitted values and residuals (and 
@@ -529,6 +619,16 @@ mean_vals  = tibble(PRES = 1012.6,
                     TEMP = 13.55,
                     RAIN = 0.074)
 augment(mod3, newdata = mean_vals)
+```
+
+```
+## Warning: `...` is not empty.
+## 
+## We detected these problematic arguments:
+## * `needs_dots`
+## 
+## These dots only exist to allow future extensions and should be empty.
+## Did you misspecify an argument?
 ```
 
 ```
@@ -593,6 +693,32 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
 // adds .remark-code-has-line-highlighted class to <pre> parent elements
 // of code chunks containing highlighted lines with class .remark-code-line-highlighted
 (function(d) {
@@ -610,17 +736,6 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   }
   preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
 })(document);</script>
-
-<script>
-(function() {
-  var links = document.getElementsByTagName('a');
-  for (var i = 0; i < links.length; i++) {
-    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
-      links[i].target = '_blank';
-    }
-  }
-})();
-</script>
 
 <script>
 slideshow._releaseMath = function(el) {
