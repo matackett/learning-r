@@ -116,6 +116,7 @@ $(document).ready(function () {
 
 <div class="topics">
 
+<p>This is still a bit rough! Gaps I plan to fill in are outlined below.</p>
 <div id="section-introduction" class="section level2">
 <h2>Introduction</h2>
 <p>Learning Objectives.</p>
@@ -140,7 +141,7 @@ library(infer)</code></pre>
 hours_summary</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["xbar"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["s"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["n"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"41.382","2":"14.81996","3":"500"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["xbar"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["s"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["n"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"NA","2":"NA","3":"3000"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <pre class="r"><code>ggplot(data = gss, aes(x = hours)) + 
@@ -165,13 +166,13 @@ xbar &lt;- hours_summary %&gt;% pull(xbar)</code></pre>
 <pre class="r"><code>df &lt;- n - 1</code></pre>
 <p>Finally, find the <span class="math inline">\(p\)</span>-value.</p>
 <pre class="r"><code>pt(t, df, lower.tail = FALSE)</code></pre>
-<pre><code>## [1] 0.0187798</code></pre>
+<pre><code>## [1] NA</code></pre>
 <p>The <span class="math inline">\(p\)</span>-value is small, so we reject the null hypothesis. These data provide sufficient evidence at <span class="math inline">\(\alpha = 0.05\)</span> to conclude that Americans, on average, work more than 40 hours per week.</p>
 <p>Is the difference practically significant?</p>
 <p>Now construct a confidence interval for the mean. Do you expect the confidence interval to include 40?</p>
 <pre class="r"><code>t_star &lt;- qt(.95, df)
 xbar + c(-1,1) * t_star * se</code></pre>
-<pre><code>## [1] 40.28981 42.47419</code></pre>
+<pre><code>## [1] NA NA</code></pre>
 <p>We can easily use the <code>t_test</code> function in the infer package to conduct a <span class="math inline">\(t\)</span>-test. To do this we need to specify the following:</p>
 <ul>
 <li><code>x</code>: a tibble</li>
@@ -187,7 +188,7 @@ xbar + c(-1,1) * t_star * se</code></pre>
        conf_level = 0.95)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["statistic"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["t_df"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["p_value"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["alternative"],"name":[4],"type":["chr"],"align":["left"]},{"label":["lower_ci"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["upper_ci"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"2.085191","2":"499","3":"0.03755959","4":"two.sided","5":"40.07984","6":"42.68416","_row":"t"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["statistic"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["t_df"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["p_value"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["alternative"],"name":[4],"type":["chr"],"align":["left"]},{"label":["lower_ci"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["upper_ci"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"2.310373","2":"1755","3":"0.020983","4":"two.sided","5":"40.11667","6":"41.42775","_row":"t"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -227,7 +228,7 @@ session$onSessionEnded(function() {
 <!--/html_preserve-->
 <!--html_preserve-->
 <script type="application/shiny-prerendered" data-context="execution_dependencies">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82]}},"value":[{"type":"character","attributes":{},"value":["assertthat","backports","base","blob","broom","cellranger","cli","colorspace","compiler","crayon","datasets","DBI","dbplyr","digest","dplyr","ellipsis","evaluate","fansi","farver","fastmap","forcats","fs","generics","ggplot2","glue","graphics","grDevices","grid","gtable","haven","hms","htmltools","htmlwidgets","httpuv","httr","infer","jsonlite","knitr","labeling","later","lattice","learnr","lifecycle","lubridate","magrittr","markdown","methods","mime","modelr","munsell","nlme","pillar","pkgconfig","promises","purrr","R6","Rcpp","readr","readxl","reprex","rlang","rmarkdown","rprojroot","rstudioapi","rvest","scales","shiny","stats","stringi","stringr","tibble","tidyr","tidyselect","tidyverse","tools","utils","vctrs","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["0.2.1","1.1.8","4.0.2","1.2.1","0.5.6","1.1.0","2.0.2","1.4-1","4.0.2","1.3.4","4.0.2","1.1.0","1.4.4","0.6.25","1.0.0","0.3.1","0.14","0.4.1","2.0.3","1.0.1","0.5.0","1.4.2","0.0.2","3.3.2","1.4.1","4.0.2","4.0.2","4.0.2","0.3.0","2.3.1","0.5.3","0.5.0","1.5.1","1.5.4","1.4.1","0.5.3","1.7.0","1.29","0.3","1.1.0.1","0.20-41","0.10.1","0.2.0","1.7.9","1.5","1.1","4.0.2","0.9","0.1.8","0.5.0","3.1-148","1.4.4","2.0.3","1.1.1","0.3.4","2.4.1","1.0.5.1","1.3.1","1.3.1","0.3.0","0.4.6","2.3","1.3-2","0.11","0.3.5","1.1.1","1.5.0","4.0.2","1.4.6","1.4.0","3.0.2","1.1.0","1.1.0","1.3.0","4.0.2","4.0.2","0.3.1","2.2.0","0.15","1.3.2","1.8-4","2.2.1"]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81]}},"value":[{"type":"character","attributes":{},"value":["assertthat","backports","base","broom","cellranger","cli","colorspace","compiler","crayon","datasets","DBI","dbplyr","digest","dplyr","ellipsis","evaluate","fansi","farver","fastmap","forcats","fs","generics","ggplot2","glue","graphics","grDevices","grid","gtable","haven","hms","htmltools","htmlwidgets","httpuv","httr","infer","jsonlite","knitr","labeling","later","lattice","learnr","lifecycle","lubridate","magrittr","markdown","methods","mime","modelr","munsell","nlme","pillar","pkgconfig","promises","purrr","R6","Rcpp","readr","readxl","reprex","rlang","rmarkdown","rprojroot","rstudioapi","rvest","scales","shiny","stats","stringi","stringr","tibble","tidyr","tidyselect","tidyverse","tools","utils","vctrs","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["0.2.1","1.1.8","4.0.0","0.5.6","1.1.0","2.0.2","1.4-1","4.0.0","1.3.4","4.0.0","1.1.0","1.4.3","0.6.25","1.0.0","0.3.1","0.14","0.4.1","2.0.3","1.0.1","0.5.0","1.4.2","0.0.2","3.3.2","1.4.1","4.0.0","4.0.0","4.0.0","0.3.0","2.2.0","0.5.3","0.5.0","1.5.1","1.5.4","1.4.1","0.5.1","1.7.0","1.29","0.3","1.1.0.1","0.20-41","0.10.1","0.2.0","1.7.8","1.5","1.1","4.0.0","0.9","0.1.7","0.5.0","3.1-147","1.4.6","2.0.3","1.1.1","0.3.4","2.4.1","1.0.5","1.3.1","1.3.1","0.3.0","0.4.7","2.3","1.3-2","0.11","0.3.5","1.1.1","1.5.0","4.0.0","1.4.6","1.4.0","3.0.2","1.1.0","1.1.0","1.3.0","4.0.0","4.0.0","0.3.1","2.2.0","0.15","1.3.2","1.8-4","2.2.1"]}]}]}
 </script>
 <!--/html_preserve-->
 </div>
