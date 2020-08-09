@@ -1,25 +1,47 @@
 ---
 title: Intro to linear models
-output:
-  rmarkdown::html_document:
-    css: "tutorial.css"
-    toc: TRUE
-    toc_float: TRUE
+output: 
+  learnr::tutorial:
+    theme: cerulean
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,
-                      dpi=300,
-                      fig.height = 3,
-                      fig.width = 5
-)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
+
 ```{r packages-data, echo=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(knitr)
 library(broom)
+library(learnr)
 beijing <- read_csv("data/beijing.csv")
 ```
+
+```{css, echo=FALSE}
+.spoiler {
+  visibility: hidden;
+}
+
+.spoiler::before {
+  visibility: visible;
+  content: "ANSWER: Hover over me!"
+}
+
+.spoiler:hover {
+  visibility: visible;
+}
+
+.spoiler:hover::before {
+  display: none;
+}
+
+# Credit to RLesur on stack overflow (question 51020181) for CSS idea
+```
+
+## Why model data?
 
 We use models to explain the relationship between variables and to make 
 predictions. For now we will focus on **linear** models (but remember there are 
@@ -30,15 +52,8 @@ outcome variable and a single predictor. To do so, we will use the `broom`
 package, which takes the messy output of built-in functions in R and turns 
 them into tidy data frames. As expected, it integrates well with the tidyverse, especially with data wrangling using `dplyr`.
 
-```{r, out.width = "30%", echo = F, fig.align = "center"}
-include_graphics("img/broom.png")
-```
-
 ## Today's data
 
-```{r, out.width = "50%", echo = F, fig.align = "center"}
-include_graphics("img/beijing1.png")
-```
 Today's data are come from a series of atmospheric measurements taken at the
 Agriculture Exhibition Hall in Beijing from 2013 - 2017. The following variables
 are in the dataset:
@@ -58,18 +73,33 @@ and ozone concentrations, in $\mu$g/m$^3$, respectivel
 These data are adapted from a dataset released by Song Xi Chen as referenced in
 Zhang S., et al (2017), Proc. Royal Soc. A. Let's explore some of these data. 
 
-1. Describe the distribution of dew point as measured at this station (in 
-degrees C):
+We can load in the dataset using the following code:
 
-```{r, fig.height=2.5, echo = F, message = F}
+```{r, eval = F}
+beijing <- read_csv("data/beijing.csv")
+```
+
+Note that the `read_csv` function is part of the `tidyverse`, which must first be
+loaded. As well, the path to the data might depend on how your directories 
+are set up.
+
+## Brief initial EDA
+
+Let's do some initial EDA to examine variables in our dataset. Code has been provided
+for the graphs to help reinforce your `ggplot2` skills!
+
+Describe the distribution of dew point as measured at this station (in degrees
+C):
+
+```{r, message = F}
 ggplot(data = beijing, aes(x = DEWP)) +
   geom_histogram() +
   labs(y = "Count")
 ```
 
-2. Describe the distribution of barometric pressure (in hectopascals):
+Describe the distribution of barometric pressure (in hectopascals):
 
-```{r, fig.height=2.5, echo = F, message = F}
+```{r, message = F}
 ggplot(data = beijing, aes(x = PRES)) +
   geom_histogram() +
   labs(y = "Count")
@@ -98,25 +128,31 @@ understand, and is generally denoted by $y$. The **explanatory variable**
 (independent variable, or predictor variable) is the variable we want to use to
 explain the variation in the response, generally denoted by $x$.
 
-3. Examine the following plot, which depicts the relationship between PM2.5 
+Examine the following plot, which depicts the relationship between PM2.5 
 levels and wind speed. Describe the relationship between these two variables.
 
-```{r, message = F, warning = F, echo = F}
+```{r}
 ggplot(data = beijing, aes(x = PRES, y = DEWP)) +
   geom_point() +
   ylim(c(-40, 30))
 ```
 
-4. Now let's overlay a line on this relationship. What are the response and 
-explanatory variables?  Does the line describe the relationship between these 
-two variables "well"?
+Now let's overlay a line on this relationship. 
 
-```{r, message = F, warning = F, echo = F}
+**What are the response and explanatory variables? Does the line describe the**
+**relationship between these two variables "well"?**
+
+```{r}
 ggplot(data = beijing, aes(x = PRES, y = DEWP)) +
   geom_point() +
   geom_smooth(method = "lm", se = F) +
   ylim(c(-40, 30))
 ```
+
+[The response variable is dew point, and the explanatory variable is 
+barometric pressure. The line does seem to describe this relationship well; we
+will talk more about what this means later on in this tutorial and the tutorial
+for multiple regression, diagnostics, and predictions.]{.spoiler}
 
 The blue line is a function that we can use to obtain **predicted values** of
 our response given values of our predictors. These predicted values are the 
@@ -127,8 +163,11 @@ The **residual** is the difference between the actual observed value of the
 response variable *observed* in the dataset vs. the value *predicted* by the 
 model. It is essentially the vertical distance between each point and the line.
 
-5. What does a negative residual mean? Which points on the plot above have 
-negative residuals?
+**What does a negative residual mean? Which points on the plot above have them?**
+
+[A negative residual means that our predicted value is greater than the observed
+value of the response variable. Points on the plot below the blue line have 
+negative residuals.]{.spoiler}
 
 ## Interpreting linear models
 
@@ -158,6 +197,10 @@ Now let's take a look at the `tidy` output for our object as provided by the
 ```{r}
 tidy(mod1)
 ```
+
+This output is a tidy data frame! Each row corresponds to a parameter estimated in 
+the model (here, the intercept and slope), and each column is a variable
+corresponding to a statistical measure (the estimate, standard error, p-value, etc.).
 
 We write the fitted model as follows:
 
@@ -190,7 +233,13 @@ model
 
 $$\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1x_i$$
 
-6. What is different between the underlying linear model and the fitted model?
+**What is different between the underlying linear model and the fitted model?**
+
+[The underlying linear model is that which is assumed to hold; it contains
+population parameters and specifies a form for the error term. The fitted model
+is one that is fit on the observed data (according to some specified algorithm).
+When specifying the fitted model, we specify model estimates for the *predicted*
+response variable. There is no error term in the fitted model.]{.spoiler}
 
 Remember that residuals are the differences between the observed response and 
 the predicted response values from the model:
@@ -201,7 +250,7 @@ OLS selects $\hat{\beta}_0$ and $\hat{\beta}_1$ such that the sum of squared
 residuals is minimized. The residuals are given by the red segments in the 
 graphic below:
 
-```{r echo=FALSE, fig.height = 2.5}
+```{r echo=FALSE}
 d <- tibble(
     PRES     = mod1$model$PRES,
     DEWP    = mod1$model$DEWP,
@@ -218,6 +267,8 @@ p <- ggplot(data = d, mapping = aes(x = PRES, y = DEWP)) +
 p
 ```
 
+You will learn how to calculate residuals by using the `augment` function in
+the tutorial for multiple linear regression and model diagnostics.
 
 ## Statistical inference
 
@@ -230,8 +281,8 @@ estimates $\hat{\beta}_0$ and $\hat{\beta}_1$ In regression models, p-values
 generally correspond to testing the null hypothesis $$H_0: \beta = 0$$ vs. the 
 alternative hypothesis $$H_1: \beta \neq 0$$. 
 
-7. At the $\alpha = 0.05$ level, is there sufficient evidence to suggest that 
-$\beta_0 \neq 0$? How about $\beta_1$?
+At the $\alpha = 0.05$ level, is there sufficient evidence to suggest that 
+$\beta_0 \neq 0$? How about $\beta_1$? (look at the p-values to tell!)
 
 We can also get model-level summaries by using the `glance` function on our
 model object:
@@ -245,35 +296,15 @@ variability in the response variable that explained by our predictors. In our
 example, We see that approximately 60% of the variability in dew point can be 
 explained by its linear relationship with barometric pressure.
 
-## Categorical predictors?
+## On your own!
 
-Let's fit a linear regression model using the categorical variable `wd` (wind
-direction), which takes on eight values corresponding to the compass points.
+Create a linear model that predicts one of the atmospheric pollutants (either
+`PM2.5`, `PM10`, `SO2`, `NO2`, `CO`, or `O3`) based on meteorological 
+characteristics (i.e., anything except when the observation was taken). 
+Interpret the estimated intercept and slope from your model. What do you notice?
 
-```{r}
-mod2 <- lm(DEWP ~ wd, data = beijing)
-tidy(mod2)
+```{r ex-1, exercise = TRUE}
+___ <- lm(___ ~ ___, data = ___)
+  
+tidy(___)
 ```
-
-8. What do you think these "slopes" correspond to? Why are there only seven wind 
-directions in the output but eight in total? what happened to wind coming from 
-the east?
-
-When the categorical explanatory variable has many levels, the levels are 
-encoded as **dummy variables**. Dummy variables take values of either 0 or 1, 
-depending on whether the condition it corresponds to is satisfied. For instance,
-`wdS` takes on the value of 1 if the wind comes from the south, and 0 if it does 
-not. Each coefficient describes the expected difference in dew point when wind 
-comes from that particular direction compared to the baseline level (east).
-
-Our fitted/predicted model is given by
-
-\begin{align*}
-\widehat{DEWP} &= 5.93 - 8.17N - 3.84NE - 12.55NW + \\
-&\mathrel{\phantom{=}} 1.95S + 0.31SE -2.10SW - 5.41W
-\end{align*}
-where the predictors correspond to dummy variables for if the wind is blowing 
-from that direction.
-
-9. Using the tidy model output above, is there sufficient evidence to suggest 
-differences in dew point depending on wind direction? What patterns do you see?
