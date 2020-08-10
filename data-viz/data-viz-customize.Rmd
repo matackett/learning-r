@@ -5,6 +5,7 @@ output:
   html_document:
     toc: true
     toc_float: true
+    theme: cerulean
 ---
 
 ```{r setup, include=FALSE}
@@ -22,7 +23,7 @@ library(flair)
 
 In the [DATA VIZ - INSERT LINK] tutorial, you learned the basics of `ggplot2`, the tidyverse's primary package for creating data visualizations. In this tutorial, we will focus on different ways you can customize your data visualizations. 
 
-By the end of this tutorial, you be able to
+By the end of this tutorial, you should be able to
 
 - Add aesthetics to a plot
 - Change the limits on the x and y axis
@@ -39,6 +40,8 @@ To learn more about the data set and the variable definitions, type the followin
 ```{r}
 ?mtcars
 ```
+
+We will make a few small changes to the `mtcars` data frame to prepare it for visualization: 
 
 ```{r}
 mtcars <- mtcars %>%
@@ -105,7 +108,9 @@ Notice in **Plot A** that the color of the points is based on the type of transm
 
 Let's look at the code for **Plot A**. 
 
-Notice how the code used to define the color is inside of the `aes` function. This tells R to color the points based on the type of transmission (`am`). In other words, the color aesthetic is assigned to `am`. We have also added a label the legend and a subtitle.
+Notice how the code used to define the color is inside of the `aes` function. This tells R to color the points based on the type of transmission (`am`). In other words, the color aesthetic is assigned to `am`. We have also added a label to the legend and a subtitle.
+
+*Note: When we add labels, we map a label to each aesthetic. For example, the code `color = "Transmission"` within the `labs()` function doesn't change the color of the points by Transmission but merely applies the label "Transmission" to the color legend. (Without  this label, the legend would be titled `am` which may be confusing to some readers.)*
 
 
 ```{r aes-var, eval = F, echo = F}
@@ -397,7 +402,8 @@ p1 <- ggplot(data = mtcars, aes(x = cyl)) +
 
 p2 <- ggplot(data = mtcars, aes(x = hp)) + 
   geom_histogram() +
-  labs(x = "Horsepower")
+  labs(x = "Horsepower", 
+       y = "Count")
 
 p3 <- ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) +
   geom_point() +
