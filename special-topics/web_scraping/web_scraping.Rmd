@@ -3,8 +3,7 @@ title: "Web Scraping"
 output: 
   learnr::tutorial:
     progressive: false
-    css: "css/tutorial.css"
-    theme: "sandstone"
+    theme: "cerulean"
     allow_skip: true
     includes:
       in_header: www/hex.html
@@ -16,7 +15,7 @@ library(learnr)
 library(knitr)
 library(tidyverse)
 library(rvest)
-knitr::opts_chunk$set(echo = TRUE, error = TRUE, exercise.timelimit = 5)
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, exercise.timelimit = 10)
 ```
 
 ## Introduction
@@ -48,18 +47,14 @@ library(tidyverse)
 library(rvest)
 ```
 
-<br/>
-
-Video to go here...
-
 ## HTML
 
-This tutorial will make use of the love-to-be scraped website 
+This tutorial will make use of the love-to-be-scraped website 
 [Books to Scrape](http://books.toscrape.com/index.html). The goal will be to 
 extract data from this website into our R environment. You'll work with a core 
 set of functions and follow a standard recipe to get data such
 as the title, price, and star rating of the books. First, you need to 
-understand the underlying structure  of a web page.
+understand the underlying structure of a web page.
 
 <br/>
 
@@ -124,8 +119,8 @@ easily be able to bring the data on the web into R.
 
 ## Package `rvest`
 
-`rvest` is a package authored by Hadley Wickham that makes basic processing and 
-manipulation of HTML documents easy.
+[`rvest`](https://github.com/tidyverse/rvest) is a package authored by Hadley 
+Wickham that makes basic processing and manipulation of HTML documents easy.
 
 Core functions:
 
@@ -360,7 +355,7 @@ books_df
 
 The following is a list of best practice guidelines for web scraping.
 
-- Abide by a site's terms and conditions. If they ask you not scrape, don't
+- Abide by a site's terms and conditions. If they ask you not to scrape, don't
   scrape.
 
 - Respect robots.txt. Most site will have `/robots.txt` files that will specify
@@ -394,7 +389,7 @@ resources.
 ## References
 
 1. Easily Harvest (Scrape) Web Pages. (2020). Rvest.tidyverse.org. 
-   Retrieved from https://rvest.tidyverse.org/
+   Retrieved from https://rvest.tidyverse.org/.
    
 2. SelectorGadget: point and click CSS selectors. (2020). Selectorgadget.com. 
-   Retrieved from https://selectorgadget.com/
+   Retrieved from https://selectorgadget.com/.

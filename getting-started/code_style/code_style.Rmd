@@ -3,8 +3,7 @@ title: "Code Style"
 output: 
   learnr::tutorial:
     progressive: false
-    css: "css/tutorial.css"
-    theme: "sandstone"
+    theme: "cerulean"
     allow_skip: true
 runtime: shiny_prerendered
 ---
@@ -47,10 +46,6 @@ websites such as Stack Overflow. Always fix style inconsistencies when
 incorporating code you find from online into your work.
 </div>
 
-<br/>
-
-Video to go here...
-
 ## Naming
 
 ### Object names
@@ -73,7 +68,7 @@ FlightsRDU
 _FlIgHtSGSO
 ```
 
-Focus on choosing names that are short and informative. Objects names are 
+Focus on choosing names that are short and informative. Object names are 
 generally nouns, while function names are generally verbs.
 
 Avoid choosing object names that are already functions or reserved words in R.
@@ -211,7 +206,8 @@ and `:::`.
 ### Line length
 
 Keep your code and narrative within a width of 80 characters. Lines of code
-can be broken after `,`, `%>%`, and `+` (when working with `ggplot2` functions).
+can be broken after `,`, `%>%`, and `+` 
+(when working with `tidyverse` functions).
 For text narrative, simply hit `return` on your keyboard to start a new line
 once you reach 80 characters.
 
@@ -236,7 +232,7 @@ c("Two", "too", "to")
 c('Two', 'too', 'to')
 ```
 
-To see why using a pair of `'` is not advised, run the below code.
+To see why using a pair of `'` is not advised, run the code below.
 
 ```{r single_quotes, exercise=TRUE, error=TRUE}
 x <- 'I'm not a fan of single quotes'
@@ -278,7 +274,7 @@ ggplot(data = mtcars, aes(x = hp, y = mpg)) +
 
 <div class = "warning">
 **Warning!** In fitting a linear model, function `lm()` has the data argument
-second. Always check the help (`?lm`) when working with a new function to 
+second. Always check the help (e.g., `?lm`) when working with a new function to 
 understand its arguments.
 </div>
 
@@ -375,7 +371,7 @@ quiz(
 ## References
 
 1. Style guide · R packages. (2020). Retrieved from
-   http://r-pkgs.had.co.nz/style.html
+   http://r-pkgs.had.co.nz/style.html.
    
 2. Wickham, H. (2020). The tidyverse style guide. Retrieved from
-   https://style.tidyverse.org/
+   https://style.tidyverse.org/.

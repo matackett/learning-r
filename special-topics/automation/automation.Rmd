@@ -3,8 +3,7 @@ title: "Automation"
 output: 
   learnr::tutorial:
     progressive: false
-    css: "css/tutorial.css"
-    theme: "sandstone"
+    theme: "cerulean"
     allow_skip: true
 runtime: shiny_prerendered
 ---
@@ -51,10 +50,6 @@ library(tidyverse)
 library(nycflights13)
 ```
 
-<br/>
-
-Video to go here...
-
 ## Why automation?
 
 Consider the small tibble below.
@@ -62,17 +57,17 @@ Consider the small tibble below.
 ```{r include=FALSE}
 x <- tibble(
   col_a = c(3, -1, 0, 10),
-  col_b = c(2, -2, 2, -2),
+  col_b = c(2, -2, 2, -22),
   col_c = c(8, sqrt(131), log(4), 33),
   col_d = 1:4
 )
 ```
 
 
-```{r example_tibble, exercise=TRUE}
+```{r example_tibble}
 x <- tibble(
   col_a = c(3, -1, 0, 10),
-  col_b = c(2, -2, 2, -2),
+  col_b = c(2, -2, 2, -22),
   col_c = c(8, sqrt(131), log(4), 33),
   col_d = 1:4
 )
@@ -83,25 +78,25 @@ x
 Suppose we were interested in computing the mean of each column. One technique
 may be as follows.
  
-```{r pull_1, exercise=TRUE}
+```{r pull_1}
 x %>% 
   pull(1) %>% 
   mean()
 ```
  
-```{r pull_2, exercise=TRUE}
+```{r pull_2}
 x %>% 
   pull(2) %>% 
   mean()
 ```
 
-```{r pull_3, exercise=TRUE}
+```{r pull_3}
 x %>% 
   pull(3) %>% 
   mean()
 ```
 
-```{r pull_4, exercise=TRUE}
+```{r pull_4}
 x %>% 
   pull(4) %>% 
   mean()
@@ -144,12 +139,12 @@ we had 100, or 1,000, or even 10,000 columns? Data this large is not uncommon,
 and we certainly do not want to have 10,000 function calls of 
 `get_column_mean()` where the only variation is in the index.
 
+How can we reduce the code duplication even more?
+
 ## Iteration with `for` loops
 
 Looking back at our previous code, we see that the only variation is with
-regards to the column index in which we want to compute the mean. A `for` loop
-is one type of loop available in R that can easily automate our process and
-eliminate this duplication.
+regards to the column index in which we want to compute the mean.
 
 ```{r eval=FALSE}
 get_column_mean(data = x, index = 1)
@@ -158,9 +153,15 @@ get_column_mean(data = x, index = 3)
 get_column_mean(data = x, index = 4)
 ```
 
+A `for` loop
+is one type of loop available in R that can easily automate our process and
+eliminate this duplication.
+
 <div class="info">
 **Note!** R also has `while` and `repeat` loops. The `for` loop is the most
-common and is available in almost every programming language.
+common and is available in almost every programming language. More information
+on `while` loops can be found
+[here](https://r4ds.had.co.nz/iteration.html#unknown-sequence-length).
 </div>
 
 ### Syntax
@@ -173,9 +174,7 @@ saw in the last section.
 output <- numeric(ncol(x))  # output vector to store results, line 1
 
 for (i in seq_along(x)) {   # define our looping sequence, line 3
-  output[i] <- x  %>%       # code to iterate, lines 4 - 6
-    pull(i) %>% 
-    mean()
+  output[i] <- get_column_mean(data = x, index = i) # code to iterate
 }
 
 output
@@ -212,22 +211,16 @@ output
    The code is run repeatedly each time for a different value of `i`. The
    first time through we would have
    ```{r include=FALSE}
-   output[1] <- x %>% 
-    pull(1) %>% 
-    mean()
+   output[1] <- get_column_mean(data = x, index = 1)
    ```
    ```{r loop_body_1, exercise=TRUE}
-   output[1] <- x %>% 
-    pull(1) %>% 
-    mean()
+   output[1] <- get_column_mean(data = x, index = 1)
     
    output
    ```
    The second time through the loop we would have
    ```{r loop_body_2, exercise=TRUE}
-   output[2] <- x %>% 
-    pull(2) %>% 
-    mean()
+   output[2] <- get_column_mean(data = x, index = 2)
     
    output
    ``` 
@@ -237,7 +230,16 @@ output
    
 ### Exercise 1
 
-Compute the median of every column in `mtcars`
+Object `mtcars` is a data frame
+available in `base` R that comprises fuel consumption and 10 aspects of 
+automobile design and performance for 32 automobiles in models from 1973 - 1974.
+Below is a preview.
+
+```{r preview_mtcars}
+mtcars
+```
+
+Use a `for` loop to compute the median of every column in `mtcars`.
 
 ```{r ex1, exercise=TRUE}
 
@@ -258,7 +260,7 @@ result
 
 ### Exercise 2
 
-Compute the number of unique values in each column of the `planes` data frame
+Use a `for` loop to compute the number of unique values in each column of the `planes` data frame
 from the `nycflights13` package. Recall that this package has already been
 loaded.
    
@@ -286,24 +288,28 @@ This means that if you have a vector `x` with n elements and pass this
 vector into a vectorized function, the function will be applied to each
 element of `x`. For example:
 
-```{r vectorize_ex_1, exercise=TRUE}
+```{r include=FALSE}
 x <- -4:4
 x
+```
 
+```{r create_x, exercise=TRUE}
+x <- -4:4
+x
+```
+
+```{r vectorize_ex_1, exercise=TRUE}
 abs(x)
 ```
 
 ```{r vectorize_ex_2, exercise=TRUE}
-x <- -4:4
-x
-
 sqrt(abs(x))
 ```
 
-Although you could, using a `for` loop to do the above computations is not
+You could use a `for` loop to do the above computations, but this is not
 recommended. It is inefficient, and you will not be harnessing R's full power
 and functionality. Run the code below to verify you get the same answer
-as above.
+as above for taking the square root of the absolute value of `x`.
 
 ```{r bad_for_loop, exercise=TRUE}
 x <- -4:4
@@ -318,7 +324,7 @@ output
 
 To determine if you'll need a loop to tackle your task or not, first look at 
 the help for the functions you plan to work with to understand if they
-are vectorized or not. Most functions you apply to a flat vector will be
+are vectorized or not. Most functions you apply to a vector will be
 vectorized and a loop will not be required. If you need to apply a function to
 each column of a data frame or each component in a list, then you may need
 to accomplish that task with a `for` loop.
@@ -396,4 +402,4 @@ quiz(
 ## References
 
 1. Grolemund, G., & Wickham, H. (2020). 21 Iteration | R for Data Science. 
-   Retrieved from https://r4ds.had.co.nz/iteration.html
+   Retrieved from https://r4ds.had.co.nz/iteration.html.

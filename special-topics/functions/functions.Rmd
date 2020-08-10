@@ -3,8 +3,7 @@ title: "Functions"
 output: 
   learnr::tutorial:
     progressive: false
-    css: "css/tutorial.css"
-    theme: "sandstone"
+    theme: "cerulean"
     allow_skip: true
 runtime: shiny_prerendered
 ---
@@ -32,7 +31,7 @@ The ability to write and understand functions will elevate your skill set as a
 data scientist, statistician, and R programmer. By writing and using functions
 you can tackle one big problem by breaking it up into smaller key steps, where
 a set of functions you created is used to complete the 
-necessary tasks. Incorporating functions into your workflow will
+necessary tasks. Incorporating functions into your workflow will:
 
 - make your work more reproducible,
 - make your code more readable,
@@ -87,7 +86,7 @@ understand its arguments.
 ## Writing functions
 
 Functions in programming and data science are not unlike the mathematical
-functions you learned about in pre-calculus. Functions depend on a set of
+functions you learned about in previous courses. Functions depend on a set of
 inputs. You'll pass values into those inputs and based on the function's
 purpose it will generally return a result.
 
@@ -407,7 +406,7 @@ quiz(
 ## References
 
 1. Grolemund, G., & Wickham, H. (2020). 19 Functions | R for Data Science. 
-   Retrieved from https://r4ds.had.co.nz/functions.html
+   Retrieved from https://r4ds.had.co.nz/functions.html.
    
 2. Wickham, H. (2020). The tidyverse style guide. Retrieved from
-   https://style.tidyverse.org/
+   https://style.tidyverse.org/.
