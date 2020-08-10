@@ -21,7 +21,11 @@ library(patchwork)
 library(flair)
 ```
 
+## Introduction 
+
 In the [*Basics of ggplot*](Ggplot.html) tutorial, you learned the basics of `ggplot2`, the tidyverse's primary package for creating data visualizations. In this tutorial, we will focus on different ways you can customize your data visualizations. 
+
+### Learning objectives 
 
 By the end of this tutorial, you should be able to
 
@@ -155,11 +159,11 @@ decorate("aes-all") %>%
 1. Fill in the code below to create a scatterplot such that the shape of the points is based on the number of cylinders (`cyl`) and all points are a size 2.
 
 ```{r eval = F}
-ggplot(data = mtcars, aes(x = hp, y = mpg, _______)) +
-  geom_point(_______) +
+ggplot(data = mtcars, aes(x = hp, y = mpg, ___)) +
+  geom_point(___) +
   labs(x = "Horsepower", 
        y = "Miles per gallon",
-       ____________,
+       ___,
        title = "Horsepower vs. Miles per gallon")
 ```
 
@@ -167,11 +171,11 @@ ggplot(data = mtcars, aes(x = hp, y = mpg, _______)) +
 
 
 ```{r eval = F}
-ggplot(data = mtcars, aes(x = ___, y = ___, _______)) +
-  geom_point(_______) +
+ggplot(data = mtcars, aes(x = ___, y = ___, ___)) +
+  geom_point(___) +
   labs(x = "Horsepower", 
        y = "Miles per gallon",
-       __________,
+       ___,
        title = "Horsepower vs. Miles per gallon")
 ```
 
@@ -272,7 +276,7 @@ ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) +
        color = "Cylinder",
        title = "Horsepower vs. Miles per gallon",
        subtitle = "by Cylinder") + 
-  scale_color_brewer(palette = "______")
+  scale_color_brewer(palette = "___")
 ```
 
 
@@ -286,7 +290,7 @@ ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) +
        color = "Cylinder",
        title = "Horsepower vs. Miles per gallon",
        subtitle = "by Cylinder") + 
-  scale_colour_viridis(palette = "______")
+  scale_colour_viridis(palette = "___")
 ```
 
 

@@ -1514,7 +1514,11 @@ div.tocify {
 </div>
 
 
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
 <p>In the <a href="Ggplot.html"><em>Basics of ggplot</em></a> tutorial, you learned the basics of <code>ggplot2</code>, the tidyverse’s primary package for creating data visualizations. In this tutorial, we will focus on different ways you can customize your data visualizations.</p>
+<div id="learning-objectives" class="section level3">
+<h3>Learning objectives</h3>
 <p>By the end of this tutorial, you should be able to</p>
 <ul>
 <li>Add aesthetics to a plot</li>
@@ -1523,6 +1527,8 @@ div.tocify {
 <li>Apply a theme to a plot</li>
 <li>Arrange multiple plots in a grid</li>
 </ul>
+</div>
+</div>
 <div id="the-data" class="section level2">
 <h2>The Data</h2>
 <p>We will use the <code>mtcars</code> data set, which is automatically loaded when you open RStudio. The data is from the 1974 <em>Motor Trend</em> magazine, and it contains performance information and other specifications for 32 automobiles made in 1973 and 1974.</p>
@@ -1579,20 +1585,20 @@ div.tocify {
 <ol style="list-style-type: decimal">
 <li>Fill in the code below to create a scatterplot such that the shape of the points is based on the number of cylinders (<code>cyl</code>) and all points are a size 2.</li>
 </ol>
-<pre class="r"><code>ggplot(data = mtcars, aes(x = hp, y = mpg, _______)) +
-  geom_point(_______) +
+<pre class="r"><code>ggplot(data = mtcars, aes(x = hp, y = mpg, ___)) +
+  geom_point(___) +
   labs(x = &quot;Horsepower&quot;, 
        y = &quot;Miles per gallon&quot;,
-       ____________,
+       ___,
        title = &quot;Horsepower vs. Miles per gallon&quot;)</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Fill in the code below to create a scatterplot of miles per gallon versus horsepower such that all points have an alpha of 0.5 and the size is determined by the number of forward gears (<code>gear</code>).</li>
 </ol>
-<pre class="r"><code>ggplot(data = mtcars, aes(x = ___, y = ___, _______)) +
-  geom_point(_______) +
+<pre class="r"><code>ggplot(data = mtcars, aes(x = ___, y = ___, ___)) +
+  geom_point(___) +
   labs(x = &quot;Horsepower&quot;, 
        y = &quot;Miles per gallon&quot;,
-       __________,
+       ___,
        title = &quot;Horsepower vs. Miles per gallon&quot;)</code></pre>
 </div>
 </div>
@@ -1635,7 +1641,7 @@ div.tocify {
        color = &quot;Cylinder&quot;,
        title = &quot;Horsepower vs. Miles per gallon&quot;,
        subtitle = &quot;by Cylinder&quot;) + 
-  scale_color_brewer(palette = &quot;______&quot;)</code></pre>
+  scale_color_brewer(palette = &quot;___&quot;)</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Fill in the code below to try different palettes available in the [<code>scale_color_viridis</code>] (<a href="https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/" class="uri">https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/</a>) function.</li>
 </ol>
@@ -1646,7 +1652,7 @@ div.tocify {
        color = &quot;Cylinder&quot;,
        title = &quot;Horsepower vs. Miles per gallon&quot;,
        subtitle = &quot;by Cylinder&quot;) + 
-  scale_colour_viridis(palette = &quot;______&quot;)</code></pre>
+  scale_colour_viridis(palette = &quot;___&quot;)</code></pre>
 </div>
 </div>
 <div id="themes" class="section level2">
