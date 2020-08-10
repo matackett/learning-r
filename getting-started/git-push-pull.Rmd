@@ -82,7 +82,7 @@ knitr::include_graphics("push-pull-img/git-pane.png")
 knitr::include_graphics("push-pull-img/commit-message.png")
 ```
 
-5. If you're happy the changes, write an informative commit message in the Commit message box. The commit message is a brief description of the changes that were made. In this case we will write the message "Update author name". 
+5. If you're happy with the changes, write an informative commit message in the Commit message box. The commit message is a brief description of the changes that were made. In this case we will write the message "Update author name". 
 
 6. Click *Commit*.
 
@@ -90,7 +90,7 @@ You don't have to commit after every change, as this would get quite cumbersome.
 
 ### Push
 
-Now that you have made an update and committed this change, it's time to **push** these changes to the web. Or more specifically, to your repo on GitHub. Why? So that others can see your changes. In the context of class, we mean the teaching team. (Your repos in this course are private and can only be seen by you and the teaching team.)
+Now that you have made an update and committed this change, it's time to **push** these changes to the web. Or more specifically, to your repo on GitHub. Why? So that others can see your changes. In the context of class, we mean the teaching team. (Your repos in this course are private and can only be seen by you and the teaching team.) In the context of a research project or internship, you may be collaborating with others on analysis;  pushing your changes to the GitHub repo will be the primary way you share your updates with your collaborators.
 
 To push your changes to GitHub, click *Push* in the Commit message box from earlier.
 
@@ -111,6 +111,11 @@ To update the local repo, click the **Pull** button in the Git pane. You will no
 **Tip: When you're with multiple people in a single GitHub repo, you should always <i>pull</i> before adding new work. This will ensure you are starting with the most up-to-date version of the team's analysis, and it will help you avoid merge conflicts.**
 
 <br> 
+
+## Resources
+
+[*Happy Git and GitHub for the R User*](https://happygitwithr.com/) by Jenny Bryan, the STAT 545 TAs, and Jim Hester
+
 
 ## Acknowledgements
 

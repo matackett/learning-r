@@ -54,10 +54,13 @@ As you begin to use GitHub more, you may also come across terms describing more 
 | gh-pages | Special branch which allows creation of a webpage from within GitHub        |
 | GitHub actions | Mechanism for continuous integration |
 
+## Register for a GitHub account
+
+If you do not have a GitHub account, you can register for a new account at http://github.com. Your GitHub repo will contain examples of your work that can be shared as you apply for internships and jobs, so choose a username that you are willing to share with future employers. Also consider a username that will still be relevant after your statistics class (e.g. don't use Stat101Student2020 as your username `r emo::ji('upside_down_face')`). See [Username Advice](https://happygitwithr.com/github-acct.html) in *Happy Git and GitHub for the R User* for more tips on choosing a GitHub username. 
 
 ## Clone a GitHub repo
 
-Most of your assignments will be done using GitHub and RStudio. You'll begin with a starter repo on GitHub (mostly likely provided by your instructor) that contains templates and other materials needed to complete the assignment. You'll conduct your analysis and type your responses in RStudio and "push" the updates back to the repo on GitHub. In this tutorial, we will focus on the steps to get started on an assignment - specifically cloning a repo and starting a new project in RStudio.
+Most of your assignments will be done using GitHub and RStudio. You'll begin with a starter repo on GitHub (most likely provided by your instructor) that contains templates and other materials needed to complete the assignment. You'll conduct your analysis and type your responses in RStudio and "push" the updates back to the repo on GitHub. In this tutorial, we will focus on the steps to get started on an assignment - specifically cloning a repo and starting a new project in RStudio.
 
 We'll use the [example-assignment repo](https://github.com/DukeStatSci/example-assignment) in the [DukeStatSci GitHub organization](https://github.com/DukeStatSci) for this tutorial. You can use this repo to practice the steps in this tutorial; however, note that you **<u>cannot</u>** push to the repo (we'll talk more about pushing in the next tutorial). 
 
@@ -143,6 +146,10 @@ git config --global credential.helper 'cache --timeout 604800'
 ```
 
 This will cache your password for 604800 seconds, i.e. 7 days (60 * 60 * 24 * 7 = 604800). This is generally enough time to complete a lab or homework assignment. You can increase the number of seconds for longer assignments, such as a project that lasts several weeks.
+
+## Resources
+
+[*Happy Git and GitHub for the R User*](https://happygitwithr.com/) by Jenny Bryan, the STAT 545 TAs, and Jim Hester
 
 
 ## Acknowledgements
