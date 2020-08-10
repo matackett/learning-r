@@ -30,7 +30,7 @@ By the end of this tutorial, you will be able to
 
 ## Terminology
 
-Below are terms that are commonly used when talking about GitHub.^[Definitions from Beckman, M., &Ccedil;etinkaya-Rundel, M., Horton, N., Rundel, C., Sullivan, A., Tackett, M. *Implementing version control with Git as a learning objective in statistics courses.* [arxiv.org/abs/2001.01988](https://arxiv.org/abs/2001.01988).] 
+Below are terms that are commonly used when talking about GitHub.^[Definitions from Beckman, M., &Ccedil;etinkaya-Rundel, M., Horton, N., Rundel, C., Sullivan, A., & Tackett, M. *Implementing version control with Git as a learning objective in statistics courses.* [arxiv.org/abs/2001.01988](https://arxiv.org/abs/2001.01988).] 
 
 | Term   | Definition |
 |--------|------------|

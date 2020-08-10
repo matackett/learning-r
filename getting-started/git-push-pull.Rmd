@@ -7,6 +7,7 @@ output:
     toc: true
     toc_float: true
     fig_height: 10
+    theme: cerulean
 ---
 
 ```{r setup, include=FALSE}
@@ -16,7 +17,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       fig.align = "center")
 ```
 
-In the tutorial Getting Started with GitHub: Clone Repo + Start New RStudio Project [ADD LINK], you learned how to clone a repo and start a new project in RStudio. In this tutorial, we'll talk about how to pass updated files between RStudio and GitHub as you work on your analysis. 
+In the tutorial [Getting Started with GitHub: Clone Repo + Start New RStudio Project](clone-new-project.html), you learned how to clone a repo and start a new project in RStudio. In this tutorial, we'll talk about how to pass updated files between RStudio and GitHub as you work on your analysis. 
 
 By the end of this tutorial, you will be able to 
 
@@ -27,7 +28,7 @@ By the end of this tutorial, you will be able to
 
 ## Terms
 
-Below are terms that are commonly used to describe the set up and actions when using GitHub.^[Definitions from Beckman, M., C¸ etinkaya-Rundel M., Horton, N., Rundel, C., Sullivan, A., Tackett, M. *Implementing version control with Git as a learning objective in statistics courses.* [arxiv.org/abs/2001.01988](https://arxiv.org/abs/2001.01988).] 
+Below are terms that are commonly used to describe the set up and actions when using GitHub.^[Definitions from Beckman, M., &Ccedil;etinkaya-Rundel, M., Horton, N., Rundel, C., Sullivan, A.,& Tackett, M. *Implementing version control with Git as a learning objective in statistics courses.* [arxiv.org/abs/2001.01988](https://arxiv.org/abs/2001.01988).] 
 
 | Term   | Definition |
 |--------|------------|
@@ -47,7 +48,7 @@ As you begin to use GitHub more, you may also come across terms describing more 
 |--------|------------|
 | forking   | Create a copy of a repository in your local profile |
 | pull request | Submit changes to a remote repo       |
-| branching | Keeping multiple snapshot of a repo |
+| branching | Keeping multiple snapshots of a repo |
 | gh-pages | Special branch which allows creation of a webpage from within GitHub        |
 | GitHub actions | Mechanism for continuous integration |
 
@@ -95,7 +96,11 @@ To push your changes to GitHub, click *Push* in the Commit message box from earl
 
 Make sure you push all the files from the *Git* pane to your assignment repo on GitHub. In other words, the Git pane should be empty after you push. If it's not empty, click the box next to the remaining files, write an informative commit message, and push.
 
-You can now go to your repo repo on GitHub and see the updates!
+You can now go to your repo on GitHub and see the updates!
+
+```{r}
+knitr::include_graphics("push-pull-img/updated-repo.png")
+```
 
 ## Pull 
 
@@ -109,4 +114,4 @@ To update the local repo, click the **Pull** button in the Git pane. You will no
 
 ## Acknowledgements
 
-The instructions from this tutorial were adapted from labs in [Data Science in a Box](https://datasciencebox.org/) by Mine Çetinkaya-Rundel.
+The instructions from this tutorial were adapted from labs in [Data Science in a Box](https://datasciencebox.org/) by Mine &Ccedil;etinkaya-Rundel.
