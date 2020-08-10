@@ -134,6 +134,5 @@ Using k-nearest neighbors,
 - Penguin 2 is predicted to be in the Adelie species. 
 - Penguin 3 is predicted to be in the Chinstrap species.
 
-## Resources
 
 
