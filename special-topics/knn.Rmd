@@ -17,11 +17,11 @@ library(tidyverse)
 
 By the end of this tutorial, you be able to:
 
-- Use R to conduct k-nearest neighbor
+- Use R to conduct k-nearest neighbors
 
 ## The Data
 
-For this tutorial, we are using the `penguins` dataset from the [`palmerpenguins` R package](https://allisonhorst.github.io/palmerpenguins/index.html) maintained by Dr. Allison Horst. This data contains measurements and other characteristics for 344 penguins observed near Palmer Station Antarctica. The data were originally collected by Dr. Kristen Gorman. Click [here](https://allisonhorst.github.io/palmerpenguins/reference/penguins.html) to view the codebook for this data set.
+For this tutorial, we are using the `penguins` data set from the [`palmerpenguins` R package](https://allisonhorst.github.io/palmerpenguins/index.html) maintained by Dr. Allison Horst. This data contains measurements and other characteristics for 344 penguins observed near Palmer Station Antarctica. The data were originally collected by Dr. Kristen Gorman. Click [here](https://allisonhorst.github.io/palmerpenguins/reference/penguins.html) to view the codebook for this data set.
 
 Let's start by loading the palmerpenguins R package. 
 ```{r}
@@ -42,7 +42,7 @@ penguins <- penguins %>%
 
 ## Exploratory data analysis
 
-We will use k-nearest neighbor to classify the penguins into three groups based on their measurements (more about this later). Before performing the classification, let's do a brief exploratory data analysis to take a look at the data. 
+We will use k-nearest neighbors to classify the penguins into three groups based on their measurements (more about this later). Before performing the classification, let's do a brief exploratory data analysis to take a look at the data. 
 
 We will use `body_mass_g`, `bill_length_mm`, `bill_depth_mm`, and `flipper_length_mm` to classify the penguins, so we'll focus on these variables. 
 
@@ -62,7 +62,7 @@ penguins %>%
           aes(color = species))
 ```
 
-## k-nearest neighbor
+## k-nearest neighbors
 
 Suppose we have the measurements for 3 new penguins but we don't know their species. We can use k-nearest neighbors to predict the class for the new penguins by taking the plurality vote of its *k* nearest neighbors in terms of their class (species) memberships.
 
@@ -93,7 +93,7 @@ species <- penguins %>%
   pull()
 ```
 
-We will also create a new data frame that only contains the measurements we're using for the k-nearest neighbor. By using the `ends_with` option in the `select` function, we can select `bill_length_mm`, `bill_depth_mm`, and `flipper_length_mm` without typing each variable name individually.
+We will also create a new data frame that only contains the measurements we're using for the k-nearest neighbors. By using the `ends_with` option in the `select` function, we can select `bill_length_mm`, `bill_depth_mm`, and `flipper_length_mm` without typing each variable name individually.
 
 ```{r}
 penguins_knn <- penguins %>%
@@ -102,7 +102,7 @@ penguins_knn <- penguins %>%
 
 ### Choosing *k*
 
-Now we're ready to perform k-nearest neighbor. Since we know there are three species of penguins in the data set, we will set `k = 3` to specify there are three classes. Sometimes it is not as clear what $k$ should be, so you will have to use your judgment along with the context of the analysis question to choose a value of $k$. Here are a few considerations when using $k$: 
+Now we're ready to perform k-nearest neighbors. Since we know there are three species of penguins in the data set, we will set `k = 3` to specify there are three classes. Sometimes it is not as clear what $k$ should be, so you will have to use your judgment along with the context of the analysis question to choose a value of $k$. Here are a few considerations when using $k$: 
 
 - A larger value of $k$ reduces variance, but is computationally expensive and makes class boundaries harder to distinguish.
 
@@ -119,8 +119,21 @@ Now let's use the `knn` function in R to classify the new penguins.
 ```{r}
 library(class)
 
-knn_species <- knn(penguins_knn, new_penguins, species, k = 3, prob = FALSE)
+knn_species <- knn(train = penguins_knn, test = new_penguins, cl = species, k = 3, prob = FALSE)
 ```
+
+The `knn` function has the following arguments: 
+
+- `train`: This is the data frame of training set cases, i.e. the data from the `penguins` data set in our example. The training data set should **<u>only</u>** include the variables that will be used to classify observations. In our example, these variables are `body_mass_g`, `bill_length_mm`, `bill_depth_mm`, and `flipper_length_mm`.
+- `test`: This is the data frame of test set cases, i.e. the data frame containing the three new penguins in our example. Similar to the training data frame, the test data frame should only include the variables used for classification.
+- `cl`: A vector of true class labels.
+- `k`: Number of classes
+
+Optional arguments are 
+
+- `prob`: If it's true, the "votes" for the winning class are returned as the `prob` attribute. We'll set it to `FALSE` for our example. 
+- `use.all`: This decides how R will handle ties. If it's true, the all distances equal to the $k^{th}$ largest are used. Otherwise, a random selection of distances equal to the $k^{th}$ largest are used.
+
 
 We assign the function output to the object `knn_species`. This is a vector of the predicted species for our three new penguins. 
 
@@ -134,5 +147,9 @@ Using k-nearest neighbors,
 - Penguin 2 is predicted to be in the Adelie species. 
 - Penguin 3 is predicted to be in the Chinstrap species.
 
+## Resources 
+
+- [K-Nearest Neighbors Algorithm with Examples in R (Simply Explained knn)](https://towardsdatascience.com/k-nearest-neighbors-algorithm-with-examples-in-r-simply-explained-knn-1f2c88da405c)
+- "K-Nearest Neighbors" in [Introduction to Statistical Learning](https://faculty.marshall.usc.edu/gareth-james/ISL/ISLR%20Seventh%20Printing.pdf) by Gareth James, Daniela Witten, Trevor Hasties, Robert Tibshirani, pg. 39 - 42.  
 
 
