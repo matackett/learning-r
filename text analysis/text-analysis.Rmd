@@ -3,34 +3,19 @@ title: "Text analysis"
 author: ""
 date: "Duke University"
 output:
-  xaringan::moon_reader:
-    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
-    css: "sta199-slides.css"
-    lib_dir: libs
-    nature: 
-      highlightLines: true
-      highlightStyle: github
-      countIncrementalSlides: false
+  html_document:
+    theme: cerulean
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,
-                      dpi=300,
-                      fig.height = 3,
-                      fig.width = 5
-)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
+## Tidy text
 
-class: center, middle
-
-# Tidytext analysis
-
----
-
-#### Packages
-
-In addition to `tidyverse` we will be using a few other packages today
+This document introduces how to perform some basic text manipulation and
+visualization using tidy principles in R. In addition to the `tidyverse`, we 
+will also be using a few other packages today:
 
 ```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -38,18 +23,12 @@ library(tidytext)
 library(genius) # https://github.com/JosiahParry/genius
 ```
 
----
+Using tidy data principles can make many text mining tasks easier, more 
+effective, and consistent with tools already in wide use. Learn more at
+https://www.tidytextmining.com/.
 
-### Tidytext
-
-- Using tidy data principles can make many text mining tasks easier, more 
-effective, and consistent with tools already in wide use.
-
-- Learn more at https://www.tidytextmining.com/.
-
----
-
-### What is tidy text?
+What is tidy text? Suppose we have some song lyrics given in the `text` object
+as below. 
 
 ```{r, message=FALSE, warning=FALSE}
 text <- c("On your mark ready set let's go", 
@@ -63,9 +42,8 @@ text <- c("On your mark ready set let's go",
 text
 ```
 
----
-
-### What is tidy text?
+Tidy data must have observations given by rows, and variables given by columns.
+Compare the former output to the output below:
 
 ```{r, message=FALSE, warning=FALSE}
 text_df <- tibble(line = 1:7, text = text)
@@ -73,63 +51,46 @@ text_df <- tibble(line = 1:7, text = text)
 text_df
 ```
 
----
-
-### What is tidy text?
+Text data often contains **tokens**, which are the individual units of "meaning"
+in text data. Suppose we are interested in individual words. We can obtain the
+tokens from our text by using the `unnest_tokens` function in the `tidytext`
+package:
 
 ```{r, message=FALSE, warning=FALSE}
 text_df %>%
   unnest_tokens(word, text)
 ```
 
----
-
-### Let's get some data
+## Today's data
 
 We'll use the `genius` package to get song lyric data from [Genius](https://genius.com/).
+`genius_album()` allows you to download the lyrics for an entire album in a 
+tidy format:
 
-- `genius_album()` allows you to download the lyrics for an entire album in a 
-tidy format. 
-
-- Input: Two arguments: artist and album. Supply the quoted name of artist 
-and the album (if it gives you issues check that you have the album name and 
-artists as specified on [Genius](https://genius.com/)).
+- Input: Two arguments: artist and album. Supply the name of the artist and the 
+album as listed on [Genius](https://genius.com/) (if it gives you issues check 
+that you have the album name and artists specified correctly!).
 
 - Output: A tidy data frame with three columns corresponding to the track name, 
 the track number, and lyrics
+
+Today, we will be working with Ariana Grande's album *thank u, next* and The 
+National's album *I Am Easy to Find*.
+
+Let's pull some album data using the `genius` package, and save the data frames
+for later.
 
 ```{r, message = F, warning = F, cache=TRUE}
 ariana <- genius_album(
   artist = "Ariana Grande", 
   album = "thank you, next"
-  )
+  ) 
 
 national <- genius_album(
   artist = "The National",
   album = "I Am Easy to Find"
 )
-```
 
----
-
-### Ariana Grande vs. The National
-
-.pull-left[
-```{r, echo=FALSE,out.width = '90%'} 
-knitr::include_graphics("img/ariana.png")
-```
-]
-
-.pull-right[
-```{r, echo=FALSE,out.width = '90%'} 
-knitr::include_graphics("img/national.png")
-```
-]
----
-
-### Save for later
-
-```{r, message = F, warning = F}
 ariana <- ariana  %>% 
   mutate(
   artist = "Ariana Grande", 
@@ -144,31 +105,17 @@ national <- national %>%
 
 ```
 
+What songs are in the albums?
 
----
-
-### What songs are in the album?
-<small>
 ```{r, message = F, warning = F}
 ariana %>%
   distinct(track_title)
-```
-</small>
 
----
-
-### What songs are in the album?
-<small>
-```{r, message = F, warning = F}
 national %>%
   distinct(track_title)
 ```
 
-</small>
-
----
-
-### Tidy up your lyrics!
+Now let's tidy up the lyrics!
 
 ```{r, message = F, warning = F}
 ariana_lyrics <- ariana %>%
@@ -178,92 +125,52 @@ national_lyrics <- national %>%
   unnest_tokens(word, lyric)
 ```
 
----
+What are the most common words?
 
-### What are the most common words?
-
-.pull-left[
 ```{r, message = F, warning = F}
 ariana_lyrics %>%
   count(word) %>%
   arrange(desc(n))
 ```
-]
 
-.pull-right[
 ```{r, message = F, warning = F}
 national_lyrics %>%
   count(word) %>%
   arrange(desc(n))
 ```
-]
 
----
 
-### Stop words
+## Stop words
 
-- In computing, stop words are words which are filtered out before or after 
-processing of natural language data (text).
-
-- They usually refer to the most common words in a language, but there is not a 
-single list of stop words used by all natural language processing tools.
-
-See `?get_stopwords` for more info.
+In computing, stop words are words which are filtered out before or after 
+processing of natural language data (text). They usually refer to the most 
+common words in a language, but there is not asingle list of stop words used by 
+all natural language processing tools. See `?get_stopwords` for more info.
 
 ```{r, message = F, warning = F}
 get_stopwords(source = "smart")
 ```
 
----
-
-### What are the most common words?
+Let's ignore stop words when looking at the most common words used by Ariana
+Grade and The National. What differences do you notice?
 
 ```{r, message = F, warning = F}
 stopwords <- get_stopwords(source = "smart") %>% 
   select(word) %>% 
   pull()
-```
 
-.pull-left[
-```{r, message = F, warning = F}
 ariana_lyrics %>%
   filter(!(word %in% stopwords)) %>%
   count(word) %>%
   arrange(desc(n))
-```
-]
 
-.pull-right[
-```{r, message = F, warning = F}
-ariana_lyrics %>%
+national_lyrics %>%
   filter(!(word %in% stopwords)) %>%
   count(word) %>%
   arrange(desc(n))
 ```
-]
 
----
-
-### What are the most common words?
-
-```{r, eval=FALSE}
-ariana_lyrics %>%
-  anti_join(get_stopwords(source = "smart")) %>%
-  count(word) %>%
-  arrange(desc(n)) %>%
-  top_n(20) %>%
-  ggplot(aes(fct_reorder(word, n), n)) +
-    geom_col() +
-    coord_flip() + 
-    theme_minimal() +
-    labs(title = "Frequency of 'thank u, next' lyrics",
-         y = "",
-         x = "")
-```
-
----
-
-### What are the most common words?
+Let's visualize these word frequencies:
 
 ```{r, echo=FALSE, message=FALSE, fig.height = 7, fig.width = 11}
 ariana_lyrics %>%
@@ -278,14 +185,7 @@ ariana_lyrics %>%
     labs(title = "Frequency of 'thank u, next' lyrics",
          y = "",
          x = "")
-```
 
-
----
-
-### What are the most common words?
-
-```{r, echo=FALSE, message=FALSE, fig.height = 7, fig.width = 11}
 national_lyrics %>%
   anti_join(get_stopwords(source = "smart")) %>%
   count(word) %>%
@@ -300,94 +200,41 @@ national_lyrics %>%
          x = "")
 ```
 
----
+## Sentiment analysis
 
-### Sentiment analysis
+One way to analyze the sentiment of a text is to consider the text as a 
+combination of its individual words The sentiment content of the whole text is 
+the sum of the sentiments of the individual words The sentiment attached to each 
+word is given by a **lexicon**, which may be downloaded from external sources.
+Let's take a look at a few exapmles:
 
-- One way to analyze the sentiment of a text is to consider the text as a 
-combination of its individual words 
 
-- The sentiment content of the whole text as the sum of the sentiment content of
-the individual words
-
-- The sentiment attached to each word is given by a *lexicon*, which may be 
-downloaded from external sources
-
----
-
-### Sentiment lexicons
-
-.pull-left[
 ```{r}
 get_sentiments("afinn")
 ```
-]
-.pull-right[
+
 ```{r}
 get_sentiments("bing") 
 ```
-]
 
----
-
-### Sentiment lexicons
-
-.pull-left[
 ```{r}
 get_sentiments("nrc")
 ```
-]
-.pull-right[
+
 ```{r}
 get_sentiments("loughran") 
 ```
-]
 
----
+A few words of caution: not every word is in a lexicon! As well, lexicons do not 
+account for qualifiers before a word (e.g., "not happy") because they were 
+constructed for one-word tokens only. Finally, summing up each word's sentiment 
+may result in a neutral sentiment, even if there are strong positive and 
+negative sentiments in the body.
 
-### Notes about sentiment lexicons
-
-- Not every word is in a lexicon!
+Let's visualize the sentiments in the lyrics between the two groups. What do
+you notice?
 
 ```{r}
-get_sentiments("bing") %>% 
-  filter(word == "data")
-```
-
-- Lexicons do not account for qualifiers before a word (e.g., "not happy") 
-because they were constructed for one-word tokens only
-
-- Summing up each word's sentiment may result in a neutral sentiment, even if 
-there are strong positive and negative sentiments in the body
-
----
-
-### Sentiments in lyrics
-
-
-.pull-left[
-```{r, message = F, warning = F}
-ariana_lyrics %>%
-  inner_join(get_sentiments("bing")) %>%
-  count(sentiment, word) %>%
-  arrange(desc(n))
-```
-]
-
-.pull-right[
-```{r, message = F, warning = F}
-national_lyrics %>%
-  inner_join(get_sentiments("bing")) %>%
-  count(sentiment, word) %>%
-  arrange(desc(n))
-```
-]
-
----
-
-### Visualizing sentiments
-
-```{r, eval=FALSE}
 ariana_lyrics %>%
   inner_join(get_sentiments("bing")) %>%
   count(sentiment, word) %>%
@@ -402,34 +249,7 @@ ariana_lyrics %>%
     theme_minimal() +
     labs(title = "Sentiments in Ariana Lyrics",
          x = "")
-```
 
----
-
-### Visualizing sentiments
-
-```{r, echo=FALSE, message=FALSE, fig.height = 7, fig.width = 11}
-ariana_lyrics %>%
-  inner_join(get_sentiments("bing")) %>%
-  count(sentiment, word) %>%
-  arrange(desc(n)) %>%
-  group_by(sentiment) %>%
-  top_n(10) %>%
-  ungroup() %>%
-  ggplot(aes(fct_reorder(word, n), n, fill = sentiment)) +
-    geom_col() +
-    coord_flip() +
-    facet_wrap(~ sentiment, scales = "free_y") +
-    theme_minimal() +
-    labs(title = "Sentiments in Ariana Lyrics",
-         x = "")
-```
-
----
-
-### Visualizing sentiments
-
-```{r, echo=FALSE, message=FALSE, fig.height = 7, fig.width = 11}
 national_lyrics %>%
   inner_join(get_sentiments("bing")) %>%
   count(sentiment, word) %>%
@@ -446,53 +266,10 @@ national_lyrics %>%
          x = "")
 ```
 
----
+And finally, let's create a visualization comparing relative frequency between
+the two artists on their albums:
 
-### Ariana word cloud
-
-```{r, eval = F}
-library(wordcloud)
-set.seed(12345)
-
-ariana_lyrics %>%
-  anti_join(stop_words) %>%
-  count(word) %>%
-  with(wordcloud(word, n, max.words = 100))
-```
-
----
-
-### Ariana word cloud
-
-```{r, echo = F, warning = F, message = F}
-library(wordcloud)
-set.seed(12345)
-
-ariana_lyrics %>%
-  anti_join(stop_words) %>%
-  count(word) %>%
-  with(wordcloud(word, n, max.words = 100))
-```
-
----
-
-### The National word cloud
-
-```{r, echo = F, warning = F, message = F}
-library(wordcloud)
-set.seed(12345)
-
-national_lyrics %>%
-  anti_join(stop_words) %>%
-  count(word) %>%
-  with(wordcloud(word, n, max.words = 100))
-```
-
----
-
-### Word frequencies, Ariana vs. The National
-
-```{r, eval = F}
+```{r}
 # combine the lyrics, calculate frequencies
 combined <- bind_rows(ariana_lyrics, national_lyrics) %>%
   anti_join(get_stopwords(source = "smart")) %>% 
@@ -512,36 +289,3 @@ ggplot(combined, aes(x = `Ariana Grande`, y = `The National`))+
   scale_y_log10()+
   geom_abline(color = "blue")
 ```
-
----
-
-
-### Word frequencies, Ariana vs. The National
-
-```{r, echo = F, warning = F, message = F, fig.height = 7, fig.width = 11}
-# combine the lyrics, calculate frequencies
-combined <- bind_rows(ariana_lyrics, national_lyrics) %>%
-  anti_join(get_stopwords(source = "smart")) %>% 
-  group_by(artist) %>% 
-  count(word, sort = T) %>% 
-  mutate(freq = n / sum(n)) %>% 
-  select(artist, word, freq) %>% 
-  spread(artist, freq)
-
-# make into nice plot
-
-ggplot(combined, aes(x = `Ariana Grande`, y = `The National`))+
-  # hide discreteness
-  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
-  geom_text(aes(label = word), check_overlap = T, vjust = 1.5)+
-  scale_x_log10()+
-  scale_y_log10()+
-  geom_abline(color = "blue")
-```
-
----
-
-### On your own
-
-Application Exercise, available at
-[https://classroom.github.com/a/hPdnIAFI](https://classroom.github.com/a/hPdnIAFI)
