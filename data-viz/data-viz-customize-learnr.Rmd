@@ -1,11 +1,11 @@
 ---
 title: "Customizing Data Visualizations"
-author: ""
 output: 
-  html_document:
-    toc: true
-    toc_float: true
-    theme: cerulean
+  learnr::tutorial:
+    progressive: false
+    theme: "cerulean"
+    allow_skip: true
+runtime: shiny_prerenderedd
 ---
 
 ```{r setup, include=FALSE}
@@ -13,6 +13,10 @@ knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE, 
                       message = FALSE, 
                       fig.align = "center")
+library(tidyverse)
+library(patchwork)
+library(ggthemes)
+library(viridis) 
 ```
 
 ```{r load-packages, echo = F}
@@ -154,7 +158,7 @@ decorate("aes-all") %>%
 
 1. Fill in the code below to create a scatterplot such that the shape of the points is based on the number of cylinders (`cyl`) and all points are a size 2.
 
-```{r eval = F}
+```{r exercise = TRUE}
 ggplot(data = mtcars, aes(x = hp, y = mpg, _______)) +
   geom_point(_______) +
   labs(x = "Horsepower", 
@@ -166,7 +170,7 @@ ggplot(data = mtcars, aes(x = hp, y = mpg, _______)) +
 2. Fill in the code below to create a scatterplot of miles per gallon versus horsepower such that all points have an alpha of 0.5 and the size is determined by the number of forward gears (`gear`).
 
 
-```{r eval = F}
+```{r exercise = TRUE}
 ggplot(data = mtcars, aes(x = ___, y = ___, _______)) +
   geom_point(_______) +
   labs(x = "Horsepower", 
@@ -264,7 +268,7 @@ Click [here](https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-
 
 1. Fill in the code below to try different color palettes available in [RColorBrewer](https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html).
 
-```{r eval = F}
+```{r exercise = TRUE}
 ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) + 
   geom_point() +
   labs(x = "Horsepower", 
@@ -278,7 +282,7 @@ ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) +
 
 2. Fill in the code below to try different palettes available in the [`scale_color_viridis`] (https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/) function.
 
-```{r eval = F}
+```{r exercise = TRUE}
 ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) + 
   geom_point() +
   labs(x = "Horsepower", 
@@ -387,6 +391,15 @@ decorate("ggthemes") %>%
 
 Apply a new theme to a plot of your choice. You can create your own plot or use code from one of the plots in this tutorial. Try a few different themes - from `ggplot2` and from `ggthemes`. 
 
+```{r exercise = TRUE}
+#create a plot using a theme from ggplot2
+```
+
+```{r exercise = TRUE}
+# create a plot using a theme from ggthemes
+library(ggthemes)
+
+```
 ### Patchwork 
 
 Sometimes we want to organize multiple plots in a grid to more neatly format them in a write up or presentation. This can be especially helpful if you have a lot of plots to display (for example, when doing exploratory data analysis). 
@@ -460,10 +473,14 @@ Use the patchwork function to arrange `p1`, `p2`, and `p3` in the following conf
 p1 / (p2 + p3)
 ```
 
+```{r exercise = TRUE}
+library(patchwork)
+
+```
+
 ## Resources
 
 - https://ggplot2.tidyverse.org/
 - https://patchwork.data-imaginist.com/index.html
 - [R for Data Science: Data visualization](https://r4ds.had.co.nz/data-visualisation.html)
 - [ggplot2: Elegant Graphics for Data Analysis](ggplot2: Elegant Graphics for Data Analysis)
-
