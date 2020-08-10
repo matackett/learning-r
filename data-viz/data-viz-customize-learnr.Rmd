@@ -2,7 +2,7 @@
 title: "Customizing Data Visualizations"
 output: 
   learnr::tutorial:
-    progressive: false
+    progressive: true
     theme: "cerulean"
     allow_skip: true
 runtime: shiny_prerenderedd
@@ -158,9 +158,9 @@ decorate("aes-all") %>%
 
 1. Fill in the code below to create a scatterplot such that the shape of the points is based on the number of cylinders (`cyl`) and all points are a size 2.
 
-```{r exercise = TRUE}
-ggplot(data = mtcars, aes(x = hp, y = mpg, _______)) +
-  geom_point(_______) +
+```{r ex1, exercise = TRUE}
+ggplot(data = mtcars, aes(x = hp, y = mpg,_____)) +
+  geom_point(_____) +
   labs(x = "Horsepower", 
        y = "Miles per gallon",
        ____________,
@@ -170,7 +170,7 @@ ggplot(data = mtcars, aes(x = hp, y = mpg, _______)) +
 2. Fill in the code below to create a scatterplot of miles per gallon versus horsepower such that all points have an alpha of 0.5 and the size is determined by the number of forward gears (`gear`).
 
 
-```{r exercise = TRUE}
+```{r ex2, exercise = TRUE}
 ggplot(data = mtcars, aes(x = ___, y = ___, _______)) +
   geom_point(_______) +
   labs(x = "Horsepower", 
