@@ -2,10 +2,10 @@
 title: "Customizing Data Visualizations"
 output: 
   learnr::tutorial:
-    progressive: true
+    progressive: false
     theme: "cerulean"
     allow_skip: true
-runtime: shiny_prerenderedd
+runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
@@ -13,19 +13,31 @@ knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE, 
                       message = FALSE, 
                       fig.align = "center")
+library(learnr)
 library(tidyverse)
 library(patchwork)
 library(ggthemes)
 library(viridis) 
+library(gradethis)
+library(flair)
+
+tutorial_options(
+  exercise.timelimit = 30
+)
+
+mtcars <- mtcars %>%
+  mutate(am = factor(am),
+         cyl = factor(cyl), 
+         vs = factor(vs))
 ```
 
-```{r load-packages, echo = F}
-library(tidyverse)
-library(patchwork)
-library(flair)
-```
+## Introduction
+
+---
 
 In the [*Basics of ggplot*](Ggplot.html) tutorial, you learned the basics of `ggplot2`, the tidyverse's primary package for creating data visualizations. In this tutorial, we will focus on different ways you can customize your data visualizations. 
+
+### Learning Objectives 
 
 By the end of this tutorial, you should be able to
 
@@ -56,7 +68,7 @@ mtcars <- mtcars %>%
 
 We create data visualizations using the `ggplot2` package. It is one of the core `tidyverse` packages, so it loads automatically when we run the code below.
 
-```{r}
+```{r eval = F}
 library(tidyverse)
 ```
 
@@ -158,24 +170,24 @@ decorate("aes-all") %>%
 
 1. Fill in the code below to create a scatterplot such that the shape of the points is based on the number of cylinders (`cyl`) and all points are a size 2.
 
-```{r ex1, exercise = TRUE}
-ggplot(data = mtcars, aes(x = hp, y = mpg,_____)) +
-  geom_point(_____) +
+```{r ex1, exercise=TRUE}
+ggplot(data = mtcars, aes(x = hp, y = mpg,___)) +
+  geom_point(___) +
   labs(x = "Horsepower", 
        y = "Miles per gallon",
-       ____________,
+       ___,
        title = "Horsepower vs. Miles per gallon")
 ```
 
 2. Fill in the code below to create a scatterplot of miles per gallon versus horsepower such that all points have an alpha of 0.5 and the size is determined by the number of forward gears (`gear`).
 
 
-```{r ex2, exercise = TRUE}
-ggplot(data = mtcars, aes(x = ___, y = ___, _______)) +
-  geom_point(_______) +
+```{r ex2, exercise=TRUE}
+ggplot(data = mtcars, aes(x = ___, y = ___, ___)) +
+  geom_point(___) +
   labs(x = "Horsepower", 
        y = "Miles per gallon",
-       __________,
+       ___,
        title = "Horsepower vs. Miles per gallon")
 ```
 
@@ -268,7 +280,7 @@ Click [here](https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-
 
 1. Fill in the code below to try different color palettes available in [RColorBrewer](https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html).
 
-```{r exercise = TRUE}
+```{r ex3, exercise=TRUE}
 ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) + 
   geom_point() +
   labs(x = "Horsepower", 
@@ -276,13 +288,13 @@ ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) +
        color = "Cylinder",
        title = "Horsepower vs. Miles per gallon",
        subtitle = "by Cylinder") + 
-  scale_color_brewer(palette = "______")
+  scale_color_brewer(palette = "___")
 ```
 
 
 2. Fill in the code below to try different palettes available in the [`scale_color_viridis`] (https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/) function.
 
-```{r exercise = TRUE}
+```{r ex4, exercise=TRUE}
 ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) + 
   geom_point() +
   labs(x = "Horsepower", 
@@ -290,7 +302,7 @@ ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) +
        color = "Cylinder",
        title = "Horsepower vs. Miles per gallon",
        subtitle = "by Cylinder") + 
-  scale_colour_viridis(palette = "______")
+  scale_colour_viridis(palette = "___")
 ```
 
 
@@ -391,11 +403,11 @@ decorate("ggthemes") %>%
 
 Apply a new theme to a plot of your choice. You can create your own plot or use code from one of the plots in this tutorial. Try a few different themes - from `ggplot2` and from `ggthemes`. 
 
-```{r exercise = TRUE}
+```{r ex5, exercise=TRUE}
 #create a plot using a theme from ggplot2
 ```
 
-```{r exercise = TRUE}
+```{r ex6, exercise=TRUE}
 # create a plot using a theme from ggthemes
 library(ggthemes)
 
@@ -473,7 +485,7 @@ Use the patchwork function to arrange `p1`, `p2`, and `p3` in the following conf
 p1 / (p2 + p3)
 ```
 
-```{r exercise = TRUE}
+```{r ex7, exercise=TRUE}
 library(patchwork)
 
 ```
