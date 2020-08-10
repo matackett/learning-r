@@ -7,6 +7,7 @@ output:
     toc: true
     toc_float: true
     fig_height: 10
+    theme: cerulean
 ---
 
 ```{r setup, include=FALSE}
@@ -29,7 +30,7 @@ By the end of this tutorial, you will be able to
 
 ## Terminology
 
-Below are terms that are commonly used when talking about GitHub.^[Definitions from Beckman, M., C¸ etinkaya-Rundel M., Horton, N., Rundel, C., Sullivan, A., Tackett, M. *Implementing version control with Git as a learning objective in statistics courses.* [arxiv.org/abs/2001.01988](https://arxiv.org/abs/2001.01988).] 
+Below are terms that are commonly used when talking about GitHub.^[Definitions from Beckman, M., &Ccedil;etinkaya-Rundel, M., Horton, N., Rundel, C., Sullivan, A., Tackett, M. *Implementing version control with Git as a learning objective in statistics courses.* [arxiv.org/abs/2001.01988](https://arxiv.org/abs/2001.01988).] 
 
 | Term   | Definition |
 |--------|------------|
@@ -49,7 +50,7 @@ As you begin to use GitHub more, you may also come across terms describing more 
 |--------|------------|
 | forking   | Create a copy of a repository in your local profile |
 | pull request | Submit changes to a remote repo       |
-| branching | Keeping multiple snapshot of a repo |
+| branching | Keeping multiple snapshots of a repo |
 | gh-pages | Special branch which allows creation of a webpage from within GitHub        |
 | GitHub actions | Mechanism for continuous integration |
 
@@ -58,7 +59,7 @@ As you begin to use GitHub more, you may also come across terms describing more 
 
 Most of your assignments will be done using GitHub and RStudio. You'll begin with a starter repo on GitHub (mostly likely provided by your instructor) that contains templates and other materials needed to complete the assignment. You'll conduct your analysis and type your responses in RStudio and "push" the updates back to the repo on GitHub. In this tutorial, we will focus on the steps to get started on an assignment - specifically cloning a repo and starting a new project in RStudio.
 
-We'll use the [example-assignment repo](https://github.com/DukeStatSci/example-assignment) in the [DukeStatSci GitHub organization](https://github.com/DukeStatSci) on for this tutorial. You can use this repo to practice the steps in this tutorial; however, note that you **<u>cannot</u>** push to the repo (we'll talk more about pushing in the next tutorial). 
+We'll use the [example-assignment repo](https://github.com/DukeStatSci/example-assignment) in the [DukeStatSci GitHub organization](https://github.com/DukeStatSci) for this tutorial. You can use this repo to practice the steps in this tutorial; however, note that you **<u>cannot</u>** push to the repo (we'll talk more about pushing in the next tutorial). 
 
 ## Clone a repo + create new project
 
@@ -76,11 +77,15 @@ knitr::include_graphics("clone-new-project-img/starter-repo.png")
 knitr::include_graphics("clone-new-project-img/clone-repo.png")
 ```
 
-4. Go to the Docker containers at https://vm-manage.oit.duke.edu/containers and log in with your Duke NetId and Password.
+4. Go to RStudio. 
 
-5. Click to log into the Docker container for your course. You should now see the RStudio environment.
+    If you are using RStudio through a Docker container 
+      - Go to the Docker containers at https://vm-manage.oit.duke.edu/containers and log in with your Duke NetId and Password.
+      - Click to log into the Docker container for your course. You should now see the RStudio environment.
 
-6. Go to *File* `r emo::ji("arrow_right")` *New Project* `r emo::ji("arrow_right")` *Version Control* `r emo::ji("arrow_right")` *Git*. 
+<br>
+
+6. In RStudio, go to *File* `r emo::ji("arrow_right")` *New Project* `r emo::ji("arrow_right")` *Version Control* `r emo::ji("arrow_right")` *Git*. 
 
 7. Copy and paste the URL of your assignment repo into the dialog box *Repository URL*. You can leave *Project directory name* empty. It will default to the name of the GitHub repo.
 
@@ -88,7 +93,7 @@ knitr::include_graphics("clone-new-project-img/clone-repo.png")
 knitr::include_graphics("clone-new-project-img/paste-url.png")
 ```
 
-8. Click *Create Project*, and the files from your GitHub repo will be displayed the *Files* pane in RStudio. 
+8. Click *Create Project*, and the files from your GitHub repo will be displayed in the *Files* pane in RStudio. 
 
 ```{r create-project, fig.width=3}
 knitr::include_graphics("clone-new-project-img/create-project.png")
@@ -127,7 +132,20 @@ Then, rerun the `use_git_config` function with your GitHub username and email ad
 
 **That's it! You've cloned a repo, started a new project in RStudio, and configured git. You're now ready to start your analysis in RStudio!**
 
+## Cache password
+
+If you are asked to reenter your password each time you push to GitHub,   you can cache your GitHub password so it is saved over a specified period of time. This most likely occurs if you're using RStudio through [RStudio Cloud](https://rstudio.cloud/) or RStudio Pro servers provided by the Statistical Science department. 
+
+To cache your password, run the following in the **Terminal**: 
+
+```{r eval = F}
+git config --global credential.helper 'cache --timeout 604800'
+```
+
+This will cache your password for 604800 seconds, i.e. 7 days (60 * 60 * 24 * 7 = 604800). This is generally enough time to complete a lab or homework assignment. You can increase the number of seconds for longer assignments, such as a project that lasts several weeks.
+
+
 ## Acknowledgements
 
-The instructions from this tutorial were adapted from labs in [Data Science in a Box](https://datasciencebox.org/) by Mine Çetinkaya-Rundel.
+The instructions from this tutorial were adapted from labs in [Data Science in a Box](https://datasciencebox.org/) by Mine &Ccedil;etinkaya-Rundel.
 
