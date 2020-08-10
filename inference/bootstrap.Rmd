@@ -11,10 +11,12 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 library(learnr)
 library(knitr)
-knitr::opts_chunk$set(echo = TRUE, 
-                      warning = FALSE, 
-                      message = FALSE,
-                      exercise.timelimit = 3)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  exercise.timelimit = 3
+)
 ```
 
 ## Introduction
@@ -103,7 +105,8 @@ Create an appropriate plot of the repair times for ILEC and CLEC customers.
 ```
 
 ```{r ex1-solution}
-ggplot(verizon, aes(x = Group, y = Time)) + geom_boxplot()
+ggplot(verizon, aes(x = Group, y = Time)) +
+  geom_boxplot()
 ```
 
 Calculate summary statistics (including mean, median, sd, and n) for the 
@@ -117,10 +120,12 @@ repair times for ILEC and CLEC customers.
 ```{r ex2-solution}
 verizon %>%
   group_by(Group) %>%
-  summarize(mean_wait = mean(Time),
-            median_wait = median(Time),
-            sd_wait = sd(Time),
-            count = n())
+  summarize(
+    mean_wait = mean(Time),
+    median_wait = median(Time),
+    sd_wait = sd(Time),
+    count = n()
+  )
 ```
 
 You should notice that the mean time is higher for CLEC customers than for ILEC 
@@ -157,47 +162,60 @@ generate the bootstrap distribution and store the results in `boot_dist`.
 
 ```{r quiz, echo=FALSE}
 quiz(
-    question("How many rows are in `boot_dist`?",
+  question("How many rows are in `boot_dist`?",
     answer("10,000",
-           correct = TRUE,
-           message = "We specified this using the generate function."),
+      correct = TRUE,
+      message = "We specified this using the generate function."
+    ),
     answer("23",
-           message = ""),
+      message = ""
+    ),
     answer("1664",
-           message = ""),
+      message = ""
+    ),
     answer("2",
-           message = ""),
+      message = ""
+    ),
     answer("1000",
-           message = ""),
+      message = ""
+    ),
     random_answer_order = TRUE,
     allow_retry = TRUE
   ),
-  
+
   question("What is in each row of `boot_dist`?",
     answer("Each row in `boot_dist` is a bootstrapped mean - the mean of 
-           one bootstrapped sample.", 
-           correct = TRUE,
-           message = ""),
-    answer("Each row in `boot_dist` is our original sample mean.", 
-           message = ""),
+           one bootstrapped sample.",
+      correct = TRUE,
+      message = ""
+    ),
+    answer("Each row in `boot_dist` is our original sample mean.",
+      message = ""
+    ),
     answer("Each row in `boot_dist` is a bootstrap sample - a sample taken with
-           replacement from our original sample.", 
-           message = ""),
+           replacement from our original sample.",
+      message = ""
+    ),
     random_answer_order = TRUE
   ),
-      question("For each bootstrap sample, how many draws with replacement were 
+  question("For each bootstrap sample, how many draws with replacement were 
                taken from the original sample?",
     answer("10,000",
-           message = ""),
+      message = ""
+    ),
     answer("23",
-           correct = TRUE,
-           message = "This is the CLEC sample size."),
+      correct = TRUE,
+      message = "This is the CLEC sample size."
+    ),
     answer("1664",
-           message = ""),
+      message = ""
+    ),
     answer("2",
-           message = ""),
+      message = ""
+    ),
     answer("1000",
-           message = ""),
+      message = ""
+    ),
     random_answer_order = TRUE,
     allow_retry = TRUE
   )
@@ -207,7 +225,7 @@ quiz(
 Let's visualize the bootstrap distribution. We can do this using `ggplot`.
 
 ```{r}
-ggplot(data = boot_dist, aes(x = stat)) + 
+ggplot(data = boot_dist, aes(x = stat)) +
   geom_histogram(binwidth = 1) +
   labs(x = "Bootstrapped Mean Times", y = "Count")
 ```
@@ -217,7 +235,7 @@ that allows us to visualize the bootstrap distribution.
 
 ```{r}
 visualize(boot_dist) +
-    labs(x = "Bootstrapped Mean Times", y = "Count")
+  labs(x = "Bootstrapped Mean Times", y = "Count")
 ```
 
 To construct a 95\% bootstrap confidence interval, just find the middle 95\% of
@@ -229,29 +247,33 @@ confidence.
 
 ```{r}
 boot_dist %>%
-  summarize(lower_bound = quantile(stat, 0.025),
-            upper_bound = quantile(stat, 0.975))
+  summarize(
+    lower_bound = quantile(stat, 0.025),
+    upper_bound = quantile(stat, 0.975)
+  )
 ```
 
 The `infer` package also has a built-in function called `get_ci` which does the 
 same thing.
 
 ```{r}
-percentile_ci <- get_ci(boot_dist, level  = 0.95)
+percentile_ci <- get_ci(boot_dist, level = 0.95)
 percentile_ci
 ```
 
 Finally, let's visualize the confidence interval on the bootstrap distribution.
 
 ```{r}
-lower_bound <- boot_dist %>% 
-  summarize(lower_bound = quantile(stat, 0.025)) %>% pull()
-upper_bound <- boot_dist %>% 
-  summarize(upper_bound = quantile(stat, 0.975)) %>% pull()
+lower_bound <- boot_dist %>%
+  summarize(lower_bound = quantile(stat, 0.025)) %>%
+  pull()
+upper_bound <- boot_dist %>%
+  summarize(upper_bound = quantile(stat, 0.975)) %>%
+  pull()
 
-ggplot(data = boot_dist, aes(x = stat)) + 
-  geom_histogram(binwidth = 1) + 
-  geom_vline(xintercept = c(lower_bound, upper_bound), linetype = "dotted") + 
+ggplot(data = boot_dist, aes(x = stat)) +
+  geom_histogram(binwidth = 1) +
+  geom_vline(xintercept = c(lower_bound, upper_bound), linetype = "dotted") +
   labs(x = "Bootstrapped Mean Times", y = "Count")
 ```
 
@@ -262,8 +284,10 @@ running (for example) `?visualize`.
 ```{r}
 visualize(boot_dist) +
   shade_confidence_interval(endpoints = percentile_ci) +
-  labs(x = "Bootstrapped Mean Times", y = "Count", 
-       caption = "Green lines represent 95% C.I. bounds")
+  labs(
+    x = "Bootstrapped Mean Times", y = "Count",
+    caption = "Green lines represent 95% C.I. bounds"
+  )
 ```
 
 Finally, we provide a brief one-sentence interpretation in the context of the 
@@ -297,7 +321,7 @@ an interpretation of your interval in context.
 ```
 
 ```{r ex4-solution}
-get_ci(boot_dist, level  = 0.80)
+get_ci(boot_dist, level = 0.80)
 ```
 
 3. Construct a 90% bootstrap confidence interval using the ILEC repait time 
@@ -320,4 +344,3 @@ https://statistics.sites.stanford.edu/sites/g/files/sbiybj6031/f/BIO%2083.pdf)
 https://rss.onlinelibrary.wiley.com/doi/pdf/10.1111/j.1740-9713.2004.00067.x)
 - [Bootstrap Methods and Permutation Tests by Tim Hesterberg](
 https://statweb.stanford.edu/~tibs/stat315a/Supplements/bootstrap.pdf)
-
