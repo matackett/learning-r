@@ -1,25 +1,47 @@
 ---
-title: Multiple regression
-output:
-  rmarkdown::html_document:
-    css: "tutorial.css"
-    toc: TRUE
-    toc_float: TRUE
+title: Regression diagnostics and prediction
+output: 
+  learnr::tutorial:
+    theme: cerulean
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,
-                      dpi=300,
-                      fig.height = 3,
-                      fig.width = 5
-)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
+
 ```{r packages-data, echo=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(knitr)
 library(broom)
+library(learnr)
 beijing <- read_csv("data/beijing.csv")
 ```
+
+```{css, echo=FALSE}
+.spoiler {
+  visibility: hidden;
+}
+
+.spoiler::before {
+  visibility: visible;
+  content: "ANSWER: Hover over me!"
+}
+
+.spoiler:hover {
+  visibility: visible;
+}
+
+.spoiler:hover::before {
+  display: none;
+}
+
+# Credit to RLesur on stack overflow (question 51020181) for CSS idea
+```
+
+## Intro
 
 We use models to explain the relationship between variables and to make 
 predictions. For now we will focus on **linear** models (but remember there are 
@@ -33,11 +55,7 @@ to get model predictions and check assumptions for our linear regression model.
 
 ## Today's data
 
-```{r, out.width = "50%", echo = F, fig.align = "center"}
-include_graphics("img/beijing1.png")
-```
-
-As a review, today's data come from a series of atmospheric measurements taken 
+Today's data come from a series of atmospheric measurements taken 
 at the Agriculture Exhibition Hall in Beijing from 2013 - 2017. The following 
 variables are in the dataset:
 
@@ -62,14 +80,17 @@ and intercept parameter estimates as follows:
 
 ```{r}
 mod1 <- lm(DEWP ~ PRES, data = beijing)
-tidy(mod1)
+tidy(mod1) %>%
+  mutate_if(is.numeric, round, 3)
 ```
 
 - **Intercept**: if the barometric pressure is 0, we would expect the dew point 
-to be 1071 degrees Celsius, on average 
+to be 1071 degrees Celsius, on average.
 
 - **Slope**: for each additional hectopascal of barometric pressure, we would 
-expect the dew point to decrease by 1.08 degrees Celsius
+expect the dew point to decrease by 1.08 degrees Celsius.
+
+## Adding more predictors
 
 We have a pretty good idea of what the dew point would be, **conditional** on
 the value of the barometric pressure. But if we knew the temperature and  
@@ -97,25 +118,28 @@ predictors in the model. In this way, we can adjust for potential confounders
 in our model:
 
 ```{r, echo = F}
-tidy(mod2)
+tidy(mod2) %>%
+  mutate_if(is.numeric, round, 3)
 ```
 
 $$\widehat{DEWP} = 316 - 0.364 PRES + 0.723 TEMP + 1.15 RAIN$$
 
 - If the barometric pressure, temperature, and precipitation are all 0, then we
-would expect a dew point of 361 degrees Celsius (hmm...)
+would expect a dew point of 361 degrees Celsius (hmm...).
 
 - For each additional hPa increase in barometric pressure, we would expect a
 0.364 C *decrease* in dew point (on average), 
-**holding temperature and precipiation constant**
+**holding temperature and precipiation constant**.
 
 - For each additional degree C increase in temperature, we would expect a 0.723
 C increase in dew point (on average),
-**holding barometric pressure and precipiation constant**
+**holding barometric pressure and precipiation constant**.
 
 - For each additional mm increase in precipitation, we would expect a 1.15 C
 increase in dew point (on average),
-**holding barometric pressure and temperature constant**
+**holding barometric pressure and temperature constant**.
+
+## Inference with multiple predictors
 
 We may again test hypotheses that $\beta$ coefficients are equal to 0 (vs. the
 alternative that they are not equal to 0). Be sure that any interpretation for 
@@ -125,8 +149,21 @@ each slope coefficient should follow a $t$ distribution, with $n - p - 1$
 degrees of freedom (where $n$ is the total sample size and $p$ is the number of
 estimated parameters in your model).
 
-1. Is there sufficient evidence that barometric pressure has a linear association
-with dew point, while adjusting for temperature and precipitation?
+Let's check the `tidy` model output from before:
+
+```{r, echo = F}
+tidy(mod2) %>%
+  mutate_if(is.numeric, round, 3)
+```
+
+**Is there sufficient evidence that barometric pressure has a linear association**
+**with dew point, while adjusting for temperature and precipitation?**
+
+[Yes. At the $\alpha$ = 0.05 level, we reject the null hypothesis. There is
+sufficient evidence of such an association (i.e., that the $\beta$ coefficient
+is not equal to 0).]{.spoiler}
+
+## $R^2$ and $R^2_{adj}$
 
 We can once again `glance` at the model output to obtain model-specific 
 summaries. Let's take a look at the $R^2$ for our model:
@@ -151,21 +188,29 @@ be interpreted as explained variability.
 
 Our fitted model is given by
 
-```{r, echo = F}
-tidy(mod2) %>% 
-  select(term, estimate)
-```
-
 $$\widehat{DEWP} = 360.7 - 0.36PRES + 0.72 TEMP + 1.15RAIN,$$
 
 and can be used to predict dew points given the barometric pressure, 
-temperature, and precipitation (simply plug into the model). Try to answer the
-following question, which will require some `dplyr` manipulation:
+temperature, and precipitation (simply plug into the model). 
 
-2. Suppose the barometric pressure, temperature, and precipitation are equal to the
-mean values in our dataset. What would the predicted dew point be? 
+### Exercise 1
 
-3. Is this prediction close to the mean dew point in our dataset?
+Suppose the barometric pressure, temperature, and precipitation are equal to the
+mean values in our dataset. What would the predicted dew point be? You may use
+the following space to code your answer.
+
+```{r ex-1, exercise = TRUE}
+mod2 <- lm(DEWP ~ PRES + TEMP + RAIN, data = beijing)
+
+...
+```
+
+**Is this prediction close to the mean dew point in our dataset?**
+
+[Yes, our estimate of 2.37 degrees C is quite close to the mean dew point in the 
+dataset, which is equal to 2.38.]{.spoiler}
+
+## Augmenting model results
 
 We can actually obtain the predicted values using code, without having to deal
 with messy algebra. We will use the `augment` function. Let's try it out on our
@@ -185,17 +230,24 @@ into our `mod2` model object, which contains our multiple linear regression
 model:
 
 ```{r}
-mean_vals = tibble(PRES = 1012.6,
-                    TEMP = 13.55,
-                    RAIN = 0.074)
+mean_vals <- beijing %>% 
+  summarize(PRES = mean(PRES, na.rm = T),
+            TEMP = mean(TEMP, na.rm = T),
+            RAIN = mean(RAIN, na.rm = T))
+
 augment(mod2, newdata = mean_vals)
 ```
 
 Note that the new dataset has the same variable names as found in our model. 
-With our model we predict a dew point of 2.38 C and note that the standard error 
+With our model we predict a dew point of 2.37 C and note that the standard error 
 for this prediction is 0.195 C.
 
-4. How might we use these results to create interval estimates?
+**How might we use these results to create interval estimates?**
+
+[We can construct a confidence interval by taking our point estimate
+`.fitted`, and adding/subtracting the margin of error given by the confidence
+multiplier times the standard error of our estimate, `.se.fit`.]{.spoiler}
+
 
 ## Model assumptions
 
@@ -229,9 +281,9 @@ observation)
 
 - `.resid` provides the residual for the observation
 
-How might we evaluate the four linear model assumptions?
+Let's evaluate these four assumptions.
 
-### Evaluating independence
+## Independence
 
 Unfortunately, in many cases we must simply think about how the data are 
 collected. In this case, we have atmospheric measurements through time at a 
@@ -253,7 +305,7 @@ determine this visually, this was only because our data happened to be time-
 series data. In general, there is no plot that we will always be able to use to
 diagnose independence.
 
-### Evaluating normality of errors
+## Normality of errors
 
 We can simply plot a histogram of the residuals and assess visually. There are
 more formal methods, but for our purposes this will suffice. Note our use of the
@@ -267,9 +319,11 @@ augment(mod2) %>%
        title = "Residuals are left-skewed")
 ```
 
-5. Do the residuals appear to be normally distributed?
+**Do the residuals appear to be normally distributed?**
 
-### The residual plot
+[No - they are left skewed!]{.spoiler}
+
+## The residual plot
 
 One of the most useful diagnostic plots is the **residual plot**, 
 which plots the fitted values against the residuals. Let's take a look:
@@ -293,8 +347,14 @@ then we might have violation of constant error variance (homoscedasticity of
 errors). This might result in a "fanning" pattern. Our residual plot doesn't
 suggest that this assumption violated.
 
-6. Do linearity and homogeneity of error variance appear satisfied in our plot?
-Why or why not?
+**Do linearity and homogeneity of error variance appear satisfied in our plot?**
+**Why or why not?**
+
+[Linearity does not appear to be satisfied; we see evidence of assymetry around
+the x-axis (examine the ranges of the residuals above and below this line,
+for instance). However, constant variance does look to be an appropriate
+assumption - at every vertical "slice" of the data, the spread of the residuals 
+appears to be relatively similar)]{.spoiler}
 
 ## Interaction effects 
 
@@ -302,9 +362,10 @@ Sometimes, the effect of one variable depends on the value of another. For
 example, the effect of exercise % on obesity may be different for smokers vs.
 non-smokers. To model such a relationship, we create an **interaction term**.
 
-We fit interaction terms in the model by multiplying predictors together:
+We fit interaction terms in the model by multiplying predictors together. 
+Note the syntax used in the code below for the interaction between `TEMP` and `RAIN`:
 
-```{r, echo = F}
+```{r}
 mod3 <- lm(DEWP ~ PRES + TEMP + RAIN + TEMP*RAIN, data = beijing)
 ```
 
@@ -334,12 +395,46 @@ Let's take a look at the tidy output:
 tidy(mod3)
 ```
 
-7. What **is** the estimated expected change in dew point given a one mm 
-increase in precipitation? (Hint: as stated before, it depends on the
-temperature!)
-8. Recently, atmospheric pollution in terms of fine particulate matter (PM2.5)
+**What IS the estimated expected change in dew point given a one mm**
+**increase in precipitation, if we hold barometric pressure constant?**
+**(Hint: as stated before, it depends on the temperature!)**
+
+[The answer is the main effect of precipitation plus the interaction effect with
+temperature, multiplied by the observed temperature. That is, 9.01 - 0.35
+$\times$ TEMP]{.spoiler}
+
+
+## On your own!
+
+### Exercise 2
+
+Recently, atmospheric pollution in terms of fine particulate matter (PM2.5)
 has been of concern. Fit a model that predicts PM2.5 levels based on current
-weather patterns. 
-9. Assess any assumptions needed for your linear model. 
-10. Is there evidence that any weather-related variables are linearly associated 
+weather patterns, and assess any assumptions needed for your linear model. Is 
+there evidence that any weather-related variables are linearly associated 
 with PM2.5 levels, conditional on levels of the other predictors?
+
+You may use the following space to code your answer:
+
+```{r ex-2, exercise = TRUE}
+___ <- lm(___ ~ ___ + ___ + ..., data = ___)
+  
+tidy(___)
+
+# Histogram of residuals
+
+augment(___) %>% 
+  ggplot(data = ., mapping = aes(x = ___)) + 
+  geom_histogram() +
+  labs(x = "Residual", y = "Count",
+       title = "___")
+
+# Residual plot
+
+augment(___) %>% 
+  ggplot(data = ., mapping = aes(x = ___, y = ___)) + 
+  geom_point() + 
+  geom_hline(yintercept = 0, color = "red") + 
+  labs(x = "Fitted value", y = "Residual",
+       title = "___")
+```
