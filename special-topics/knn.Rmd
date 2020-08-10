@@ -1,10 +1,10 @@
 ---
 title: "k nearest neighbor"
-author: "Maria Tackett"
 output: 
   html_document:
     toc: true
     toc_float: true
+    theme: cerulean
 ---
 
 ```{r setup, include=FALSE}
@@ -23,8 +23,13 @@ By the end of this tutorial, you be able to:
 
 For this tutorial, we are using the `penguins` dataset from the [`palmerpenguins` R package](https://allisonhorst.github.io/palmerpenguins/index.html) maintained by Dr. Allison Horst. This data contains measurements and other characteristics for 344 penguins observed near Palmer Station Antarctica. The data were originally collected by Dr. Kristen Gorman. Click [here](https://allisonhorst.github.io/palmerpenguins/reference/penguins.html) to view the codebook for this data set.
 
+Let's start by loading the palmerpenguins R package. 
 ```{r}
 library(palmerpenguins)
+```
+
+Next, we'll take a quick look at the `penguins` data set to get a general idea of the variables and their types, the number of observations, and some of the values for each variable. 
+```{r}
 glimpse(penguins)
 ```
 
@@ -37,7 +42,7 @@ penguins <- penguins %>%
 
 ## Exploratory data analysis
 
-We will use k-nearest neighbor to classify the penguins into three groups based on their measurements. Before performing the classification, let's do a brief exploratory data analysis to take a look at the data. 
+We will use k-nearest neighbor to classify the penguins into three groups based on their measurements (more about this later). Before performing the classification, let's do a brief exploratory data analysis to take a look at the data. 
 
 We will use `body_mass_g`, `bill_length_mm`, `bill_depth_mm`, and `flipper_length_mm` to classify the penguins, so we'll focus on these variables. 
 
@@ -49,11 +54,12 @@ ggplot(data = penguins, aes(x = species)) +
 ```
 We can use the `ggpairs` function in the `GGally` package to quickly view the relationship between the measurements we'll use for classification.
 
-```{r}
+```{r, fig.width = 10}
 library(GGally)
 penguins %>%
   select(species, body_mass_g, bill_length_mm, bill_depth_mm, flipper_length_mm) %>%
-  ggpairs(aes(color = species))
+  ggpairs(columns = c("body_mass_g", "bill_length_mm", "bill_depth_mm", "flipper_length_mm"), 
+          aes(color = species))
 ```
 
 ## k-nearest neighbor
@@ -94,7 +100,21 @@ penguins_knn <- penguins %>%
   select(body_mass_g, ends_with("_mm"))
 ```
 
-Now we're ready to perform k-nearest neighbor. Since we know there are three species of penguins in the data set, we will set `k = 3` to specify there are three classes.
+### Choosing *k*
+
+Now we're ready to perform k-nearest neighbor. Since we know there are three species of penguins in the data set, we will set `k = 3` to specify there are three classes. Sometimes it is not as clear what $k$ should be, so you will have to use your judgment along with the context of the analysis question to choose a value of $k$. Here are a few considerations when using $k$: 
+
+- A larger value of $k$ reduces variance, but is computationally expensive and makes class boundaries harder to distinguish.
+
+- A smaller value of $k$ results in sharp class boundaries, but may be too sensitive to the local data structure.
+
+- For binary classification, it's helpful to choose an odd value for $k$ to avoid ties. In general, avoid using even values for $k$.
+
+- A commonly chosen simple approach is to use the square root of the sample size. For example, if the same size is 100, use $k = \sqrt{100} = 10$ as your starting point.
+
+### Classify the new penguins
+
+Now let's use the `knn` function in R to classify the new penguins.
 
 ```{r}
 library(class)
@@ -113,5 +133,7 @@ Using k-nearest neighbors,
 - Penguin 1 is predicted to be in the Adelie species. 
 - Penguin 2 is predicted to be in the Adelie species. 
 - Penguin 3 is predicted to be in the Chinstrap species.
+
+## Resources
 
 
