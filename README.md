@@ -4,46 +4,10 @@ Link: [duke-learning-r.netlify.app](https://duke-learning-r.netlify.app)
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/29c7797b-c258-45e7-a92e-29ab740eda5d/deploy-status)](https://app.netlify.com/sites/duke-learning-r/deploys)
 
-Welcome to the Learning R tutorials! [INSERT SOME WELCOME MESSAGE]
 
-## Getting started 
+## Instructions on updating the site
 
-### Accessing RStudio
-
-- RStudio Cloud
-- Docker Containers
-- Local Installation
-
-### Register for GitHub
-
-## How to use these tutorials
-
-### VPN for Shiny Tutorials
-
-## Tutorials 
-
-### Units
-
-<details>
-<summary><a href = "/getting-started">Getting Started</a></summary>
-<ul>
-  <li>Basics of R and RStudio (learnr)</li>
-  <li>Basics of R Markdown (learnr)</li>
-  <li>Into the Tidyverse(learnr)</li>
-  <li>Clone repo + start new project</li>
-  <li>Commit + Push and Pull</li>
-  <li>Code style (learnr)</li>
-</ul>
-</details>
-
-<details>
-<summary>
-- [Data Visualization](/data-viz)
-- [Data Wrangling](/data-wrangling)
-- [Inference](/inference)
-- [Regression](/regression)
-- [Special Topics](/special-topics)
-
+[ADD INSTRUCTIONS!]
 
 <!--
 |   Unit             |   Topic                              |   Contributor  |   Reviewer 1  |   Reviewer 2  |
