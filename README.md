@@ -1,5 +1,7 @@
 # Duke StatSci Learning R Tutorials
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/29c7797b-c258-45e7-a92e-29ab740eda5d/deploy-status)](https://app.netlify.com/sites/duke-learning-r/deploys)
+
 Welcome to the Learning R tutorials! [INSERT SOME WELCOME MESSAGE]
 
 ## Getting started 
