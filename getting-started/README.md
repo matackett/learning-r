@@ -10,3 +10,7 @@
 
 - Clone repo + start new project
 - Commit + Push and Pull
+
+## Getting started with code style
+
+- Code style learnr tutorial
