@@ -1,0 +1,90 @@
+---
+title: "Spatial Data"
+output: 
+  learnr::tutorial:
+    progressive: false
+    theme: "cerulean"
+    allow_skip: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Spatial Data
+
+This tutorial will teach you how to visualize spatial data (i.e., geographic data) in `ggplot2`. Let's make some maps!
+
+## Reading Spatial Data into R
+
+Spatial files are stored in shapefiles (.shp). Using the sf package and the `st_read` command, we can look at a dataset in R for North Carolina's 100 counties. Notice here that x and y apply to the longitude and latitude of a county. This particular data set has information on the number of live births by county in several years in the 1970s.
+
+```{r sf, echo=TRUE}
+library(sf)
+nc <- st_read(system.file("shape/nc.shp", package = "sf"), quiet = TRUE)
+nc
+```
+
+## Making Maps in R
+
+You can use `ggplot()` to plot maps in R. If you add the command `geom_sf()`, a map of North Carolina and its 100 counties appears.
+```{r ncmap, echo=TRUE, fig.width=5}
+library(ggplot2)
+ggplot(nc) +
+  geom_sf()
+```
+
+You can also add a theme to your map and outline the county borders in color.
+```{r themecolors, echo=TRUE, fig.width=5}
+ggplot(nc) +
+  geom_sf(color = "slateblue") +
+  theme_bw(base_size = 16)
+```
+
+You can change the size of the outline or fill in the counties by using the size and fill options inside `geom_sf` If you want it to be shaded more lightly, you can specify with by setting `alpha` equal to a smaller value as I do below.
+
+```{r themecolors2, echo=TRUE, fig.width=5}
+ggplot(nc) +
+  geom_sf(color = "slateblue", size = 2, alpha = 0.7, fill = "orange") +
+  theme_bw(base_size = 16)
+```
+
+## Choropeth Maps
+
+Sometimes, you will want to plot a variable by a geographic unit. To do this, you can make a choropeth map. Below, I make a map of county births in 1974 by county by indicating the name of the variable I want to map inside `aes` by setting `fill` equal to this variable.
+
+```{r fill, echo=TRUE, fig.width=5}
+ggplot(nc) +
+  geom_sf(aes(fill = BIR74)) +
+  theme_bw(base_size = 16)
+```
+
+It may sometimes help to pick diverging colors; a [guide](https://colorbrewer2.org/#type=diverging&scheme=PiYG&n=3) to colors that divege (with options that are color-blind friendly) are available here.
+
+```{r gradient, echo=TRUE, fig.width=5}
+ggplot(nc) +
+  geom_sf(aes(fill = BIR74)) +
+  scale_fill_gradient(low = "#e9a3c9", high = "#a1d76a") +
+  theme_bw(base_size = 16)
+```
+
+## Quiz
+
+```{r quiz}
+quiz(
+  question("Which kind of file do you need to make a map in R with ggplot?",
+    answer(".GAL"),
+    answer(".SHP", correct = TRUE),
+    answer(".dta"),
+    answer(".nb2"),
+    allow_retry = TRUE
+    ),
+   question("True or False: you use aes(fill=) to make a choropeth map?",
+    answer("True", correct= TRUE),
+    answer("False",),
+    allow_retry = TRUE
+    )
+)
+```

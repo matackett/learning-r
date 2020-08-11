@@ -1,68 +1,69 @@
 name: "Learning R"
-title: "Duke Stat Sci Learning R Tutorials"
-description: |
-  Duke Stat Sci Learning R Tutorials
-output_dir: "_site"
+title: "Duke StatSci Learning R Tutorials"
+creative_commons: CC BY
+exclude: ["*.Rmd"]
 navbar:
   right:
-    - text: "Home"
-      href: index.html
     - text: "How to Use"
       href: about.html
     - text: "Getting Started"
       menu: 
         - text: "Basics of R and RStudio (learnr)"
-        - href: about.html
+          href: about.html
         - text: "Into the Tidyverse(learnr)"
-        - href: about.html
+          href: about.html
         - text: "Code style (learnr)"
-        - href: about.html
+          href: about.html
+        - text: "---"
         - text: "Clone repo + start new project"
-        - href: about.html
+          href:  getting-started/clone-new-project.html
         - text: "Commit + Push and Pull"
-        - href: about.html
+          href: about.html
     - text: "Data Viz & Wrangling"
       menu: 
         - text: "ggplot2 baiscs (learnr)"
-        - href: about.html
+          href: about.html
         - text: "Customize data viz"
-        - href: about.html
+          href: about.html
+        - text: "---"
         - text: "Tidy data wrangling with `dplyr`"
-        - href: about.html
+          href: about.html
         - text: "Wrangling factors with `forcats`"
-        - href: about.html
+          href: about.html
         - text: "Data types in R"
-        - href: about.html
+          href: about.html
     - text: "Inference"
       menu: 
         - text: "Bootstrapping with Infer"
-        - href: about.html
+          href: about.html
         - text: "Simulation-Based Inference with Infer"
-        - href: about.html
+          href: about.html
         - text: "CLT-Based Inference with Infer"
-        - href: about.html
+          href: about.html
     - text: "Regression"
       menu: 
         - text: "Intro to Linear Models"
-        - href: about.html
+          href: about.html
         - text: "Regression diagnostics and prediction"
-        - href: about.html
+          href: about.html
         - text: "Logistic Regression"
-        - href: about.html
+          href: about.html
     - text: "Special Topics"
       menu: 
         - text: "Spatial Analysis"
-        - href: about.html
+          href: about.html
         - text: "kNN"
-        - href: about.html
+          href: about.html
         - text: "Web Scraping (learnr)"
-        - href: about.html
+          href: about.html
         - text: "Functions (learnr)"
-        - href: about.html
+          href: about.html
         - text: "Automation (learnr)"
-        - href: about.html
+          href: about.html
         - text: "Shiny (learnr)"
-        - href: about.html
+          href: about.html
         - text: "Text analysis"
-        - href: about.html
+          href: about.html
+    - text: "Data sets"
+      href: about.html
 output: distill::distill_article

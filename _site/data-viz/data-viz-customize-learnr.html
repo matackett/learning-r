@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+<meta name="progressive" content="false" />
+<meta name="allow-skip" content="true" />
+
+<title>Customizing Data Visualizations</title>
+
+
+<!-- highlightjs -->
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+<!-- taken from https://github.com/rstudio/rmarkdown/blob/67b7f5fc779e4cfdfd0f021d3d7745b6b6e17149/inst/rmd/h/default.html#L296-L362 -->
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("section-TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+<!-- end tabsets -->
+
+
+
+</head>
+
+<body>
+
+
+
+<div class="pageContent band">
+<div class="bandContent page">
+
+<div class="topics">
+
+<div id="section-introduction" class="section level2">
+<h2>Introduction</h2>
+<hr />
+<p>In the <a href="Ggplot.html"><em>Basics of ggplot</em></a> tutorial, you learned the basics of <code>ggplot2</code>, the tidyverse’s primary package for creating data visualizations. In this tutorial, we will focus on different ways you can customize your data visualizations.</p>
+<div id="section-learning-objectives" class="section level3">
+<h3>Learning Objectives</h3>
+<p>By the end of this tutorial, you should be able to</p>
+<ul>
+<li>Add aesthetics to a plot</li>
+<li>Change the limits on the x and y axis</li>
+<li>Change the color palette</li>
+<li>Apply a theme to a plot</li>
+<li>Arrange multiple plots in a grid</li>
+</ul>
+</div>
+<div id="section-the-data" class="section level3">
+<h3>The Data</h3>
+<p>We will use the <code>mtcars</code> data set, which is automatically loaded when you open RStudio. The data is from the 1974 <em>Motor Trend</em> magazine, and it contains performance information and other specifications for 32 automobiles made in 1973 and 1974.</p>
+<p>To learn more about the data set and the variable definitions, type the following code in the console:</p>
+<pre class="r"><code>?mtcars</code></pre>
+<p>We will make a few small changes to the <code>mtcars</code> data frame to prepare it for visualization:</p>
+<pre class="r"><code>mtcars &lt;- mtcars %&gt;%
+  mutate(am = factor(am),
+         cyl = factor(cyl), 
+         vs = factor(vs))</code></pre>
+<p>We create data visualizations using the <code>ggplot2</code> package. It is one of the core <code>tidyverse</code> packages, so it loads automatically when we run the code below.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+</div>
+</div>
+<div id="section-the-basic-plot" class="section level2">
+<h2>The basic plot</h2>
+<p>Let’s start with a scatterplot displaying the relationship between horsepower (<code>hp</code>) and miles per gallon (<code>mpg</code>).</p>
+<pre class="r"><code>ggplot(data = mtcars, aes(x = hp, y = mpg)) +
+  geom_point() +
+  labs(x = &quot;Horsepower&quot;, 
+       y = &quot;Miles per gallon&quot;, 
+       title = &quot;Horsepower vs. Miles per gallon&quot;)</code></pre>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-4-1.png" width="624" style="display: block; margin: auto;" /></p>
+<p>Using this as a baseline, let’s customize the plot!</p>
+</div>
+<div id="section-aesthetics" class="section level2">
+<h2>Aesthetics</h2>
+<p>We can add aesthetics (features) to our plot to incorporate additional variables or to customize the plot. These aesthetics include</p>
+<ul>
+<li><code>color</code></li>
+<li><code>shape</code></li>
+<li><code>size</code></li>
+<li><code>alpha</code> (transparency)</li>
+</ul>
+<p>Aesthetics can be mapped in two different ways:</p>
+<ol style="list-style-type: decimal">
+<li>Aesthetic based on value of a variable. Aesthetic defined inside <code>aes()</code>.</li>
+<li>Same aesthetic for all observations. Defined in the <code>geom_**</code> outside of <code>aes()</code>.</li>
+</ol>
+<p>Let’s look at two plots in which the <code>color</code> aesthetic is applied in both ways:</p>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-5-1.png" width="624" style="display: block; margin: auto;" /></p>
+<p>Notice in <strong>Plot A</strong> that the color of the points is based on the type of transmission (<code>am</code>). Using color in this way, we have added additional information to the plot, as we can now see the relationship between miles per gallon and horsepower for each transmission type.</p>
+<p>Let’s look at the code for <strong>Plot A</strong>.</p>
+<p>Notice how the code used to define the color is inside of the <code>aes</code> function. This tells R to color the points based on the type of transmission (<code>am</code>). In other words, the color aesthetic is assigned to <code>am</code>. We have also added a label to the legend and a subtitle.</p>
+<p><em>Note: When we add labels, we map a label to each aesthetic. For example, the code <code>color = "Transmission"</code> within the <code>labs()</code> function doesn’t change the color of the points by Transmission but merely applies the label “Transmission” to the color legend. (Without this label, the legend would be titled <code>am</code> which may be confusing to some readers.)</em></p>
+<pre><code class='language-r'><code>ggplot(data = mtcars, aes(x = hp, y = mpg, <span style='background-color:pink'>color = am</span>)) + <br>&nbsp;&nbsp;geom_point() +<br>&nbsp;&nbsp;labs(x = "Horsepower", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y = "Miles per gallon", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='background-color:pink'>color = "Transmission"</span>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = "Horsepower vs. Miles per gallon",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='background-color:pink'>subtitle = "by Transmission"</span>)</code></code></pre>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-24-1.png" width="624" style="display: block; margin: auto;" /></p>
+<p><br></p>
+<p>Now, let’s take a look at the code for <strong>Plot B</strong>.</p>
+<p>Here, we have assigned the same color aesthetic to all points on the plot. Since we want to use the same color for all points, we define the color in the <code>geom_**</code> outside of the <code>aes</code> function. In this case, we haven’t added any new information, but we’re just using color to change how the plot looks.</p>
+<pre><code class='language-r'><code>ggplot(data = mtcars, aes(x = hp, y = mpg)) +<br>&nbsp;&nbsp;geom_point(<span style='background-color:pink'>color = "blue"</span>) +<br>&nbsp;&nbsp;labs(x = "Horsepower", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y = "Miles per gallon",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = "Horsepower vs. Miles per gallon")</code></code></pre>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-25-1.png" width="624" style="display: block; margin: auto;" /></p>
+<div id="section-your-turn" class="section level3">
+<h3>Your turn!</h3>
+<ol style="list-style-type: decimal">
+<li>Fill in the code below to create a scatterplot such that the shape of the points is based on the number of cylinders (<code>cyl</code>) and all points are a size 2.</li>
+</ol>
+<div class="tutorial-exercise" data-label="ex1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>ggplot(data = mtcars, aes(x = hp, y = mpg,___)) +
+  geom_point(___) +
+  labs(x = &quot;Horsepower&quot;, 
+       y = &quot;Miles per gallon&quot;,
+       ___,
+       title = &quot;Horsepower vs. Miles per gallon&quot;)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"center","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":30,"exercise.checker":"NULL"}</script>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li>Fill in the code below to create a scatterplot of miles per gallon versus horsepower such that all points have an alpha of 0.5 and the size is determined by the number of forward gears (<code>gear</code>).</li>
+</ol>
+<div class="tutorial-exercise" data-label="ex2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>ggplot(data = mtcars, aes(x = ___, y = ___, ___)) +
+  geom_point(___) +
+  labs(x = &quot;Horsepower&quot;, 
+       y = &quot;Miles per gallon&quot;,
+       ___,
+       title = &quot;Horsepower vs. Miles per gallon&quot;)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"center","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":30,"exercise.checker":"NULL"}</script>
+</div>
+</div>
+</div>
+<div id="section-change-axis-limits" class="section level2">
+<h2>Change axis limits</h2>
+<p>Let’s stick with <strong>Plot A</strong> for now.</p>
+<p>Another way to customize the plot is to change the limits on the x and y axes. Suppose we want to zoom in on a portion of the plot. Let’s change the axes to do so.</p>
+<pre><code class='language-r'><code>ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) + <br>&nbsp;&nbsp;geom_point() +<br>&nbsp;&nbsp;labs(x = "Horsepower", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y = "Miles per gallon", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color = "Transmission",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = "Horsepower vs. Miles per gallon",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subtitle = "by Transmission") +<br>&nbsp;&nbsp;<span style='background-color:pink'>xlim(c(100, 300)) +</span><br>&nbsp;&nbsp;<span style='background-color:pink'>ylim(c(15, 25))</span></code></code></pre>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-26-1.png" width="624" style="display: block; margin: auto;" /></p>
+</div>
+<div id="section-change-color-palette" class="section level2">
+<h2>Change color palette</h2>
+<p>Another way to customize a plot is to change the color palette. The default color palette used in <code>ggplot2</code> is not color-blind safe, so it is good practice to change the color palette if you wish to present your results to a large audience.</p>
+<p>Let’s look at a plot of the Miles per gallon vs. Horsepower colored by the cylinders.</p>
+<pre class="r"><code>ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) + 
+  geom_point() +
+  labs(x = &quot;Horsepower&quot;, 
+       y = &quot;Miles per gallon&quot;, 
+       color = &quot;Cylinder&quot;,
+       title = &quot;Horsepower vs. Miles per gallon&quot;,
+       subtitle = &quot;by Cylinder&quot;) </code></pre>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-9-1.png" width="624" style="display: block; margin: auto;" /></p>
+<p>This is the default color palette in <code>ggplot2</code>; however, we may want to use something different. One way to do this is by using the <code>scale_color_brewer</code> function. Using this function, we specify a palette from <a href="https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html">RColorBrewer</a>.</p>
+<p>Here is the same plot above using the “Dark2” color palette:</p>
+<pre><code class='language-r'><code>ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) + <br>&nbsp;&nbsp;geom_point() +<br>&nbsp;&nbsp;labs(x = "Horsepower", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y = "Miles per gallon", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color = "Cylinder",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = "Horsepower vs. Miles per gallon",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subtitle = "by Cylinder") + <br>&nbsp;&nbsp;<span style='background-color:pink'>scale_color_brewer(palette = "Dark2")</span></code></code></pre>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-27-1.png" width="624" style="display: block; margin: auto;" /></p>
+<p>Another option for color palettes are those available in the <code>viridis</code> package. All palettes in this package are colorblind safe.</p>
+<pre><code class='language-r'><code><span style='background-color:pink'>library(viridis)</span> &nbsp;<br><br>ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) + <br>&nbsp;&nbsp;geom_point() +<br>&nbsp;&nbsp;labs(x = "Horsepower", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y = "Miles per gallon", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color = "Cylinder",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = "Horsepower vs. Miles per gallon",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subtitle = "by Cylinder") + <br>&nbsp;&nbsp;&nbsp;<span style='background-color:pink'>scale_color_viridis(discrete = TRUE) # for discrete color scale</span></code></code></pre>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-28-1.png" width="624" style="display: block; margin: auto;" /></p>
+<p>Click <a href="https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/">here</a> to find a full list of color palettes available to use in <code>scale_color_brewer</code> and <code>scale_color_viridis</code>.</p>
+<div id="section-your-turn-1" class="section level3">
+<h3>Your turn!</h3>
+<ol style="list-style-type: decimal">
+<li>Fill in the code below to try different color palettes available in <a href="https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html">RColorBrewer</a>.</li>
+</ol>
+<div class="tutorial-exercise" data-label="ex3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) + 
+  geom_point() +
+  labs(x = &quot;Horsepower&quot;, 
+       y = &quot;Miles per gallon&quot;, 
+       color = &quot;Cylinder&quot;,
+       title = &quot;Horsepower vs. Miles per gallon&quot;,
+       subtitle = &quot;by Cylinder&quot;) + 
+  scale_color_brewer(palette = &quot;___&quot;)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"center","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":30,"exercise.checker":"NULL"}</script>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li>Fill in the code below to try different palettes available in the [<code>scale_color_viridis</code>] (<a href="https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/" class="uri">https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/</a>) function.</li>
+</ol>
+<div class="tutorial-exercise" data-label="ex4" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>ggplot(data = mtcars, aes(x = hp, y = mpg, color = cyl)) + 
+  geom_point() +
+  labs(x = &quot;Horsepower&quot;, 
+       y = &quot;Miles per gallon&quot;, 
+       color = &quot;Cylinder&quot;,
+       title = &quot;Horsepower vs. Miles per gallon&quot;,
+       subtitle = &quot;by Cylinder&quot;) + 
+  scale_colour_viridis(palette = &quot;___&quot;)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"center","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":30,"exercise.checker":"NULL"}</script>
+</div>
+</div>
+</div>
+<div id="section-themes" class="section level2">
+<h2>Themes</h2>
+<p>We may want to change the overall look of the visualization, e.g. the background, grid lines, etc. One way to do this is by applying a theme to the visualization.</p>
+<div id="section-themes-in-ggplot2-package" class="section level3">
+<h3>Themes in <code>ggplot2</code> package</h3>
+<p>There is a collection of <a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">complete themes</a> available in the <code>ggplot2</code> package. Let’s take a look at two the themes: <code>theme_dark</code> and <code>theme_classic</code>.</p>
+<pre><code class='language-r'><code>ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) + <br>&nbsp;&nbsp;geom_point() +<br>&nbsp;&nbsp;labs(x = "Horsepower", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y = "Miles per gallon", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color = "Transmission",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = "Horsepower vs. Miles per gallon",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subtitle = "by Transmission") +<br>&nbsp;<span style='background-color:pink'>theme_dark()</span></code></code></pre>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-29-1.png" width="624" style="display: block; margin: auto;" /></p>
+<pre><code class='language-r'><code>ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) + <br>&nbsp;&nbsp;geom_point() +<br>&nbsp;&nbsp;labs(x = "Horsepower", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y = "Miles per gallon", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color = "Transmission",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = "Horsepower vs. Miles per gallon",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subtitle = "by Transmission") +<br>&nbsp;<span style='background-color:pink'>theme_classic()</span></code></code></pre>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-30-1.png" width="624" style="display: block; margin: auto;" /></p>
+<p>A list of complete themes available in the <code>ggplot2</code> package can be found <a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">here</a>.</p>
+<p>You can also customize individual elements of a visualization by using the <code>theme</code> function. One instance in which this function is especially useful is to update the font size of the axis labels and title.</p>
+<pre><code class='language-r'><code>ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) + <br>&nbsp;&nbsp;geom_point() +<br>&nbsp;&nbsp;labs(x = "Horsepower", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y = "Miles per gallon", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color = "Transmission",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subtitle = "by Transmission",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = "Horsepower vs. Miles per gallon") +<br>&nbsp;<span style='background-color:pink'>theme(plot.title = element_text(size = 20),</span> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='background-color:pink'>axis.title.x = element_text(size = 16),</span> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='background-color:pink'>axis.title.y = element_text(size = 16))</span></code></code></pre>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-31-1.png" width="624" style="display: block; margin: auto;" /></p>
+<p>See the <a href="https://ggplot2.tidyverse.org/reference/theme.html"><code>theme</code> reference page</a> to learn more about customizing individual elements of a plot.</p>
+</div>
+<div id="section-ggthemes-package" class="section level3">
+<h3><code>ggthemes</code> package</h3>
+<p>The <code>ggthemes</code> package has a selection of custom themes and color palettes. You can find all of the themes and palettes on the <a href="https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/"><code>ggthemes</code> webpage</a>.</p>
+<p>Here is an example of their FiveThirtyEight theme. Note that you need to load the <code>ggthemes</code> package.</p>
+<pre><code class='language-r'><code><span style='background-color:pink'>library(ggthemes)</span><br><br>ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) + <br>&nbsp;&nbsp;geom_point() +<br>&nbsp;&nbsp;labs(x = "Horsepower", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y = "Miles per gallon", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color = "Transmission",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subtitle = "by Transmission",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title = "Horsepower vs. Miles per gallon") +<br>&nbsp;<span style='background-color:pink'>theme_fivethirtyeight()</span></code></code></pre>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-32-1.png" width="624" style="display: block; margin: auto;" /></p>
+</div>
+<div id="section-your-turn-2" class="section level3">
+<h3>Your turn!</h3>
+<p>Apply a new theme to a plot of your choice. You can create your own plot or use code from one of the plots in this tutorial. Try a few different themes - from <code>ggplot2</code> and from <code>ggthemes</code>.</p>
+<div class="tutorial-exercise" data-label="ex5" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>#create a plot using a theme from ggplot2</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"center","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":30,"exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise" data-label="ex6" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># create a plot using a theme from ggthemes
+library(ggthemes)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"center","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":30,"exercise.checker":"NULL"}</script>
+</div>
+</div>
+<div id="section-patchwork" class="section level3">
+<h3>Patchwork</h3>
+<p>Sometimes we want to organize multiple plots in a grid to more neatly format them in a write up or presentation. This can be especially helpful if you have a lot of plots to display (for example, when doing exploratory data analysis).</p>
+<p>We can use the <code>patchwork</code> package to arrange plots in rows and columns.</p>
+<p>Let’s suppose we have the following three plots assigned to names <code>p1</code>, <code>p2</code>, and <code>p3</code>:</p>
+<pre class="r"><code>p1 &lt;- ggplot(data = mtcars, aes(x = cyl)) + 
+  geom_bar() +
+  labs(x = &quot;Number of Cylinders&quot;)
+
+p2 &lt;- ggplot(data = mtcars, aes(x = hp)) + 
+  geom_histogram() +
+  labs(x = &quot;Horsepower&quot;, 
+       y = &quot;Count&quot;)
+
+p3 &lt;- ggplot(data = mtcars, aes(x = hp, y = mpg, color = am)) +
+  geom_point() +
+  labs(x = &quot;Horsepower&quot;, 
+       y = &quot;Miles per gallon&quot;, 
+       color = &quot;Transmission&quot;)</code></pre>
+<p>First, we need to load the patchwork package.</p>
+<p>Use <code>/</code> to put a plot on a new row:</p>
+<pre class="r"><code>p1 / p2 / p3</code></pre>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-18-1.png" width="624" style="display: block; margin: auto;" /></p>
+<p>Use <code>+</code> to put a plot in a new column:</p>
+<pre class="r"><code>p1 + p2 + p3</code></pre>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-19-1.png" width="624" style="display: block; margin: auto;" /></p>
+<p>Use a combination of <code>/</code> and <code>+</code> to arrange the plots in rows and columns. Let’s put <code>p1</code> and <code>p2</code> on the first row and <code>p3</code> on the second row:</p>
+<pre class="r"><code>(p1 + p2) / p3</code></pre>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-20-1.png" width="624" style="display: block; margin: auto;" /></p>
+<p>Let’s repeat the code above without the parentheses. Notice how the arrangement these plots differ from the arrangement above.</p>
+<pre class="r"><code>p1 + p2 / p3</code></pre>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-21-1.png" width="624" style="display: block; margin: auto;" /></p>
+<p>Just like the “order of operations” from math, the <code>/</code> will be applied before <code>+</code>. Use parentheses (as in the code above) to apply the <code>+</code> first.</p>
+<p>Finally, we can use the <code>plot_annotation()</code> function to add labels and other text annotations to patchwork objects. Using the code below, we use letters to label each plot.</p>
+<pre class="r"><code>(p1 + p2) / p3 +
+  plot_annotation(tag_levels = &quot;A&quot;, tag_prefix = &quot;Figure &quot;)</code></pre>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-22-1.png" width="624" style="display: block; margin: auto;" /></p>
+</div>
+<div id="section-your-turn-3" class="section level3">
+<h3>Your turn!</h3>
+<p>Use the patchwork function to arrange <code>p1</code>, <code>p2</code>, and <code>p3</code> in the following configuration:</p>
+<p><img src="data-viz-customize-learnr_files/figure-html/unnamed-chunk-23-1.png" width="624" style="display: block; margin: auto;" /></p>
+<div class="tutorial-exercise" data-label="ex7" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>library(patchwork)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"center","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":30,"exercise.checker":"NULL"}</script>
+</div>
+</div>
+</div>
+<div id="section-resources" class="section level2">
+<h2>Resources</h2>
+<ul>
+<li><a href="https://ggplot2.tidyverse.org/" class="uri">https://ggplot2.tidyverse.org/</a></li>
+<li><a href="https://patchwork.data-imaginist.com/index.html" class="uri">https://patchwork.data-imaginist.com/index.html</a></li>
+<li><a href="https://r4ds.had.co.nz/data-visualisation.html">R for Data Science: Data visualization</a></li>
+<li><a href="ggplot2:%20Elegant%20Graphics%20for%20Data%20Analysis">ggplot2: Elegant Graphics for Data Analysis</a> 
+<script type="application/shiny-prerendered" data-context="server-start">
+knitr::opts_chunk$set(echo = TRUE, 
+                      warning = FALSE, 
+                      message = FALSE, 
+                      fig.align = "center")
+library(learnr)
+library(tidyverse)
+library(patchwork)
+library(ggthemes)
+library(viridis) 
+library(gradethis)
+library(flair)
+
+tutorial_options(
+  exercise.timelimit = 30
+)
+
+mtcars <- mtcars %>%
+  mutate(am = factor(am),
+         cyl = factor(cyl), 
+         vs = factor(vs))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::register_http_handlers(session, metadata = NULL)
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+session$onSessionEnded(function() {
+        learnr:::session_stop_event(session)
+      })
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-ex1-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ex1-code-editor`)), session)
+output$`tutorial-exercise-ex1-output` <- renderUI({
+  `tutorial-exercise-ex1-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-ex2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ex2-code-editor`)), session)
+output$`tutorial-exercise-ex2-output` <- renderUI({
+  `tutorial-exercise-ex2-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-ex3-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ex3-code-editor`)), session)
+output$`tutorial-exercise-ex3-output` <- renderUI({
+  `tutorial-exercise-ex3-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-ex4-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ex4-code-editor`)), session)
+output$`tutorial-exercise-ex4-output` <- renderUI({
+  `tutorial-exercise-ex4-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-ex5-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ex5-code-editor`)), session)
+output$`tutorial-exercise-ex5-output` <- renderUI({
+  `tutorial-exercise-ex5-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-ex6-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ex6-code-editor`)), session)
+output$`tutorial-exercise-ex6-output` <- renderUI({
+  `tutorial-exercise-ex6-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-ex7-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ex7-code-editor`)), session)
+output$`tutorial-exercise-ex7-output` <- renderUI({
+  `tutorial-exercise-ex7-result`()
+})
+</script>
+ <!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="dependencies">
+{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootstrap"]},{"type":"character","attributes":{},"value":["3.3.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/bootstrap"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["viewport"]}},"value":[{"type":"character","attributes":{},"value":["width=device-width, initial-scale=1"]}]},{"type":"character","attributes":{},"value":["js/bootstrap.min.js","shim/html5shiv.min.js","shim/respond.min.js"]},{"type":"character","attributes":{},"value":["css/cerulean.min.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["pagedtable"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/pagedtable-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/pagedtable.js"]},{"type":"character","attributes":{},"value":["css/pagedtable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["textmate.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-format"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmarkdown/templates/tutorial/resources"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-format.js"]},{"type":"character","attributes":{},"value":["tutorial-format.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["navigation"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/navigation-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tabsets.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["default.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["font-awesome"]},{"type":"character","attributes":{},"value":["5.1.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/fontawesome"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/all.css","css/v4-shims.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootbox"]},{"type":"character","attributes":{},"value":["4.4.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/bootbox"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["bootbox.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["idb-keyvalue"]},{"type":"character","attributes":{},"value":["3.2.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/idb-keyval"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["idb-keyval-iife-compat.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]}]}
+</script>
+<!--/html_preserve-->
+<!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="execution_dependencies">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88]}},"value":[{"type":"character","attributes":{},"value":["assertthat","backports","base","broom","cellranger","cli","colorspace","compiler","crayon","datasets","DBI","dbplyr","digest","dplyr","ellipsis","evaluate","fansi","farver","fastmap","flair","forcats","fs","generics","ggplot2","ggthemes","glue","gradethis","graphics","grDevices","grid","gridExtra","gtable","haven","hms","htmltools","htmlwidgets","httpuv","httr","jsonlite","knitr","labeling","later","lattice","learnr","lifecycle","lubridate","magrittr","markdown","methods","mime","modelr","munsell","nlme","patchwork","pillar","pkgconfig","promises","purrr","R6","RColorBrewer","Rcpp","readr","readxl","reprex","rlang","rmarkdown","rprojroot","rstudioapi","rvest","scales","shiny","stats","stringi","stringr","tibble","tidyr","tidyselect","tidyverse","tools","utils","vctrs","viridis","viridisLite","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["0.2.1","1.1.8","4.0.0","0.5.6","1.1.0","2.0.2","1.4-1","4.0.0","1.3.4","4.0.0","1.1.0","1.4.3","0.6.25","1.0.0","0.3.1","0.14","0.4.1","2.0.3","1.0.1","0.0.2","0.5.0","1.4.2","0.0.2","3.3.2","4.2.0","1.4.1","0.1.0.9004","4.0.0","4.0.0","4.0.0","2.3","0.3.0","2.2.0","0.5.3","0.5.0.9000","1.5.1","1.5.4","1.4.1","1.7.0","1.29","0.3","1.1.0.1","0.20-41","0.10.1","0.2.0","1.7.8","1.5","1.1","4.0.0","0.9","0.1.7","0.5.0","3.1-147","1.0.0","1.4.6","2.0.3","1.1.1","0.3.4","2.4.1","1.1-2","1.0.5","1.3.1","1.3.1","0.3.0","0.4.7","2.3","1.3-2","0.11","0.3.5","1.1.1","1.5.0","4.0.0","1.4.6","1.4.0","3.0.2","1.1.0","1.1.0","1.3.0","4.0.0","4.0.0","0.3.1","0.5.1","0.3.0","2.2.0","0.16","1.3.2","1.8-4","2.2.1"]}]}]}
+</script>
+<!--/html_preserve--></li>
+</ul>
+</div>
+
+</div> <!-- topics -->
+
+<div class="topicsContainer">
+<div class="topicsPositioner">
+<div class="band">
+<div class="bandContent topicsListContainer">
+
+<!-- begin doc-metadata -->
+<div id="doc-metadata">
+<h2 class="title toc-ignore" style="display:none;">Customizing Data Visualizations</h2>
+</div>
+<!-- end doc-metadata -->
+
+</div> <!-- bandContent.topicsListContainer -->
+</div> <!-- band -->
+</div> <!-- topicsPositioner -->
+</div> <!-- topicsContainer -->
+
+
+</div> <!-- bandContent page -->
+</div> <!-- pageContent band -->
+
+
+
+
+<script>
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+
+</body>
+
+</html>

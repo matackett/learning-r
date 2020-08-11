@@ -1,0 +1,405 @@
+---
+title: "Automation"
+output: 
+  learnr::tutorial:
+    progressive: false
+    theme: "cerulean"
+    allow_skip: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(knitr)
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, exercise.timelimit = 5)
+```
+
+## Introduction
+
+---
+
+### Learning objectives
+
+- When to use iteration
+- Understand the `for` loop structure
+- When to not use a loop
+
+---
+
+Writing and using functions is one way to reduce duplication in your code.
+However, functions alone will not be able to eliminate all instances of 
+duplication. You may be able to write a function to scale each numeric variable
+in a data frame to a [0, 1] scale. But, if you need to apply this function
+to 30 variables in that data frame there will be duplication. This is where
+iteration (automation) plays a role in reducing duplication. R offers loops
+and functionals as tools for reducing duplication through iteration. This
+tutorial will introduce you to automation through `for` loops.
+
+<div class="info">
+**Note!** A functional is a function that takes a function as its argument and
+returns a vector as output.
+</div>
+
+### Packages
+
+The following packages have been loaded in this tutorial:
+
+```{r}
+library(tidyverse)
+library(nycflights13)
+```
+
+## Why automation?
+
+Consider the small tibble below.
+
+```{r include=FALSE}
+x <- tibble(
+  col_a = c(3, -1, 0, 10),
+  col_b = c(2, -2, 2, -22),
+  col_c = c(8, sqrt(131), log(4), 33),
+  col_d = 1:4
+)
+```
+
+
+```{r example_tibble}
+x <- tibble(
+  col_a = c(3, -1, 0, 10),
+  col_b = c(2, -2, 2, -22),
+  col_c = c(8, sqrt(131), log(4), 33),
+  col_d = 1:4
+)
+
+x
+```
+
+Suppose we were interested in computing the mean of each column. One technique
+may be as follows.
+ 
+```{r pull_1}
+x %>% 
+  pull(1) %>% 
+  mean()
+```
+ 
+```{r pull_2}
+x %>% 
+  pull(2) %>% 
+  mean()
+```
+
+```{r pull_3}
+x %>% 
+  pull(3) %>% 
+  mean()
+```
+
+```{r pull_4}
+x %>% 
+  pull(4) %>% 
+  mean()
+```
+
+Unfortunately, this results in 12 lines of code with a lot of duplication. 
+A slightly better technique would be to first create a function and then use
+that function.
+
+```{r include=FALSE}
+get_column_mean <- function(data, index) {
+  data %>% 
+    pull(index) %>% 
+    mean()
+}
+```
+
+```{r get_column_mean_fcn, exercise=TRUE}
+get_column_mean <- function(data, index) {
+  data %>% 
+    pull(index) %>% 
+    mean()
+}
+```
+
+To get the column means of `x`, we can now use the following.
+
+```{r run_function, exercise=TRUE}
+get_column_mean(data = x, index = 1)
+get_column_mean(data = x, index = 2)
+get_column_mean(data = x, index = 3)
+get_column_mean(data = x, index = 4)
+```
+
+We've reduced the number of lines of code from 12 to nine. However, there still
+exists four lines of nearly the same code. All that varies is the column index
+we use to compute the mean. This works okay here since we only have four 
+columns in our data frame. What if
+we had 100, or 1,000, or even 10,000 columns? Data this large is not uncommon, 
+and we certainly do not want to have 10,000 function calls of 
+`get_column_mean()` where the only variation is in the index.
+
+How can we reduce the code duplication even more?
+
+## Iteration with `for` loops
+
+Looking back at our previous code, we see that the only variation is with
+regards to the column index in which we want to compute the mean.
+
+```{r eval=FALSE}
+get_column_mean(data = x, index = 1)
+get_column_mean(data = x, index = 2)
+get_column_mean(data = x, index = 3)
+get_column_mean(data = x, index = 4)
+```
+
+A `for` loop
+is one type of loop available in R that can easily automate our process and
+eliminate this duplication.
+
+<div class="info">
+**Note!** R also has `while` and `repeat` loops. The `for` loop is the most
+common and is available in almost every programming language. More information
+on `while` loops can be found
+[here](https://r4ds.had.co.nz/iteration.html#unknown-sequence-length).
+</div>
+
+### Syntax
+
+Let's simplify our repeated code by using a `for` loop. Below we'll discuss
+the key components. Run the code below and verify the means match what we
+saw in the last section.
+
+```{r for_loop_syntax, exercise=TRUE}
+output <- numeric(ncol(x))  # output vector to store results, line 1
+
+for (i in seq_along(x)) {   # define our looping sequence, line 3
+  output[i] <- get_column_mean(data = x, index = i) # code to iterate
+}
+
+output
+```
+
+### `for` loop components
+
+1. Before the loop, you'll need to create an object to store your results. In
+   the example above, we created a numeric vector that is the same length as
+   the number of columns in our data frame `x`.
+    ```{r include=FALSE}
+    output <- numeric(ncol(x))
+    output
+    ```
+    ```{r output_vec, exercise=TRUE}
+    output <- numeric(ncol(x))
+    output
+    ```
+   By default, each element of the vector is 0. Soon we'll fill these in with
+   our mean calculations.
+   
+2. Next you'll need to define the looping sequence. This begins with the R
+   keyword `for` and is wrapped in parentheses. The variable `i` is a dummy
+   variable. Let's look at how `seq_along()` works with our data frame `x`.
+   ```{r seq_along_example, exercise=TRUE}
+   seq_along(x)
+   ```
+   This is a convenient way to get a vector from 1 to the number of columns in
+   a data frame. The sequence, `i in seq_along(x)` means that each run
+   of our loop, `i` will take on the next value in `seq_along(x)`, starting with
+   1 the first time through the loop.
+   
+3. The last main component is the loop's body. This is code we have seen before.
+   The code is run repeatedly each time for a different value of `i`. The
+   first time through we would have
+   ```{r include=FALSE}
+   output[1] <- get_column_mean(data = x, index = 1)
+   ```
+   ```{r loop_body_1, exercise=TRUE}
+   output[1] <- get_column_mean(data = x, index = 1)
+    
+   output
+   ```
+   The second time through the loop we would have
+   ```{r loop_body_2, exercise=TRUE}
+   output[2] <- get_column_mean(data = x, index = 2)
+    
+   output
+   ``` 
+   The iteration stops once `i` reaches the end of the looping sequence. In our
+   small example, that would be once the code body is run for when `i` is 
+   assigned the value of 4.
+   
+### Exercise 1
+
+Object `mtcars` is a data frame
+available in `base` R that comprises fuel consumption and 10 aspects of 
+automobile design and performance for 32 automobiles in models from 1973 - 1974.
+Below is a preview.
+
+```{r preview_mtcars}
+mtcars
+```
+
+Use a `for` loop to compute the median of every column in `mtcars`.
+
+```{r ex1, exercise=TRUE}
+
+```
+
+```{r ex1-solution}
+result <- numeric(length = ncol(mtcars)) # output vector
+
+for (j in seq_along(mtcars)) {           # define looping sequence
+  result[j] <- mtcars %>%                # loop body
+    pull(j) %>% 
+    median()
+}
+
+result
+```
+
+
+### Exercise 2
+
+Use a `for` loop to compute the number of unique values in each column of the `planes` data frame
+from the `nycflights13` package. Recall that this package has already been
+loaded.
+   
+```{r ex2, exercise=TRUE}
+
+```
+
+```{r ex2-solution}
+result <- numeric(length = ncol(planes))
+
+for (i in 1:length(planes)) {
+  result[i] <- planes %>% 
+    pull(i) %>% 
+    unique() %>% 
+    length()
+}
+
+result
+```
+
+## Iteration caution
+
+Many of the functions available in `base` R and other packages are vectorized.
+This means that if you have a vector `x` with n elements and pass this
+vector into a vectorized function, the function will be applied to each
+element of `x`. For example:
+
+```{r include=FALSE}
+x <- -4:4
+x
+```
+
+```{r create_x, exercise=TRUE}
+x <- -4:4
+x
+```
+
+```{r vectorize_ex_1, exercise=TRUE}
+abs(x)
+```
+
+```{r vectorize_ex_2, exercise=TRUE}
+sqrt(abs(x))
+```
+
+You could use a `for` loop to do the above computations, but this is not
+recommended. It is inefficient, and you will not be harnessing R's full power
+and functionality. Run the code below to verify you get the same answer
+as above for taking the square root of the absolute value of `x`.
+
+```{r bad_for_loop, exercise=TRUE}
+x <- -4:4
+output <- numeric(length(x))
+
+for (k in 1:length(x)) {
+  output[k] <- sqrt(abs(x[k]))
+}
+
+output
+```
+
+To determine if you'll need a loop to tackle your task or not, first look at 
+the help for the functions you plan to work with to understand if they
+are vectorized or not. Most functions you apply to a vector will be
+vectorized and a loop will not be required. If you need to apply a function to
+each column of a data frame or each component in a list, then you may need
+to accomplish that task with a `for` loop.
+
+## Check your understanding
+
+Below are some questions to check your understanding on iteration with `for`
+loops.
+
+```{r quiz, echo=FALSE}
+quiz(
+    question("A `for` loop is primarily comprised of",
+    answer("an output object, a looping sequence, and a body.",
+           correct = TRUE,
+           message = "These are the three main pieces."),
+    answer("an output object, a looping sequence, a body, and a return statement.",
+           message = ""),
+    answer("an input object, a looping sequence, and a body.",
+           message = ""),
+    answer("an argument, a name, a looping sequence, and a body.",
+           message = ""),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  ),
+  
+  question("`for` loops have a finite number of iterations.",
+    answer("True", 
+           correct = TRUE,
+           message = "The loop ends once it reaches the end of the looping
+                      sequence."),
+    answer("False", 
+           message = "The loop ends once it reaches the end of the looping
+                      sequence."),
+    random_answer_order = TRUE
+  ),
+  
+  question("The `for` loop is the only type of loop that exists in R.",
+    answer("True",
+           message = "R also supports `while` and `repeat` loops."),
+    answer("False", 
+           correct = TRUE,
+           message = "R also supports `while` and `repeat` loops."),
+    random_answer_order = TRUE
+  ),
+  
+  question("The R code `numeric(10)` will ",
+    answer("create a numeric vector of length 10 of all zeros.",
+           correct = TRUE,
+           message = ""),
+    answer("create a numeric vector of length 9 of all zeros.",
+           message = ""),
+    answer("create a numeric vector of the numbers 1 through 10.",
+           message = ""),
+    answer("create a numeric vector of the numbers 0 through 9.",
+           message = ""),
+    answer("create a null vector with enough memory for 10 elements.",
+           message = ""),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  ),
+  
+  question("The dummy variable used in a `for` loop must be `i`.",
+    answer("True",
+           message = "Any variable name can be used. By convention, people
+                      commonly use i, j, or k."),
+    answer("False",
+           correct = TRUE,
+           message = "Any variable name can be used. By convention, people
+                      commonly use i, j, or k."),
+    random_answer_order = TRUE
+  )
+)
+```
+
+## References
+
+1. Grolemund, G., & Wickham, H. (2020). 21 Iteration | R for Data Science. 
+   Retrieved from https://r4ds.had.co.nz/iteration.html.

@@ -1,0 +1,561 @@
+---
+title: Tidy data wrangling with `dplyr`
+output: 
+  learnr::tutorial:
+    theme: cerulean
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+library(tidyverse)
+library(knitr)
+library(learnr)
+
+pokemon <- read_csv("data/pokemon.csv")
+```
+
+## Tidy data
+
+>*Все счастливые семьи похожи друг на друга, каждая несчастливая семья несчастлива по-своему.*
+
+As Tolstoy write in Anna Karenina, "all happy families are alike; each unhappy 
+family is unhappy in its own way." The same is true of tidy data. All *tidy* 
+datasets are alike; each untidy dataset is untidy in its own way. The three
+characteristics of tidy datasets are as follows:
+
+- Each variable forms a column,
+- Each observation forms a row, and
+- Each type of observational unit forms a table.
+
+## Today's dataset
+
+Today's dataset was posted to Kaggle by Mario Tormo Romero, who scraped the data 
+from [the Pokemon Database](https://pokemondb.net) and 
+[Serebii](https://www.serebii.net). It has been slightly modified for the 
+purposes of this tutorial. 
+
+The dataset contains information on all Pokemon, including alternate forms,
+through Generation 8 (Pokemon Sword and Shield). Pokemon have various
+characteristics unique to each one. The variables in the `pokemon` dataset are
+listed below.
+
+- `pokedex_number`: a catelogue number of each Pokemon
+- `generation`: which video game generation the Pokemon is from
+- `leg_status`: whether a Pokemon is sub-legendary, legendary, mythical, or none
+- `type_1`, `type_2`: what "type" a Pokemon is (fire, water, electric, etc.)
+- `bst`: the base stat total of a Pokemon (a proxy for its effectiveness in 
+combat)
+- `hp`, `atk`, `def`, `spa`, `spd`, `spe`: a Pokemon's battle statistics (HP,
+attack, defense, special attack, special defense, and speed, respectively)
+
+## Introducing dplyr
+
+The `dplyr` package introduces functions as verbs that manipulate data frames,
+and is part of the core `tidyverse`. When we run `library(tidyverse)`, the 
+`dplyr` package is automatically loaded.
+
+We `dplyr`, we can 
+- `glimpse` the entire dataset 
+- `filter` for rows matching certain criteria
+- `select` columns by name
+- `mutate` new variables 
+- ... and so much more!
+
+Today's dataset has already been loaded into the environment for you by using
+the `read_csv` function in the `tidyverse` using the following code:
+
+```{r eval = F}
+library(tidyverse)
+read_csv("data/pokemon.csv")
+```
+
+Let's start by taking a `glimpse` of the dataset. Run the following code. What
+do you see?
+
+```{r glimpse, exercise = TRUE}
+glimpse(pokemon)
+```
+
+The `glimpse` gives us a quick glimpse into the main features of the dataset:
+the number of observations and variables, as well as each variable, what type it
+is, and the first few observations in the dataset.
+
+## The %>% operator
+
+The pipe operator ` %>% ` is used for many data manipulation tasks. You can 
+pronounce it as "and then".
+
+Think about the following sequence of actions: 
+- Find keys 
+- Unlock car 
+- Start car 
+- Drive to Duke
+- Park
+
+Expressed as a set of nested functions in R pseudocode this would look like:
+```{r eval=FALSE}
+park(drive(start_car(find("keys")), to = "campus"))
+```
+
+Writing it out using pipes give it a more natural (and easier to read) 
+structure:
+
+```{r eval=FALSE}
+find("keys") %>%
+  start_car() %>%
+  drive(to = "campus") %>%
+  park()
+```
+
+When writing functions with `dplyr`, there are a set of rules that must be
+followed. The first argument must *always* be a data frame, and `dplyr` 
+functions always return data frames (unless specifically told not to). In each
+step, we use a series of pipes (`%>%`), which pipe the output of the previous 
+line of code as the first input of the next line of code. 
+
+## Logical operators in R
+
+You will commonly need to use the following operators in R to compare different
+variables against values or each other:
+
+Operator    | Definition                   
+------------|------------------------------
+`<`         | less than                    
+`<=`        |	less than or equal to        
+`>`         | greater than                 
+`>=`        |	greater than or equal to     
+`==`        |	exactly equal to             
+`!=`        |	not equal to                 
+`x & y`     | `x` AND `y`                  
+`x`&nbsp;&#124;&nbsp;`y`     | `x` OR `y`  
+`is.na(x)`  | test if `x` is `NA`          
+`x %in% y`  | test if `x` is in `y`        
+`!x`        | not `x`                      
+
+Note that R stores missing values as `NA`.
+
+## Diving into `dplyr`!
+
+We'll now take a look at some of the most commonly used `dplyr` functions. In
+each example, try to read the code in "plain English," and see if the output
+matches your expectation. The functions in `dplyr` are designed to "make sense,"
+if you will. If you still do not know what each function does after looking
+at the code and output, check the documentation by typing in `?` followed by the
+function in order to look at the documentation. For instance, `?filter`. As well, 
+note the use of the logical operators introduced in the previous section.
+
+## `filter`
+
+`filter` can be used to select a subset of rows based on variables in the 
+dataset:
+
+```{r filter-1, exercise = TRUE}
+pokemon %>%
+  filter(leg_status == "Legendary")
+```
+
+`filter` can also be used to select a subset of rows:
+
+```{r filter-2, exercise = TRUE}
+pokemon %>%
+  filter(type_1 == "Grass" | type_2 == "Grass")
+```
+
+## `select` 
+
+`select` can be used to keep certain *variables* (columns) in the dataset. 
+Notice that the following code first filters for grass type Pokemon, *and then*
+selects certain variables:
+
+```{r select-1, exercise = TRUE}
+pokemon %>%
+  filter(type_1 == "Grass" | type_2 == "Grass") %>% 
+  select(name, type_1, type_2, height_m, weight_kg)
+```
+
+`select` can also be used to exclude variables by adding a `-` in front of the
+variables you wish to exclude:
+
+```{r select-2, exercise = TRUE}
+pokemon %>%
+  filter(type_1 == "Grass" | type_2 == "Grass") %>% 
+  select(-pokedex_number, -generation, -leg_status, -type_1, -type_2)
+```
+
+Finally, you can `select` a range of variables depending on their position in 
+the dataset:
+
+```{r select-3, exercise = TRUE}
+pokemon %>%
+  filter(type_1 == "Grass" | type_2 == "Grass") %>% 
+  select(name, bst:spe)
+```
+
+## `slice` 
+
+`slice` is used to take "slices" of the data based on their row indices:
+
+```{r slice-1, exercise = TRUE}
+pokemon %>%
+  filter(type_1 == "Grass" | type_2 == "Grass") %>% 
+  select(name, bst:spe) %>% 
+  slice(1, 23)
+```
+
+```{r slice-2, exercise = TRUE}
+pokemon %>%
+  filter(type_1 == "Grass" | type_2 == "Grass") %>% 
+  select(name, bst:spe) %>% 
+  slice(2, 5:8)
+```
+
+## `pull`
+
+`pull` is used to extract certain variables (columns) as *vectors* instead of as
+dataframes. This comes in handy for certain applications, where we require the
+data to be vectors specifically. For now, just know that this is something that
+can be done.
+
+```{r pull-1, exercise = TRUE}
+pokemon %>%
+  slice(1:3) %>%
+  pull(name)
+```
+
+vs.
+
+```{r pull-2, exercise = TRUE}
+pokemon %>%
+  slice(1:3) %>%
+  select(name)
+```
+
+## `sample_n` and `sample_frac`
+
+`sample_n` and `sample_frac` are used to create random samples (of rows, or
+observations) in our dataset based on either the number of observations desired
+or by the fraction of the total dataset required. For the purposes of 
+reproducible research, it is always good to set a random seed prior to choosing
+a random sample so others can reproduce your work.
+
+```{r sample-n, exercise = TRUE}
+set.seed(1)
+pokemon %>%
+  select(name, type_1, type_2) %>% 
+  sample_n(5, replace = FALSE)
+```
+
+vs.
+
+```{r sample-frac, exercise = TRUE}
+set.seed(12345)
+pokemon %>% 
+  select(name, type_1, type_2) %>% 
+  sample_frac(0.01, replace = FALSE)
+```
+
+## `distinct`
+
+`distinct` allows us to look for unique, or distinct, observations:
+
+```{r distinct, exercise = TRUE}
+pokemon %>% 
+  select(type_1) %>% 
+  distinct()
+```
+
+## `arrange`
+
+`arrange` allows us to sort the observations in order, either ascending (by
+default) or descending:
+
+```{r arrange-1, exercise = TRUE}
+pokemon %>% 
+  select(type_1) %>% 
+  distinct() %>% 
+  arrange(type_1)
+```
+
+vs.
+
+```{r arrange-2, exercise = TRUE}
+pokemon %>% 
+  select(type_1) %>% 
+  distinct() %>% 
+  arrange(desc(type_1))
+```
+
+## `summarize` 
+
+`summarize` creates new variables based on summary statistics of existing data.
+Note that like all `dplyr` output (except `pull`), we get data frames at the
+ends of our pipelines. However, in this case we are reducing the data into
+summary statistics -- these are *not* individual-level observations anymore!
+
+```{r summarize, exercise = TRUE}
+pokemon %>%
+  summarize(avg_ht = mean(height_m, na.rm = T),
+            avg_wt = mean(weight_kg, na.rm = T))
+```
+
+## `group_by` 
+
+Often times in our analysis, we want to perform a task grouped by a certain 
+variable. For instance, the following example does the same task as seen on the
+previous page for `summarize`, but this time we are are grouping by
+`leg_status`. Compare the output from the code below to the one on the previous
+page:
+
+```{r group, exercise = TRUE}
+pokemon %>%
+  group_by(leg_status) %>%
+  summarise(avg_ht = mean(height_m, na.rm = T),
+            avg_wt = mean(weight_kg, na.rm = T))
+```
+
+## `count` 
+
+`count` allows us to count observations in groups:
+
+```{r}
+pokemon %>%
+  count(leg_status)
+```
+
+## `mutate` 
+
+We can create new variables in the dataset by using the `mutate` function. 
+Examine the following pipeline of variables. How would you read it in plain
+English? We might say
+
+- First, start with pokemon, *and then*
+- mutate a new variable `bmi` equal to `weight_kg` divided by `height_m` 
+squared, *and then*
+- arrange by `bmi` from smallest to largest, *and then*
+- slice the first five observations, *and then*
+- select the `name` and `bmi` variables
+
+How is the `mutate` function used in the example below?
+
+```{r mutate-1, exercise = TRUE}
+pokemon %>% 
+  mutate(bmi = weight_kg / height_m^2) %>% 
+  arrange(bmi) %>% 
+  slice(1:5) %>% 
+  select(name, bmi)
+```
+
+Is the output as you expect?
+
+Note that you can `mutate` many variables into your dataset by separating them
+with commas.
+
+## Save new variables for later
+
+It's often the case when when creating new variables, you want to use them in
+further analyses down the line. We can use the `<-` operator in R to assign
+values. For instance, the following example `mutate`s a new variable `bmi`, and
+then overwrites the original `pokemon` dataset.
+
+```{r mutate-2, exercise = TRUE}
+pokemon <- pokemon %>% 
+  mutate(bmi = weight_kg/height_m^2)
+
+glimpse(pokemon)
+```
+
+#### `case_when`
+
+We can also use the `case_when` function to create a new variable with certain
+values based on *cases* of another variable *when* it satisfies certain 
+conditions. For instance, examine the following example. What is the code
+doing?
+
+```{r case-when, exercise = TRUE}
+pokemon %>%
+  mutate(bmi_cat = case_when(bmi < 25             ~ "Non-overweight",
+                             bmi >= 25 & bmi < 30 ~ "Overweight",
+                             bmi >= 30            ~ "Obese")) %>% 
+  count(bmi_cat)
+```
+
+## On your own!
+
+The following exercises are designed to familiarize you with using logical
+operators and `dplyr` pipelines. Try each of the tasks below using a `dplyr`
+pipeline and check your answers against the solution for each exercise.
+
+1. Create a data frame that displays the number of Pokemon by their legendary 
+status
+
+```{r ex-1, exercise = TRUE}
+pokemon %>% 
+
+```
+
+```{r ex-1-solution}
+pokemon %>%
+  count(leg_status)
+```
+
+2. Create a data frame that lists all unique type combinations (note that "None" 
+is a valid secondary type). Arrange the list in alphabetical order by primary 
+type and then by secondary type.
+
+```{r ex-2, exercise = TRUE}
+pokemon %>% 
+
+```
+
+```{r ex-2-solution}
+pokemon %>%
+  distinct(type_1, type_2) %>% 
+  arrange(type_1, type_2)
+```
+
+3. Create a data frame that displays the number of "Legendary" Pokemon by their 
+primary type (`type_1`)
+
+```{r ex-3, exercise = TRUE}
+pokemon %>% 
+
+```
+
+```{r ex-3-solution}
+pokemon %>%
+  filter(leg_status == "Legendary") %>% 
+  count(type_1)
+```
+
+4. Create a data frame that displays the "Legendary" Pokemon from generation 4. 
+Only display their names, primary type, and secondary type
+
+```{r ex-4, exercise = TRUE}
+pokemon %>% 
+
+```
+
+```{r ex-4-solution}
+pokemon %>%
+  filter(leg_status == "Legendary",
+         generation == 3) %>% 
+  select(name, type_1, type_2)
+```
+
+5. Create a data frame that displays all Pokemon with base stat totals of 600 or 
+more that are NOT "Legendary" or "Mythical." Only display the names of the 
+Pokemon and their base stat totals, and arrange from highest base stat totals
+to lowest.
+
+```{r ex-5, exercise = TRUE}
+pokemon %>% 
+
+```
+
+```{r ex-5-solution}
+pokemon %>%
+  filter(leg_status != "Legendary" & 
+         leg_status != "Mythical" &
+         bst >= 600) %>% 
+  select(name, bst) %>% 
+  arrange(desc(bst))
+```
+
+6. Create a data frame that displays the mean base stat total of Pokemon by 
+their primary type. Arrange in order of highest mean base stat total to lowest.
+
+```{r ex-6, exercise = TRUE}
+pokemon %>% 
+
+```
+
+```{r ex-6-solution}
+pokemon %>%
+  group_by(type_1) %>% 
+  summarize(mean_bst = mean(bst)) %>% 
+  arrange(desc(mean_bst))
+```
+
+7. Create a new variable named `special` that denotes whether a Pokemon is
+special ("Legendary" or "Mythical") or not special ("Not Legendary" or "Sub
+Legendary"), then create a data frame which displays the number of special
+Pokemon by their primary type, arranged from least to most.
+
+```{r ex-7, exercise = TRUE}
+pokemon %>% 
+
+```
+
+```{r ex-7-solution}
+pokemon %>%
+  mutate(special = case_when(leg_status %in% c("Legendary", "Mythical") ~ "Special",
+                             leg_status %in% c("Not Legendary", "Sub Legendary") ~ "Not special")) %>% 
+  group_by(type_1) %>% 
+  count(special) %>% 
+  filter(special == "Special") %>% 
+  arrange(n)
+```
+
+8. Create a new variable which depicts whether a pokemon is "offensive," 
+"defensive," or "balanced." An offensive Pokemon has attack + special attack
+greater than defense + special defense, and vice-versa for a defense Pokemon.
+A balanced Pokemon has attack + special attack equal to defense + special 
+defense. Save this new variable into your dataset (we will be using it
+again later!). <br><br>
+In a separate pipeline, create a data frame which counts the number
+of offensive, defensive, and balanced Pokemon.
+
+```{r ex-8, exercise = TRUE}
+pokemon <- pokemon %>% 
+
+pokemon %>% 
+```
+
+```{r ex-8-solution}
+pokemon <- pokemon %>%
+  mutate(odb = case_when(atk + spa > def + spd ~ "Offensive",
+                         atk + spa < def + spd ~ "Defensive",
+                         atk + spa == def + spd ~ "Balanced"))
+pokemon %>% 
+  count(odb)
+```
+
+
+9. Suppose all Pokemon are perfect spheres with diameter equal to their heights.
+Calculate each Pokemon's density. Create a data frame which lists only the 
+Pokemon whose spherical forms would sink in water (density of 1000 kilograms per
+cubic meter), arranged from the most dense to the least dense. In your data 
+frame, display only the Pokemon's name, its density, and primary and secondary 
+types. The formula for the volume of a sphere is $\frac{4}{3}\pi r^3$.<br><br>
+Is anything surprising?
+
+```{r ex-9, exercise = TRUE}
+pokemon %>% 
+
+```
+
+```{r ex-9-solution}
+pokemon %>%
+  mutate(vol = 4/3*pi*(height_m/2)^3,
+         density = weight_kg/vol) %>% 
+  filter(density > 1000) %>% 
+  arrange(desc(density)) %>% 
+  select(name, density, type_1, type_2)
+
+# As it turns out, all Pokemon, if they were spherical, would float on water,
+# with the exception of the 14 Pokemon displayed above! Yes, Cosmoem IS that
+# dense (and is actually pretty spherical!)
+```
+
+10. Use `dplyr` pipelines to perform an investigation of your choice in the
+`pokemon` dataset. What insight(s) or observation(s) can you find as a result
+of your data wrangling?
+
+```{r ex-10, exercise = TRUE}
+pokemon %>% 
+  
+```

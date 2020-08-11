@@ -1,0 +1,158 @@
+---
+title: Data types in R
+output: 
+  learnr::tutorial:
+    theme: cerulean
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+library(knitr)
+library(learnr)
+library(tidyverse)
+```
+
+## Data types in R
+
+There are a number of data types in R. The most common ones that you will run 
+into as you begin your journey in R are
+
+- `logical`: boolean values `TRUE` or `FALSE` (often abbreviated as `T` or `F`)
+- `double`: floating point numerical values (the default numerical type)
+- `integer`: integer numerical values (take up less "space" than doubles). To 
+force R to use an integer instead of a double, write `L` after the number.
+- `character`: character strings
+
+We can use the `typeof` function to find the data type of an object in R. Try 
+using the `typeof` function in the space provided:
+
+```{r typeof, exercise = TRUE}
+typeof(TRUE)
+typeof(F)
+typeof("hello")
+typeof("F")
+typeof(1.2385)
+typeof(8)
+typeof(7L)
+typeof(1:3)
+```
+
+when reading data into R and glimpsing it using the `glimpse` command from the
+`tidyverse`, you'll often see what data type each variable is (for instance,
+`<chr>` or `<dbl>`, etc.).
+
+## Vectors
+
+A collection of elements that are all the same data type is called a **vector**.
+Vectors can be constructed using the `c()` function, which stands for 
+concatenation. Note that all elements of a vector must be the same data type. 
+**Implicit coercion** will happen if you mix types. Try running the following 
+code. What do you notice?
+
+```{r vectors, exercise = TRUE}
+x <- c(1, 2, 3)
+x
+typeof(x)
+
+y <- c("Hello", "World!")
+y
+typeof(y)
+
+z <- c(1, "Hello")
+z
+typeof(z)
+
+w <- c(1, -4:-8, TRUE, FALSE)
+w
+typeof(w)
+```
+
+In general, R will convert all values of a vector to the simplest type needed to
+represent all the information.
+
+## Missing and special values
+
+R uses `NA` to represent missing values in its data structures:
+
+```{r na, exercise = TRUE}
+typeof(NA)
+
+x <- c(4, NA, pi, log(2))
+x
+typeof(x)
+
+y <- c(NA, NA, NA)
+y
+typeof(y)
+```
+
+R also has the following special values which are often used in mathematical
+evaluation:
+
+- `NaN`: not a number
+- `Inf`: positive infinity
+- `-Inf`: negative infinity
+
+Play around with some of these values in the following area:
+
+```{r nan-inf, exercise = TRUE}
+-pi / 0
+
+0 / 0
+
+1 / 0 - 1 / 0
+
+NaN / NA
+```
+
+What is the type of the following vectors? Explain why they have that type.
+
+- `c(1, NA + 1L, "C")`
+- `c(1L / 0, NA)`
+- `c(1:3, 5)`
+- `c(3L, NaN + 1L)`
+- `c(NA, TRUE)`
+
+Check your answers in the space above. Were you correct?
+
+## Data "sets"
+
+A data set is not a formal data class in R. A tidy data "set" can be one either
+a `tibble` or a `data.frame`. `data.frame`s are the most commonly used data
+**structure** in R, and is just a list of equal length vectors. Each vector is
+treated as a column and elements of the vectors are rows. A `tibble` is a type 
+of data frame that makes data analysis easier, and is part of the `tidyverse`. 
+
+Most often, data frames are constructed by reading in data from an external
+file or library, but we can also create them from scratch. Let's create a 
+data frame named `df` in the following code, and take a look at the `class` of
+the data frame, as well as `glimpse` what's in it. We can also extract elements
+of data frames by using the `$` operator. Consider the example below:
+
+```{r data-set, exercise = TRUE}
+df <- tibble(x = 1:3,
+             y = c("a", "b", "c"))
+class(df)
+glimpse(df)
+
+attributes(df)
+df$x
+class(df$x)
+class(df$y)
+```
+
+## A word of caution
+
+Be careful about data types / classes! Sometimes R makes silly assumptions 
+about your data class. Using `tibbles` help, but it might not solve all issues.
+Think carefully about your data in context: a 0/1 variable is more likely a
+binary variable that should be treated categorically (perhaps as a factor, which
+is covered in another `learnr` tutorial in this series).
+
+If a plot or output is not behaving the way you expect, first investigate the
+data class. If you are absolutely sure of a data class (and the existing class
+is wrong), over-write it in your tibble so that you don't need to keep having to 
+keep track of it (perhaps by using `mutate`).

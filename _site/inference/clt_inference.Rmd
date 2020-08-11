@@ -1,0 +1,389 @@
+---
+title: "CLT-Based Inference with Infer"
+output: 
+  learnr::tutorial:
+    progressive: false
+    theme: "cerulean"
+    allow_skip: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(knitr)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  exercise.timelimit = 3
+)
+```
+
+```{r include=FALSE}
+library(learnr)
+library(knitr)
+```
+
+## Introduction
+
+In this tutorial you will learn the basics of CLT-based inference using the 
+`infer` package. To begin we load the necessary packages. Remember, if you 
+haven't already installed `infer`, do that first.
+
+```{r eval = FALSE}
+install.package("infer")
+```
+
+
+```{r load-packages}
+library(tidyverse)
+library(infer)
+```
+
+Recall the **Central Limit Theorem**. For a population with mean $\mu$ and 
+standard deviation $\sigma$ the distribution of $\bar{X}$ is normal, centered 
+at $\mu$, and with variability inversely proportional to the square root of the
+sample size.
+
+$$Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \sim N(0,1)$$ 
+
+We often don't know $\sigma$ so we estimate from our sample data using $s$. The 
+test statistic below has a $t$-distribution with $n-1$ degrees of freedom.
+
+$$T = \frac{\bar{X} - \mu}{s/\sqrt{n}} \sim t_{n-1}$$ 
+
+Relative to the normal distribution, the $t$ distribution has thicker tails to
+make up for the additional variability incurred by using $s$ to estimate 
+$\sigma$.
+
+## Exploring the Data
+
+We will use the `gss` data from the `infer` package. This data set contains a 
+sample of 500 entries from the General Social Survey (GSS). The GSS is a 
+national survey of American society and opinions that has been conducted since
+1972.
+
+First, familiarize yourself with the data set and variables using the code 
+below. You can learn more about the General Social Survey by visiting their 
+[website](https://gss.norc.org/).
+
+```{r eval = FALSE}
+?gss
+```
+
+We will focus on the hours variable, the number of hours worked in the week 
+before the survey, truncated at 89. We are interested in determining if the 
+sample data provide convincing evidence that Americans, on average, work more 
+than 40 hours per week.
+
+Let's first conduct a brief exploratory data analysis. Begin by creating a 
+well-labeled histogram of the number of hours worked per week.
+
+```{r ex1, exercise=TRUE}
+
+```
+
+```{r ex1-solution}
+ggplot(data = gss, aes(x = hours)) +
+  geom_histogram(binwidth = 2) +
+  labs(x = "Hours Worked Per Week", y = "Count")
+```
+
+Next, calculate summary statistics for the number of hours worked per week, 
+including the sample mean `xbar`, standard deviation `s`, and sample size `n`.
+Store the results in `hours_summary`.
+
+```{r ex2, exercise = TRUE}
+
+```
+
+```{r ex2-solution}
+hours_summary <- gss %>%
+  summarize(
+    xbar = mean(hours),
+    s = sd(hours),
+    n = n()
+  )
+hours_summary
+```
+
+
+
+```{r echo = FALSE}
+hours_summary <- gss %>%
+  summarize(
+    xbar = mean(hours),
+    s = sd(hours),
+    n = n()
+  )
+```
+
+## Hypothesis Testing
+
+Does the sample data provide convincing evidence that Americans, on average, 
+work more than 40 hours per week?
+
+We first write out the appropriate null and alternative hypothesis. 
+
+- $H_o: \mu = 40$
+- $H_a: \mu > 40$
+
+We will calculate the test statistic step-by-step. First pull our summary data 
+from `hours_summary`.
+
+```{r}
+n <- hours_summary %>% pull(n)
+s <- hours_summary %>% pull(s)
+xbar <- hours_summary %>% pull(xbar)
+```
+
+Next, we calculate the standard error using `s` and `n`.
+
+```{r}
+se <- s / sqrt(n)
+```
+
+Then, we use the sample mean `xbar` and the standard error `se` to calculate the
+test statistic.
+
+```{r}
+t <- (xbar - 40) / se
+```
+
+The test statistic is `r t`. 
+
+```{r}
+df <- n - 1
+```
+
+And the degrees of freedom is `r df`.
+
+
+Finally, we use the test statistic `t` and the `pt()` function in R to find the
+$p$-value.
+
+```{r}
+pt(t, df, lower.tail = FALSE)
+```
+
+The $p$-value is small, so we reject the null hypothesis. These data provide
+sufficient evidence at $\alpha = 0.05$ to conclude that Americans, on average,
+work more than 40 hours per week.
+
+
+We can use the `visualize` function from the `infer` package to plot the CLT - 
+based null null distribution. We indicate the test statistic with a red vertical 
+line and shade the region corresponding to the $p$-value in red.
+
+```{r}
+clt_based_null_distribution <- gss %>%
+  specify(response = hours) %>%
+  hypothesize(null = "point", mu = 40) %>%
+  calculate(stat = "t")
+
+
+clt_based_null_distribution %>%
+  visualize(method = "theoretical") +
+  shade_p_value(t, direction = "greater")
+```
+
+## Confidence Intervals
+
+Next we construct a confidence interval for the mean. Do you expect the 
+confidence interval to include 40?
+
+```{r}
+t_star <- qt(.95, df)
+xbar + c(-1, 1) * t_star * se
+```
+
+We are 95\% confident that the true average hours worked per week for adult 
+Americans is between `r round(xbar + -1 * t_star * se, 2)` and 
+`r round(xbar + 1 * t_star * se, 2)`.
+
+Instead of following the steps above every time we want to do a hypothesis test, 
+we can use the `t_test` function from the `infer` package to conduct a $t$-test.
+To do this we need to specify the following:
+
+
+- `x`: a tibble
+- `response`: the variable in `x` that serves as the response
+- `mu`: the hypothesized null mean value
+- `conf_int`: a logical value indicating whether to include a confidence 
+interval
+- `conf_level`: the confidence level
+
+
+```{r}
+t_test(
+  x = gss,
+  response = hours,
+  mu = 40,
+  conf_int = FALSE,
+  alternative = "greater",
+  conf_level = 0.95
+)
+```
+
+We reject the null hypothesis. These data provide sufficient evidence using 
+$\alpha = 0.05$ to conclude that Americans, on average, work more than 40 hours 
+per week.
+
+
+## Your turn!
+
+The GSS asks respondents to report their age at the time of the survey. Do these 
+data provide convincing evidence that the average age of American adults is 
+greater than 30?
+
+- $H_o: \mu = 30$
+- $H_a: \mu > 30$
+
+1. Calculate summary statistics and store the sample size as `n`, the standard 
+deviation as `s` and the sample mean as `xbar`.
+
+```{r ex3, exercise = TRUE}
+
+```
+
+```{r ex3-solution}
+age_summary <- gss %>%
+  summarize(
+    xbar = mean(age),
+    s = sd(age),
+    n = n()
+  )
+
+n <- age_summary %>% pull(n)
+s <- age_summary %>% pull(s)
+xbar <- age_summary %>% pull(xbar)
+```
+
+2. Calculate the standard error and store the result as `se`.
+
+```{r ex4, exercise = TRUE}
+
+```
+
+```{r ex4-solution}
+se <- s / sqrt(n)
+```
+
+3. Use the summary statistics and standard error to calculate the test 
+statistic.
+
+```{r ex5, exercise = TRUE}
+
+```
+
+```{r ex5-solution}
+t <- (xbar - 30) / se
+```
+
+4. What are the degrees of freedom?
+
+```{r ex6, exercise = TRUE}
+
+```
+
+```{r ex6-solution}
+df <- n - 1
+```
+
+5. Report the $p$-value.
+
+```{r ex7, exercise = TRUE}
+
+```
+
+```{r ex7-solution}
+pt(t, df, lower.tail = FALSE)
+```
+
+```{r quiz, echo=FALSE}
+quiz(
+  question("What is the appropriate statistical decision? Include a conclusion 
+           in the context of the problem.",
+    answer("We reject the null hypothesis.",
+      correct = TRUE,
+      message = "At a significance level of 5%, the data provide 
+           convincing evidence that the average age of American adults is
+           greater than 30."
+    ),
+    answer("We fail to reject the null hypothesis.",
+      message = ""
+    ),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  )
+)
+```
+
+6. Use the code chunk below to replicate the analysis above using the
+`t_test` function from the `infer` package.
+
+
+```{r ex8, exercise = TRUE}
+
+```
+
+```{r ex8-solution}
+t_test(
+  x = gss,
+  response = age,
+  mu = 30, alternative = "greater"
+)
+```
+
+7. In additional to hours worked per week, the GSS asked if the respondent 
+received a college degree. Use the `t_test` function from the `infer` package 
+to test if Americans with a college degree work the same number of hours per 
+week as Americans without a college degree. Remember, if you are confused 
+about a function you can pull up the documentation using `?t_test`.
+
+```{r ex9, exercise = TRUE}
+
+```
+
+```{r ex9-solution}
+t_test(
+  x = gss,
+  formula = hours ~ college,
+  order = c("degree", "no degree"),
+  alternative = "two-sided"
+)
+```
+
+
+```{r quiz2, echo=FALSE}
+quiz(
+  question("Report the p-value from Exercise #7 and provide an interpretation 
+  of the p-value in the context of the problem.",
+    answer("0.264",
+      correct = TRUE,
+      message = "If there was no relationship at all between college degree 
+      and hours worked per week, the probability that we would see a test 
+      statistic as or more favorable to the alternative hypothesis as what 
+      we observed is 0.264."
+    ),
+    answer("0.05",
+      message = ""
+    ),
+    answer("1.12",
+      message = ""
+    ),
+    answer("0.112",
+      message = ""
+    ),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  )
+)
+```
+
+
+
+## Resources and References
+
+- [Infer Website](https://infer.netlify.app/)
+- [General Social Survey Website](https://gss.norc.org/)

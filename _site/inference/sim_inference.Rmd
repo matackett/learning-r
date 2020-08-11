@@ -1,0 +1,450 @@
+---
+title: "Simulation-Based Inference with Infer"
+output: 
+  learnr::tutorial:
+    progressive: false
+    theme: "cerulean"
+    allow_skip: true
+runtime: shiny_prerendered
+---
+
+## Introduction
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r include=FALSE}
+library(learnr)
+library(knitr)
+```
+
+In this tutorial you will learn the basics of simulation-based inference using
+the `infer` package. To begin we load the necessary packages. Remember, if you 
+haven't already installed `infer`, do that first.
+
+```{r load-packages}
+library(tidyverse)
+library(infer)
+```
+
+Recall statistical hypothesis testing is the procedure that allows us to decide
+between two claims about the population parameter. We will follow a four step
+procedure to conduct a hypothesis.
+
+1. State the null and alternative hypothesis.
+
+2. Take a representative sample of the population, collect data, and summarize 
+the data with a statistic.
+
+3. Determine how likely it is to see data as or more surprising as what we 
+observed, assuming the null hypothesis is true.
+
+4. Make a decision. If our data is extremely unlikely assuming the null 
+hypothesis is true, we reject the null hypothesis. If our data is not extremely
+unlikely assuming the null hypothesis is true, we fail to reject the null 
+hypothesis.
+
+## Hypothesis Testing Steps
+
+We will use a real example to illustrate the steps of hypothesis testing. 
+Student cell phone use during exams (texting, searching the internet, 
+accessing class resources, etc) is a serious breach of academic integrity. 
+Suppose you are conducting a study of cheating in college courses and are 
+interested in determining if more than 5\% of students in a population of 
+interest have used their cell phone during an exam.
+
+#### 1. State the null and alternative hypothesis
+
+The null hypothesis is denoted $H_o$ and represents the status quo claim that 
+nothing unusual is going on. The alternative hypothesis is denoted $H_a$ and 
+states the opposite - there is something going on that merits further 
+investigation. Both hypotheses are defined for parameters (not statistics).
+
+Consider the null and alternative hypotheses in words below.
+
+- $H_o$: The true proportion of students who have used a cell phone during an 
+exam is equal to 5\%.
+- $H_a$: The true proportion of students who have used a cell phone during an 
+exam is greater than 5\%.
+
+```{r quiz1, echo=FALSE}
+quiz(
+  question("What is the appropriate way to express the null and alternative 
+           hypothesis in symbols?",
+    answer("Ho: p = 0.05 and Ha: p > 0.05",
+      correct = TRUE,
+      message = ""
+    ),
+    answer("Ho: p > 0.05 and Ha: p = 0.05",
+      message = ""
+    ),
+    answer("Ho: p = 0.05 and Ha: p < 0.05",
+      message = ""
+    ),
+    answer("Ho: p = 0.05 and Ha: p != 0.05",
+      message = ""
+    ),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  )
+)
+```
+
+#### 2. Take a representative sample of the population, collect data, and summarize the data with a statistic.
+
+
+Researchers took a representative sample of 267 students, surveyed them 
+confidentially and found that 27 had used a cell phone during an exam. 
+
+We first create a tibble with the sample data.
+
+```{r}
+cheating_data <-
+  tibble(outcome = c(rep("text", 27), rep("no text", 267 - 27)))
+glimpse(cheating_data)
+
+cheating_data %>%
+  count(outcome)
+```
+
+
+```{r quiz2, echo=FALSE}
+quiz(
+  question("The choice of summary statistic depends on the context. In this 
+  example, what is a natural choice?",
+    answer("27/267 = 0.1011",
+      correct = TRUE,
+      message = ""
+    ),
+    answer("1/20 = 0.05",
+      message = ""
+    ),
+    answer("267/27",
+      message = ""
+    ),
+    answer("1/2 = 0.50",
+      message = ""
+    ),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  )
+)
+```
+
+
+#### 3. Determine how likely it is to see data as or more surprising as what we observed, assuming the null hypothesis is true.
+
+We next find the probability of observing data as or more extreme as what we
+observed, assuming $H_o$ is true. This is called the $p$-value.
+
+First, we need to know what values of $\hat{p}$ we expect assuming the null 
+hypothesis is true. In other words, we need to simulate a distribution for 
+$\hat{p}$ assuming the probability of cheating is $0.05$.
+
+This null distribution for $\hat{p}$ tells us what sample proportions to expect, 
+assuming the null hypothesis is true.
+
+We will generate the null distribution using the `infer` package. We must 
+provide the following information.
+
+1. `specify()` 
+  - `response`: the outcome of interest in the appropriate data frame
+  - `success`: the level of the outcome we are interested in
+2. `hypothesize()`
+  - `null`: null hypothesis (point if you are doing inference on a point estimate
+  or independence if the null assumes independence between two variables)
+  - `p`: appropriate probabilities of success and failure
+3. `generate()` 
+  - `reps`: how many resamples to generate
+  - `type`: simulate for hypothesis testing (we did bootstrap earlier)
+4. `calculate()` our sample statistic
+
+Fill in the blanks in the code chunk below to generate the null distribution.
+
+```{r ex1, exercise = TRUE}
+null_dist <- ___ %>%
+  specify(response = ___, success = ___) %>% 
+  hypothesize(
+    null = ___, 
+    p = ___ 
+  ) %>% 
+  generate(reps = ___, type = ___) %>% 
+  calculate(stat = ___)
+```
+
+```{r ex1-solution}
+null_dist <- cheating_data %>%
+  specify(response = outcome, success = "text") %>%
+  hypothesize(
+    null = "point",
+    p = c("text" = 0.05, "no text" = 0.95)
+  ) %>%
+  generate(reps = 5000, type = "simulate") %>%
+  calculate(stat = "prop")
+```
+
+We examine the first few rows of `null_dist`.
+
+```{r echo = FALSE}
+null_dist <- cheating_data %>%
+  specify(response = outcome, success = "text") %>%
+  hypothesize(
+    null = "point",
+    p = c("text" = 0.05, "no text" = 0.95)
+  ) %>%
+  generate(reps = 5000, type = "simulate") %>%
+  calculate(stat = "prop")
+```
+
+
+```{r}
+head(null_dist)
+```
+
+
+```{r quiz3, echo=FALSE}
+quiz(
+  question("Where should the null distribution be centered?",
+    answer("0.05",
+      correct = TRUE,
+      message = ""
+    ),
+    answer("0.101",
+      message = ""
+    ),
+    answer("0.50",
+      message = ""
+    ),
+    answer("0",
+      message = ""
+    ),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  )
+)
+```
+
+
+Use the `visualize` function in `infer` to visualize the null 
+distribution.
+
+```{r}
+null_dist %>%
+  visualize()
+```
+
+It remains to calculate the $p$-value. Recall we observed a sample proportion 
+of $\hat{p} = 27 / 267 \approx 0.101$ and the $p$-value is the probability of
+observing data as or more extreme as what we observed, assuming $H_o$ is true.
+
+We will plot the null distribution again, but this time include a red vertical 
+line at the observed proportion $\hat{p} = 27/267 = 0.101$.
+
+```{r}
+phat <- 27 / 267
+
+null_dist %>%
+  visualize() +
+  shade_p_value(phat,
+    direction = "greater"
+  )
+```
+
+Intuitively, and without calculating any numbers, is what we observed surprising assuming the null hypothesis is true?
+
+```{r quiz4, echo=FALSE}
+quiz(
+  question("Without calculating any numbers and only examining the plot above,
+  is what  we observed in our sample surprising assuming the null hypothesis
+  is true?",
+    answer("Yes, we are extremely unlikely to observe sample proportions as 
+           large or larger as what we observed assuming the null hypothesis is 
+           true (p = 0.05).",
+      correct = TRUE,
+      message = ""
+    ),
+    answer("No, we are not surprised by sample proportions as large or larger 
+           as what we observed assuming the null hypothesis is
+           true (p = 0.05)."),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  )
+)
+```
+
+Now let's find the $p$-value
+
+```{r}
+null_dist %>%
+  filter(stat >= (27 / 267)) %>%
+  summarize(p_value = n() / nrow(null_dist))
+```
+
+#### 4. Make a Decision
+
+We reject $H_o$ if the $p$-value is small. A small $p$-value means we are 
+unlikely to observe something as or more extreme as what we observed
+assuming $H_o$ is true.
+
+How small is small enough? We use a threshold value called the significance or 
+$\alpha$ level set prior to collecting data. A common choice is $\alpha = 0.05$. 
+If $H_o$ is true, we expect to make the wrong decision 5\% of the time.
+
+If the $p$-value is $\alpha$ or greater, the results are not statistically
+significant.
+
+```{r quiz5, echo=FALSE}
+quiz(
+  question("Based on the p-value, what is the appropriate statistical decision 
+           and conclusion in context?",
+    answer("We reject the null hypothesis. There is convincing evidence that 
+           the proportion of college students who use their cell phones to 
+           cheat on exams is greater than 0.05.",
+      correct = TRUE,
+      message = ""
+    ),
+    answer("We fail to reject the null hypothesis. There is convincing evidence 
+    that the proportion of college students who use their cell phones to cheat 
+    on exams is greater than 0.05."),
+    answer("We reject the null hypothesis. We do not have convincing 
+        evidence that the proportion of college students who use their cell 
+        phones to cheat on exams is greater than 0.05."),
+    answer("We fail to reject the null hypothesis. We do not have convincing 
+        evidence that the proportion of college students who use their cell 
+        phones to cheat on exams is greater than 0.05."),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  )
+)
+```
+
+
+## Your Turn!
+
+We will use the `gss` data from the `infer` package. This data set contains a 
+sample of 500 entries from the General Social Survey (GSS). The GSS is a 
+national survey of American society and opinions that has been conducted since
+1972.
+
+First, familiarize yourself with the data set and variables using the code 
+below. You can learn more about the General Social Survey by visiting their 
+[website](https://gss.norc.org/).
+
+We will examine the variable `sex`, the respondent's self-identified sex and are
+interesting if the proportion of females in the population differs from 0.50.
+
+
+First, find the observed statistic. You can do this in using `dplyr` or using
+`specify` and `calculate` from `infer`.
+
+```{r ex2, exercise = TRUE}
+
+```
+
+```{r ex2-solution}
+phat <- gss %>%
+  specify(response = sex, success = "female") %>%
+  calculate(stat = "prop") %>%
+  pull(stat)
+```
+
+Next, generate the null distribution.
+
+```{r ex3, exercise = TRUE}
+
+```
+
+```{r ex3-solution}
+null_dist <- gss %>%
+  specify(response = sex, success = "female") %>%
+  hypothesize(
+    null = "point",
+    p = c("female" = 0.50, "male" = 0.50)
+  ) %>%
+  generate(reps = 5000, type = "simulate") %>%
+  calculate(stat = "prop")
+```
+
+Visualize the null distribution using the `visualize` function.
+
+```{r echo = FALSE}
+null_dist <- gss %>%
+  specify(response = sex, success = "female") %>%
+  hypothesize(
+    null = "point",
+    p = c("female" = 0.50, "male" = 0.50)
+  ) %>%
+  generate(reps = 5000, type = "simulate") %>%
+  calculate(stat = "prop")
+```
+
+```{r ex4, exercise = TRUE}
+
+```
+
+```{r ex4-solution}
+null_dist %>%
+  visualize()
+```
+
+Starting with the plot above, add a vertical line representing the sample 
+statistic and shade the region corresponding to the $p$-value.
+
+
+```{r echo = FALSE}
+phat <- gss %>%
+  specify(response = sex, success = "female") %>%
+  calculate(stat = "prop") %>%
+  pull(stat)
+```
+
+```{r ex5, exercise = TRUE}
+
+```
+
+```{r ex5-solution}
+null_dist %>%
+  visualize() +
+  shade_p_value(phat, direction = "two-sided")
+```
+
+```{r quiz6, echo=FALSE}
+quiz(
+  question("Based on the p-value, what is the appropriate statistical decision 
+           and conclusion in context?",
+    answer("We reject the null hypothesis. There is convincing evidence that 
+           the proportion of Americans who report their sex as female is 
+           different from 0.50.",
+      message = ""
+    ),
+    answer("We fail to reject the null hypothesis. There is convincing evidence
+    that  the proportion of Americans who report their sex as female is 
+           different from 0.50."),
+    answer("We reject the null hypothesis. We do not have convincing evidence that 
+           the proportion of Americans who report their sex as female is 
+           different from 0.50."),
+    answer("We fail to reject the null hypothesis. We do not have convincing evidence that 
+           the proportion of Americans who report their sex as female is 
+           different from 0.50.",
+      correct = TRUE
+    ),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  )
+)
+```
+
+
+
+
+## Resources and References
+
+- [Infer Website](https://infer.netlify.app/)
+- "The Use and Abuse of Cell Phones and Text Messaging During Class: A Survey of
+College Students". College Teaching, 2012.
+- [General Social Survey Website](https://gss.norc.org/)
