@@ -124,7 +124,7 @@ $(document).ready(function () {
 <p>Remember, you only need to install packages once, but you need to load them at the start of every session.</p>
 <pre class="r"><code>library(tidyverse)
 library(infer)</code></pre>
-<p>Recall that statistical inference refers to the process of generalizing from a sample to a population. We could use a single number (a point estimate) as our best guess of the population parameter but we often prefer a range of plausible values (an interval estimate or a confidence interval).</p>
+<p>Statistical inference refers to the process of generalizing from a sample to a population. We could use a single number (a point estimate) as our best guess of the population parameter but we often prefer a range of plausible values (an interval estimate or a confidence interval).</p>
 <p>To construct a confidence interval we need to quantify the variability of our sample statistic. We can do this using the Central Limit Theorem but today we will focus on a simulation-based method called bootstrapping. Invented in 1979 by Brad Efron, bootstrapping allows us to construct confidence intervals based on our sample data using resampling.</p>
 <p>In general, bootstrap methods</p>
 <ul>
@@ -146,21 +146,21 @@ library(infer)</code></pre>
 <h2>Exploring the Data</h2>
 <p>To introduce the bootstrap idea, we will use data and material from Tim Hesterberg’s Bootstrap Methods and Permutation Tests. A link is provided in the Resources and References panel below.</p>
 <p>The telecommunications conglomerate Verizon is both a local telephone company that maintains land-line phone services, called an Incumbent Local Exchange Carrier (ILEC), and a Competitive Local Exchance Carrier (CLEC), which means it sells long-distance services. If there is a service outage and a repair is needed, Verizon is obligated by law to make repairs as quickly for CLEC customers as their own. We will investigate the repair times (in hours) for the two types of customers.</p>
-<p>The data is in the <code>Verizon.csv</code> file. We read in the data and create subsets containing the ILEC and CLEC repair times.</p>
+<p>The data is in the <code>Verizon.csv</code> file. We read in the data and create subsets with the ILEC and CLEC repair times.</p>
 <pre class="r"><code>verizon &lt;- read_csv(&quot;data/verizon.csv&quot;)
 verizon_ilec &lt;- verizon %&gt;% filter(Group == &quot;ILEC&quot;)
 verizon_clec &lt;- verizon %&gt;% filter(Group == &quot;CLEC&quot;)</code></pre>
 <p>Create an appropriate plot of the repair times for ILEC and CLEC customers.</p>
 <div class="tutorial-exercise" data-label="ex1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":3,"exercise.checker":"NULL"}</script>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":5,"exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="ex1-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>ggplot(verizon, aes(x = Group, y = Time)) +
   geom_boxplot()</code></pre>
 </div>
-<p>Calculate summary statistics (including mean, median, sd, and n) for the repair times for ILEC and CLEC customers.</p>
+<p>Calculate summary statistics (including mean, median, sd, and sample size) for the repair times for ILEC and CLEC customers.</p>
 <div class="tutorial-exercise" data-label="ex2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":3,"exercise.checker":"NULL"}</script>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":5,"exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="ex2-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>verizon %&gt;%
@@ -270,29 +270,30 @@ ggplot(data = boot_dist, aes(x = stat)) +
 </ol>
 <div class="tutorial-exercise" data-label="ex3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>set.seed(10)</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":3,"exercise.checker":"NULL"}</script>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":5,"exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="ex3-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>set.seed(10)
 boot_dist &lt;- verizon_ilec %&gt;%
   specify(response = Time) %&gt;%
-  generate(reps = 10000, type = &quot;bootstrap&quot;) %&gt;%
+  generate(reps = 1000, type = &quot;bootstrap&quot;) %&gt;%
   calculate(stat = &quot;median&quot;)</code></pre>
 </div>
 <ol start="2" style="list-style-type: decimal">
 <li>Fill in the blanks in the code chunk below to construct an 80% bootstrap confidence interval using the bootstrap distribution in exercise #1. Provide an interpretation of your interval in context.</li>
 </ol>
 <div class="tutorial-exercise" data-label="ex4" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":3,"exercise.checker":"NULL"}</script>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":5,"exercise.setup":"ex3-solution","exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="ex4-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>get_ci(boot_dist, level = 0.80)</code></pre>
+<pre class="text"><code>get_ci(boot_dist, level = 0.80)
+# 3.34 - 3.76</code></pre>
 </div>
 <ol start="3" style="list-style-type: decimal">
-<li>Construct a 90% bootstrap confidence interval using the ILEC repait time data using a statistic of your choosing other than the median or mean and provide a one-sentence interpretation of your interval.</li>
+<li>Construct a 90% bootstrap confidence interval using the ILEC repair time data using a statistic of your choosing other than the median or mean and provide a one-sentence interpretation of your interval.</li>
 </ol>
 <div class="tutorial-exercise" data-label="ex5" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":3,"exercise.checker":"NULL"}</script>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":5,"exercise.checker":"NULL"}</script>
 </div>
 </div>
 <div id="section-resources-and-references" class="section level2">
@@ -309,7 +310,7 @@ knitr::opts_chunk$set(
   echo = TRUE,
   warning = FALSE,
   message = FALSE,
-  exercise.timelimit = 3
+  exercise.timelimit = 5
 )
 </script>
  
