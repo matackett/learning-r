@@ -20,7 +20,9 @@ Welcome to the Learning R tutorials! [INSERT SOME WELCOME MESSAGE]
 
 ### Units
 
+<details>
 - [Getting Started](/getting-started)
+</details>
 - [Data Visualization](/data-viz)
 - [Data Wrangling](/data-wrangling)
 - [Inference](/inference)
@@ -56,6 +58,3 @@ Welcome to the Learning R tutorials! [INSERT SOME WELCOME MESSAGE]
 |   Special topics   |   Intro to Shiny                     |   Shawn        |   Maria       |   Jacob       |
 |   Special topics   |   knn classification                 |   Maria        |   Jacob       |   Yue         |
 -->
-
-
-[ADD INSTRUCTIONS ABOUT CONNECTING TO VPN TO ACCESS LEARNR TUTORIALS]
