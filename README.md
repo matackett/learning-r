@@ -4,10 +4,9 @@ Link: [duke-learning-r.netlify.app](https://duke-learning-r.netlify.app)
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/29c7797b-c258-45e7-a92e-29ab740eda5d/deploy-status)](https://app.netlify.com/sites/duke-learning-r/deploys)
 
+## Instructions if you have feedback: 
 
-## Instructions on updating the site
-
-[ADD INSTRUCTIONS!]
+## Instructions on updating tutorials: 
 
 <!--
 |   Unit             |   Topic                              |   Contributor  |   Reviewer 1  |   Reviewer 2  |
