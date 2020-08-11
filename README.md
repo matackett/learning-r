@@ -21,7 +21,7 @@ Welcome to the Learning R tutorials! [INSERT SOME WELCOME MESSAGE]
 ### Units
 
 <details>
-- [Getting Started](/getting-started)
+- <summary>[Getting Started](/getting-started)</summary>
 </details>
 - [Data Visualization](/data-viz)
 - [Data Wrangling](/data-wrangling)
