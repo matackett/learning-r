@@ -18,42 +18,42 @@ navbar:
         - text: "Clone repo + start new project"
           href:  getting-started/clone-new-project.html
         - text: "Commit + Push and Pull"
-          href: about.html
+          href: getting-started/git-push-pull.html
     - text: "Data Viz & Wrangling"
       menu: 
         - text: "ggplot2 baiscs (learnr)"
           href: about.html
-        - text: "Customize data viz"
+        - text: "Customize data viz (learnr)"
           href: about.html
         - text: "---"
-        - text: "Tidy data wrangling with `dplyr`"
+        - text: "Tidy data wrangling with dplyr (learnr)"
           href: about.html
-        - text: "Wrangling factors with `forcats`"
+        - text: "Wrangling factors with forcats (learnr)"
           href: about.html
-        - text: "Data types in R"
+        - text: "Data types in R (learnr)"
           href: about.html
     - text: "Inference"
       menu: 
-        - text: "Bootstrapping with Infer"
+        - text: "Bootstrapping with Infer (learnr)"
           href: about.html
-        - text: "Simulation-Based Inference with Infer"
+        - text: "Simulation-Based Inference with Infer (learnr)"
           href: about.html
-        - text: "CLT-Based Inference with Infer"
+        - text: "CLT-Based Inference with Infer (learnr)"
           href: about.html
     - text: "Regression"
       menu: 
-        - text: "Intro to Linear Models"
+        - text: "Intro to Linear Models (learnr)"
           href: about.html
-        - text: "Regression diagnostics and prediction"
+        - text: "Regression diagnostics and prediction (learnr)"
           href: about.html
-        - text: "Logistic Regression"
+        - text: "Logistic Regression (learnr)"
           href: about.html
     - text: "Special Topics"
       menu: 
-        - text: "Spatial Analysis"
+        - text: "Spatial Analysis (learnr)"
           href: about.html
         - text: "kNN"
-          href: about.html
+          href: special-topics/knn.html
         - text: "Web Scraping (learnr)"
           href: about.html
         - text: "Functions (learnr)"
@@ -64,6 +64,4 @@ navbar:
           href: about.html
         - text: "Text analysis"
           href: about.html
-    - text: "Data sets"
-      href: about.html
 output: distill::distill_article
