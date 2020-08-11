@@ -34,7 +34,6 @@ haven't already installed `infer`, do that first.
 install.package("infer")
 ```
 
-
 ```{r load-packages}
 library(tidyverse)
 library(infer)
@@ -79,7 +78,7 @@ than 40 hours per week.
 Let's first conduct a brief exploratory data analysis. Begin by creating a 
 well-labeled histogram of the number of hours worked per week.
 
-```{r ex1, exercise=TRUE}
+```{r ex1, exercise = TRUE}
 
 ```
 
@@ -106,7 +105,6 @@ hours_summary <- gss %>%
   )
 hours_summary
 ```
-
 
 
 ```{r echo = FALSE}
@@ -150,14 +148,13 @@ test statistic.
 t <- (xbar - 40) / se
 ```
 
-The test statistic is `r t`. 
+The test statistic is about `r round(t, 2)`. 
 
 ```{r}
 df <- n - 1
 ```
 
 And the degrees of freedom is `r df`.
-
 
 Finally, we use the test statistic `t` and the `pt()` function in R to find the
 $p$-value.
@@ -170,17 +167,15 @@ The $p$-value is small, so we reject the null hypothesis. These data provide
 sufficient evidence at $\alpha = 0.05$ to conclude that Americans, on average,
 work more than 40 hours per week.
 
-
-We can use the `visualize` function from the `infer` package to plot the CLT - 
-based null null distribution. We indicate the test statistic with a red vertical 
-line and shade the region corresponding to the $p$-value in red.
+We can use the `visualize` function from the `infer` package to plot the 
+CLT-based null null distribution. We indicate the test statistic with a red 
+vertical line and shade the region corresponding to the $p$-value in red.
 
 ```{r}
 clt_based_null_distribution <- gss %>%
   specify(response = hours) %>%
   hypothesize(null = "point", mu = 40) %>%
   calculate(stat = "t")
-
 
 clt_based_null_distribution %>%
   visualize(method = "theoretical") +
@@ -201,10 +196,9 @@ We are 95\% confident that the true average hours worked per week for adult
 Americans is between `r round(xbar + -1 * t_star * se, 2)` and 
 `r round(xbar + 1 * t_star * se, 2)`.
 
-Instead of following the steps above every time we want to do a hypothesis test, 
-we can use the `t_test` function from the `infer` package to conduct a $t$-test.
-To do this we need to specify the following:
-
+Instead of coding each step individually every time we want to do a hypothesis 
+test, we can use the `t_test` function from the `infer` package to conduct a
+$t$-test. To do this we need to specify the following:
 
 - `x`: a tibble
 - `response`: the variable in `x` that serves as the response
@@ -212,7 +206,6 @@ To do this we need to specify the following:
 - `conf_int`: a logical value indicating whether to include a confidence 
 interval
 - `conf_level`: the confidence level
-
 
 ```{r}
 t_test(
@@ -228,7 +221,6 @@ t_test(
 We reject the null hypothesis. These data provide sufficient evidence using 
 $\alpha = 0.05$ to conclude that Americans, on average, work more than 40 hours 
 per week.
-
 
 ## Your turn!
 
@@ -259,44 +251,19 @@ s <- age_summary %>% pull(s)
 xbar <- age_summary %>% pull(xbar)
 ```
 
-2. Calculate the standard error and store the result as `se`.
+2. Use the summary statistics and standard error to calculate the test 
+statistic. Then, calculate the $p$-value.
 
-```{r ex4, exercise = TRUE}
-
-```
-
-```{r ex4-solution}
-se <- s / sqrt(n)
-```
-
-3. Use the summary statistics and standard error to calculate the test 
-statistic.
-
-```{r ex5, exercise = TRUE}
+```{r ex4, exercise = TRUE, exercise.setup = "ex3-solution"}
 
 ```
 
-```{r ex5-solution}
+```{r ex4-solution, exercise.setup = "ex3-solution"}
+se <- s/sqrt(n)
 t <- (xbar - 30) / se
-```
+t
 
-4. What are the degrees of freedom?
-
-```{r ex6, exercise = TRUE}
-
-```
-
-```{r ex6-solution}
 df <- n - 1
-```
-
-5. Report the $p$-value.
-
-```{r ex7, exercise = TRUE}
-
-```
-
-```{r ex7-solution}
 pt(t, df, lower.tail = FALSE)
 ```
 
@@ -321,7 +288,6 @@ quiz(
 
 6. Use the code chunk below to replicate the analysis above using the
 `t_test` function from the `infer` package.
-
 
 ```{r ex8, exercise = TRUE}
 
@@ -354,7 +320,6 @@ t_test(
 )
 ```
 
-
 ```{r quiz2, echo=FALSE}
 quiz(
   question("Report the p-value from Exercise #7 and provide an interpretation 
@@ -380,8 +345,6 @@ quiz(
   )
 )
 ```
-
-
 
 ## Resources and References
 
