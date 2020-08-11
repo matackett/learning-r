@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
   echo = TRUE,
   warning = FALSE,
   message = FALSE,
-  exercise.timelimit = 3
+  exercise.timelimit = 5
 )
 ```
 
@@ -24,9 +24,9 @@ knitr::opts_chunk$set(
 ---
 
 This brief tutorial will help you understand bootstrapping and learn how to 
-construct bootstrap confidence intervals using the `infer` package. 
-To start, load the `tidyverse` and `infer` packages. If you haven't already 
-installed `infer`, do that first by running the code below.
+construct bootstrap confidence intervals using the `infer` package. To start,
+load the `tidyverse` and `infer` packages. If you haven't already installed 
+`infer`, do that first by running the code below.
 
 ```{r eval = FALSE}
 install.packages("infer")
@@ -40,11 +40,10 @@ library(tidyverse)
 library(infer)
 ```
 
-Recall that statistical inference refers to the process of generalizing
-from a sample to a population. We could use a single number (a 
-point estimate) as our best guess of the population parameter but we often 
-prefer a range of plausible values (an interval estimate or a confidence 
-interval).
+Statistical inference refers to the process of generalizing from a sample to a 
+population. We could use a single number (a point estimate) as our best guess 
+of the population parameter but we often prefer a range of plausible values 
+(an interval estimate or a confidence interval).
 
 To construct a confidence interval we need to quantify the variability of 
 our sample statistic. We can do this using the Central Limit Theorem but
@@ -58,10 +57,9 @@ In general, bootstrap methods
 - give more accurate answers
 - are more flexible and easily applied to new settings
 
-The basic idea is as follows: our sample is representative of 
-the population, so if we resample from our original sample many times, this is 
-representative of what we would obtain if we took many samples 
-from the population.
+The basic idea is as follows: our sample is representative of the population, 
+so if we resample from our original sample many times, this is representative 
+of what we would obtain if we took many samples from the population.
 
 To bootstrap we follow the steps outlined below:
 
@@ -90,7 +88,7 @@ customers as their own. We will investigate the repair times (in hours) for the
 two types of customers.
 
 The data is in the `Verizon.csv` file. We read in the data and create subsets 
-containing the ILEC and CLEC repair times.
+with the ILEC and CLEC repair times.
 
 ```{r}
 verizon <- read_csv("data/verizon.csv")
@@ -109,9 +107,8 @@ ggplot(verizon, aes(x = Group, y = Time)) +
   geom_boxplot()
 ```
 
-Calculate summary statistics (including mean, median, sd, and n) for the 
-repair times for ILEC and CLEC customers.
-
+Calculate summary statistics (including mean, median, sd, and sample size) for 
+the repair times for ILEC and CLEC customers.
 
 ```{r ex2, exercise=TRUE}
 
@@ -158,7 +155,6 @@ We `specify` that the `Time` column in the `verizon_clec` data is our
 response of interest, `generate` 10000 resamples from our original sample of 
 type bootstrap, and `calculate` the mean for each sample. These three functions 
 generate the bootstrap distribution and store the results in `boot_dist`.
-
 
 ```{r quiz, echo=FALSE}
 quiz(
@@ -244,7 +240,6 @@ the data and the top 97.5\% of the data, so we use the `quantile` function with
 values 0.025 and 0.975. We can use the same procedure for any desired level of 
 confidence.
 
-
 ```{r}
 boot_dist %>%
   summarize(
@@ -297,9 +292,9 @@ is between 10.2 and 25.7 hours.
 ## Your turn!
 
 1. Fill in the blanks in the code chunk below to generate the bootstrap
-distribution of the median repair time for ILEC customers.
+distribution of the median repair time for ILEC customers. 
 
-```{r ex3, exercise=TRUE}
+```{r ex3, exercise = TRUE}
 set.seed(10)
 ```
 
@@ -307,33 +302,30 @@ set.seed(10)
 set.seed(10)
 boot_dist <- verizon_ilec %>%
   specify(response = Time) %>%
-  generate(reps = 10000, type = "bootstrap") %>%
+  generate(reps = 1000, type = "bootstrap") %>%
   calculate(stat = "median")
 ```
-
 
 2. Fill in the blanks in the code chunk below to construct an 80\% bootstrap 
 confidence interval using the bootstrap distribution in exercise #1. Provide 
 an interpretation of your interval in context.
 
-```{r ex4, exercise=TRUE}
+```{r ex4, exercise = TRUE, exercise.setup = "ex3-solution"}
 
 ```
 
 ```{r ex4-solution}
 get_ci(boot_dist, level = 0.80)
+# 3.34 - 3.76
 ```
 
-3. Construct a 90% bootstrap confidence interval using the ILEC repait time 
+3. Construct a 90% bootstrap confidence interval using the ILEC repair time 
 data using a statistic of your choosing other than the median or mean and
 provide a one-sentence interpretation of your interval. 
 
-```{r ex5, exercise=TRUE}
+```{r ex5, exercise = TRUE}
 
 ```
-
-
-
 
 ## Resources and References
 
