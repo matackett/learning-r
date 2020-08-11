@@ -22,6 +22,15 @@ Welcome to the Learning R tutorials! [INSERT SOME WELCOME MESSAGE]
 
 <details>
 <summary><a href = "/getting-started">Getting Started</a></summary>
+<ul>
+  <li>Basics of R and RStudio (learnr)</li>
+  <li>Basics of R Markdown (learnr)</li>
+  <li>Into the Tidyverse(learnr)</li>
+  <li>Clone repo + start new project</li>
+  <li>Commit + Push and Pull</li>
+  <li>Code style (learnr)</li>
+</ul>
+
 </details>
 - [Data Visualization](/data-viz)
 - [Data Wrangling](/data-wrangling)
