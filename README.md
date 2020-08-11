@@ -1,3 +1,34 @@
+# Duke StatSci Learning R Tutorials
+
+Welcome to the Learning R tutorials! [INSERT SOME WELCOME MESSAGE]
+
+## Getting started 
+
+### Accessing RStudio
+
+- RStudio Cloud
+- Docker Containers
+- Local Installation
+
+### Register for GitHub
+
+## How to use these tutorials
+
+### VPN for Shiny Tutorials
+
+## Tutorials 
+
+### Units
+
+- [Getting Started](/getting-started)
+- [Data Visualization](/data-viz)
+- [Data Wrangling](/data-wrangling)
+- [Inference](/inference)
+- [Regression](/regression)
+- [Special Topics](/special-topics)
+
+
+<!--
 |   Unit             |   Topic                              |   Contributor  |   Reviewer 1  |   Reviewer 2  |
 |--------------------|--------------------------------------|----------------|---------------|---------------|
 |   Getting started  |   Introducing R & RStudio            |   Jacob        |   Bob         |   Shawn       |
@@ -24,7 +55,7 @@
 |   Special topics   |   Text analysis                      |   Yue-J        |   Joan        |   Bob         |
 |   Special topics   |   Intro to Shiny                     |   Shawn        |   Maria       |   Jacob       |
 |   Special topics   |   knn classification                 |   Maria        |   Jacob       |   Yue         |
-
+-->
 
 
 [ADD INSTRUCTIONS ABOUT CONNECTING TO VPN TO ACCESS LEARNR TUTORIALS]
