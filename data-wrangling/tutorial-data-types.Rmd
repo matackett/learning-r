@@ -1,5 +1,5 @@
 ---
-title: Wrangling factors with `forcats`
+title: Data types in R
 output: 
   learnr::tutorial:
     theme: cerulean

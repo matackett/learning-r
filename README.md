@@ -30,8 +30,10 @@ Welcome to the Learning R tutorials! [INSERT SOME WELCOME MESSAGE]
   <li>Commit + Push and Pull</li>
   <li>Code style (learnr)</li>
 </ul>
-
 </details>
+
+<details>
+<summary>
 - [Data Visualization](/data-viz)
 - [Data Wrangling](/data-wrangling)
 - [Inference](/inference)
