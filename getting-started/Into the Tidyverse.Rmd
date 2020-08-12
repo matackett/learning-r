@@ -1,11 +1,14 @@
 ---
 title: "Into the Tidyverse"
-output: 
+output:
   learnr::tutorial:
-    progressive: false
-    theme: "cerulean"
-    allow_skip: true
+    progressive: no
+    theme: cerulean
+    allow_skip: yes
 runtime: shiny_prerendered
+resource_files:
+- Canada.xlsx
+- Into the Tidyverse.Rmd
 ---
 
 ```{r setup, include=FALSE}
@@ -38,7 +41,7 @@ Let's say that you wanted to make a plot using ggplot and "Location" was your x 
 ```{r canada, fig.width=5}
 library(readxl)
 library(tidyverse)
-Canada <- read_excel("D:/USB20FD - Copy/Canada.xlsx")
+Canada <- read_excel("Canada.xlsx")
 ggplot(Canada, aes(x = Location, y = Percentage))
 ```
 

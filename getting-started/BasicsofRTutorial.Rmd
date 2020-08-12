@@ -1,11 +1,16 @@
 ---
 title: "Basics of R and RStudio"
-output: 
+output:
   learnr::tutorial:
-    progressive: false
-    theme: "cerulean"
-    allow_skip: true
+    progressive: no
+    theme: cerulean
+    allow_skip: yes
 runtime: shiny_prerendered
+resource_files:
+- BasicsofRTutorial.html
+- BasicsofRTutorial.Rmd
+- Basics of Markdown.Rmd
+- BasicsofRTutorial.Rmd
 ---
 
 ```{r setup, include=FALSE}

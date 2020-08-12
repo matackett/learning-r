@@ -33,7 +33,7 @@ First, I make a histogram of former Vice President Joe Biden's vote percentage b
 library(readxl)
 library(ggplot2)
 # You could also load all of the tidyverse packages here with library(tidyverse)
-SuperTuesday <- read_excel("D:/USB20FD - Copy/SuperTuesday.xlsx")
+SuperTuesday <- read_excel(path = "https://github.com/matackett/learning-r/blob/master/data-sets/SuperTuesday.xlsx")
 ggplot(SuperTuesday, aes(x = State, y = Pct_Biden))
 ```
 

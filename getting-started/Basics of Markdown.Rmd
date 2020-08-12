@@ -1,11 +1,14 @@
 ---
 title: "Basics of R Markdown"
-output: 
+output:
   learnr::tutorial:
-    progressive: false
-    theme: "cerulean"
-    allow_skip: true
+    progressive: no
+    theme: cerulean
+    allow_skip: yes
 runtime: shiny_prerendered
+resource_files:
+- Basics of Markdown.Rmd
+- Canada.xlsx
 ---
 
 ```{r setup, include=FALSE}
@@ -67,7 +70,7 @@ This is a histogram of the percentage of the vote Justin Trudeau's Liberal Party
 
 ```{r histograms, echo=TRUE, fig.width=5}
 library(readxl)
-Canada <- read_excel("D:/USB20FD - Copy/Canada.xlsx")
+Canada <- read_excel("Canada.xlsx")
 library(ggplot2)
 ggplot(Canada, aes(x=Percentage)) + 
   geom_histogram(binwidth=5) + labs(x="Percent of Vote", y="Percentage of Vote")
