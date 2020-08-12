@@ -7,10 +7,13 @@ output:
     allow_skip: yes
 runtime: shiny_prerendered
 resource_files:
-- BasicsofRTutorial.html
+- R.png
+- RInitial.png
 - BasicsofRTutorial.Rmd
-- Basics of Markdown.Rmd
 - BasicsofRTutorial.Rmd
+- BasicsofRTutorial.Rmd
+- RInitial.png
+- R.png
 ---
 
 ```{r setup, include=FALSE}
@@ -42,7 +45,7 @@ Now that you've downloaded R, the next step is to download RStudio. This is also
 ## The RStudio Interface: Getting Started
 Here is what you should see when you first open R:
 
-![](images/RInitial.png){width=75%}
+![](RInitial.png){width=75%}
 
 As pictured above, R has an interface that has a console on the left side of your screen and several other windows on the right side of your screen. 
 
@@ -52,7 +55,7 @@ To do that, click on the plus symbol over the document on the far upper left of 
 
 This is what R will look like now:
 
-![](images/R.png){width=75%}
+![](R.png){width=75%}
 
 Finally, you will see a bunch of windows on the top right side of your screen. These include an environment window, which will list things like data sets you load into R and a window showing the history of the code you have used. 
 

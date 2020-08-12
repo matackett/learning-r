@@ -9,7 +9,7 @@ navbar:
     - text: "Getting Started"
       menu: 
         - text: "Basics of R and RStudio (learnr-FIX IMAGES)"
-          href: http://knight.stat.duke.edu:3939/r-basics/
+          href: http://knight.stat.duke.edu:3939/basics-r/
         - text: "Basics of R Markdown"
           href: http://knight.stat.duke.edu:3939/rmarkdown-basics/
         - text: "Into the Tidyverse"
