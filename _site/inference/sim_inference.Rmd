@@ -1,11 +1,13 @@
 ---
 title: "Simulation-Based Inference with Infer"
-output: 
+output:
   learnr::tutorial:
-    progressive: false
-    theme: "cerulean"
-    allow_skip: true
+    progressive: no
+    theme: cerulean
+    allow_skip: yes
 runtime: shiny_prerendered
+resource_files:
+- sim_inference.Rmd
 ---
 
 ## Introduction

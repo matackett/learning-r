@@ -1,11 +1,14 @@
 ---
 title: "Bootstrapping with Infer"
-output: 
+output:
   learnr::tutorial:
-    progressive: false
-    theme: "cerulean"
-    allow_skip: true
+    progressive: no
+    theme: cerulean
+    allow_skip: yes
 runtime: shiny_prerendered
+resource_files:
+- bootstrap.Rmd
+- verizon.csv
 ---
 
 ```{r setup, include=FALSE}
@@ -91,7 +94,7 @@ The data is in the `Verizon.csv` file. We read in the data and create subsets
 with the ILEC and CLEC repair times.
 
 ```{r}
-verizon <- read_csv("data/verizon.csv")
+verizon <- read_csv("verizon.csv")
 verizon_ilec <- verizon %>% filter(Group == "ILEC")
 verizon_clec <- verizon %>% filter(Group == "CLEC")
 ```

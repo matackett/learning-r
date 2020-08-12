@@ -1,11 +1,14 @@
 ---
-title: Data types in R
-output: 
+title: "Data types in R"
+output:
   learnr::tutorial:
     theme: cerulean
-    progressive: true
-    allow_skip: true
+    progressive: yes
+    allow_skip: yes
 runtime: shiny_prerendered
+resource_files:
+- tutorial-data-types.Rmd
+- tutorial-data-types.Rmd
 ---
 
 ```{r setup, include=FALSE}

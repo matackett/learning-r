@@ -1,11 +1,17 @@
 ---
 title: "Basics of ggplot"
-output: 
+output:
   learnr::tutorial:
-    progressive: false
-    theme: "cerulean"
-    allow_skip: true
+    progressive: no
+    theme: cerulean
+    allow_skip: yes
 runtime: shiny_prerendered
+resource_files:
+- Ggplot.Rmd
+- SuperTuesday.xlsx
+- House.xlsx
+- SuperTuesday.xlsx
+- Ggplot.Rmd
 ---
 
 ```{r setup, include=FALSE}
@@ -33,7 +39,7 @@ First, I make a histogram of former Vice President Joe Biden's vote percentage b
 library(readxl)
 library(ggplot2)
 # You could also load all of the tidyverse packages here with library(tidyverse)
-SuperTuesday <- read_excel(path = "https://github.com/matackett/learning-r/blob/master/data-sets/SuperTuesday.xlsx")
+SuperTuesday <- read_excel(path = "SuperTuesday.xlsx")
 ggplot(SuperTuesday, aes(x = State, y = Pct_Biden))
 ```
 
@@ -109,7 +115,7 @@ ggplot(SuperTuesday, aes(x = Pct_Black, y = Pct_Biden, label = State)) +
 So far, the data we have looked at comes from a single point in time (i.e., it is cross-sectional data), Sometimes, you will want to plot a variable (or several) over an extended period of time. Here, as an example, I use data from US House elections since the end of World War II (i.e., elections from 1946 to 2018) The below line plot displays the number of House seats won by the president's party in each election.
 
 ```{r house2, echo=TRUE, fig.width=5}
-House <- read_excel("D:/USB20FD - Copy/House.xlsx")
+House <- read_excel("House.xlsx")
 ggplot(House, aes(x = ElectionYear, y = SeatsWon)) +
   geom_line() +
   xlab("Year") +

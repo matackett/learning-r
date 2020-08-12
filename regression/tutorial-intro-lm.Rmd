@@ -1,11 +1,14 @@
 ---
-title: Intro to linear models
-output: 
+title: "Intro to linear models"
+output:
   learnr::tutorial:
     theme: cerulean
-    progressive: true
-    allow_skip: true
+    progressive: yes
+    allow_skip: yes
 runtime: shiny_prerendered
+resource_files:
+- tutorial-intro-lm.Rmd
+- beijing.csv
 ---
 
 ```{r setup, include=FALSE}
@@ -17,7 +20,7 @@ library(tidyverse)
 library(knitr)
 library(broom)
 library(learnr)
-beijing <- read_csv("data/beijing.csv")
+beijing <- read_csv("beijing.csv")
 ```
 
 ```{css, echo=FALSE}

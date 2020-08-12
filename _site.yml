@@ -9,13 +9,13 @@ navbar:
     - text: "Getting Started"
       menu: 
         - text: "Basics of R and RStudio (learnr-FIX IMAGES)"
-          href: http://knight.stat.duke.edu:3939/content/16/
+          href: http://knight.stat.duke.edu:3939/r-basics/
         - text: "Basics of R Markdown"
-          href: http://knight.stat.duke.edu:3939/content/17/
+          href: http://knight.stat.duke.edu:3939/rmarkdown-basics/
         - text: "Into the Tidyverse"
-          href: http://knight.stat.duke.edu:3939/content/18/
-        - text: "Code style (learnr)"
-          href: about.html
+          href: http://knight.stat.duke.edu:3939/into-tidyverse/
+        - text: "Code style"
+          href: http://knight.stat.duke.edu:3939/code-style/
         - text: "---"
         - text: "Clone repo + start new project"
           href:  getting-started/clone-new-project.html
@@ -23,47 +23,47 @@ navbar:
           href: getting-started/git-push-pull.html
     - text: "Data Viz & Wrangling"
       menu: 
-        - text: "ggplot2 baiscs (learnr)"
-          href: about.html
-        - text: "Customize data viz (learnr)"
-          href: about.html
+        - text: "ggplot2 baiscs"
+          href: http://knight.stat.duke.edu:3939/ggplot2/
+        - text: "Customize data visualizations"
+          href: http://knight.stat.duke.edu:3939/customize-viz/
         - text: "---"
-        - text: "Tidy data wrangling with dplyr (learnr)"
-          href: about.html
-        - text: "Wrangling factors with forcats (learnr)"
-          href: about.html
-        - text: "Data types in R (learnr)"
-          href: about.html
+        - text: "Tidy data wrangling with dplyr"
+          href: http://knight.stat.duke.edu:3939/wrangle-data/
+        - text: "Wrangling factors with forcats"
+          href: http://knight.stat.duke.edu:3939/wrangle-factors/
+        - text: "Data types in R"
+          href: http://knight.stat.duke.edu:3939/data-types/
     - text: "Inference"
       menu: 
-        - text: "Bootstrapping with Infer (learnr)"
-          href: about.html
-        - text: "Simulation-Based Inference with Infer (learnr)"
-          href: about.html
+        - text: "Bootstrapping with Infer"
+          href: http://knight.stat.duke.edu:3939/bootstrap/
+        - text: "Simulation-Based Inference with Infer"
+          href: http://knight.stat.duke.edu:3939/sim-inference/
         - text: "CLT-Based Inference with Infer (learnr)"
           href: about.html
     - text: "Regression"
       menu: 
-        - text: "Intro to Linear Models (learnr)"
-          href: about.html
-        - text: "Regression diagnostics and prediction (learnr)"
-          href: about.html
+        - text: "Intro to Linear Models"
+          href: http://knight.stat.duke.edu:3939/regression-intro/
+        - text: "Regression diagnostics and prediction"
+          href: http://knight.stat.duke.edu:3939/regression-diagnostics/
         - text: "Logistic Regression (learnr)"
-          href: about.html
+          href: http://knight.stat.duke.edu:3939/logistic/
     - text: "Special Topics"
       menu: 
         - text: "Spatial Analysis (learnr)"
-          href: about.html
+          href: http://knight.stat.duke.edu:3939/spatial/
         - text: "kNN"
           href: special-topics/knn.html
         - text: "Web Scraping (learnr)"
-          href: about.html
+          href: http://knight.stat.duke.edu:3939/connect/#/apps/10/access
         - text: "Functions (learnr)"
-          href: about.html
-        - text: "Automation (learnr)"
-          href: about.html
-        - text: "Shiny (learnr)"
-          href: about.html
+          href: http://knight.stat.duke.edu:3939/connect/#/apps/9/access
+        - text: "Automation"
+          href: http://knight.stat.duke.edu:3939/connect/#/apps/11/access
+        - text: "Shiny"
+          href: http://knight.stat.duke.edu:3939/connect/#/apps/12/access
         - text: "Text analysis"
-          href: about.html
+          href: special-topics/text-analysis.html
 output: distill::distill_article
