@@ -1,0 +1,13 @@
+.distill-site-nav {
+  background-color: #00539B;
+  font-size: 16px;
+  font-weight: 300;
+}
+
+
+
+@media print {
+  .distill-site-nav {
+    display: none;
+  }
+}

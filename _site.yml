@@ -1,7 +1,8 @@
 name: "Learning R"
 title: "Duke StatSci Learning R Tutorials"
-creative_commons: CC BY
-exclude: ["*.Rmd"]
+base_url: https://duke-learning-r.netlify.app/
+creative_commons: CC BY-NC
+exclude: ["*.Rmd", "*.csv", "*.xlsx"]
 navbar:
   right:
     - text: "Getting Started"
@@ -64,4 +65,9 @@ navbar:
           href: http://knight.stat.duke.edu:3939/connect/#/apps/12/access
         - text: "Text analysis"
           href: special-topics/text-analysis.html
-output: distill::distill_article
+        - icon: fab fa-github
+          href: https://github.com/matackett/learning-r
+output: 
+  distill::distill_article:
+    css: style.css
+    
