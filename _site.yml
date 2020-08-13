@@ -38,7 +38,7 @@ navbar:
           href: http://knight.stat.duke.edu:3939/bootstrap/
         - text: "Simulation-Based Inference with Infer"
           href: http://knight.stat.duke.edu:3939/sim-inference/
-        - text: "CLT-Based Inference with Infer (learnr)"
+        - text: "CLT-Based Inference with Infer"
           href: http://knight.stat.duke.edu:3939/clt-inference/
     - text: "Regression"
       menu: 
@@ -46,17 +46,17 @@ navbar:
           href: http://knight.stat.duke.edu:3939/regression-intro/
         - text: "Regression diagnostics and prediction"
           href: http://knight.stat.duke.edu:3939/regression-diagnostics/
-        - text: "Logistic Regression (learnr)"
+        - text: "Logistic Regression"
           href: http://knight.stat.duke.edu:3939/logistic/
     - text: "Special Topics"
       menu: 
-        - text: "Spatial Analysis (learnr)"
+        - text: "Spatial Analysis"
           href: http://knight.stat.duke.edu:3939/spatial/
         - text: "kNN"
           href: special-topics/knn.html
-        - text: "Web Scraping (learnr)"
+        - text: "Web Scraping"
           href: http://knight.stat.duke.edu:3939/connect/#/apps/10/access
-        - text: "Functions (learnr)"
+        - text: "Functions"
           href: http://knight.stat.duke.edu:3939/connect/#/apps/9/access
         - text: "Automation"
           href: http://knight.stat.duke.edu:3939/connect/#/apps/11/access
