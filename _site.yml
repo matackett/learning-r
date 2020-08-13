@@ -65,8 +65,8 @@ navbar:
           href: http://knight.stat.duke.edu:3939/connect/#/apps/12/access
         - text: "Text analysis"
           href: special-topics/text-analysis.html
-        - icon: fab fa-github
-          href: https://github.com/matackett/learning-r
+    - icon: fab fa-github
+      href: https://github.com/matackett/learning-r
 output: 
   distill::distill_article:
     css: style.css
