@@ -8,6 +8,7 @@ output:
 runtime: shiny_prerendered
 resource_files:
 - clt_inference.Rmd
+- clt_inference.Rmd
 ---
 
 ```{r setup, include=FALSE}

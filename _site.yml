@@ -4,8 +4,6 @@ creative_commons: CC BY
 exclude: ["*.Rmd"]
 navbar:
   right:
-    - text: "How to Use"
-      href: about.html
     - text: "Getting Started"
       menu: 
         - text: "Basics of R and RStudio"
@@ -41,7 +39,7 @@ navbar:
         - text: "Simulation-Based Inference with Infer"
           href: http://knight.stat.duke.edu:3939/sim-inference/
         - text: "CLT-Based Inference with Infer (learnr)"
-          href: about.html
+          href: http://knight.stat.duke.edu:3939/clt-inference/
     - text: "Regression"
       menu: 
         - text: "Intro to Linear Models"
