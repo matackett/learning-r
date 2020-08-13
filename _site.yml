@@ -14,7 +14,7 @@ navbar:
         - text: "Into the Tidyverse"
           href: http://knight.stat.duke.edu:3939/into-tidyverse/
         - text: "Code style"
-          href: http://knight.stat.duke.edu:3939/code-style/
+          href: http://knight.stat.duke.edu:3939/code_style
         - text: "---"
         - text: "Clone repo + start new project"
           href:  getting-started/clone-new-project.html
