@@ -14,6 +14,9 @@ resource_files:
 ```{r setup, include=FALSE}
 library(learnr)
 library(knitr)
+library(tidyverse)
+library(infer)
+
 knitr::opts_chunk$set(
   echo = TRUE,
   warning = FALSE,
@@ -37,7 +40,7 @@ haven't already installed `infer`, do that first.
 install.package("infer")
 ```
 
-```{r load-packages}
+```{r load-packages, eval = FALSE}
 library(tidyverse)
 library(infer)
 ```
@@ -171,7 +174,7 @@ sufficient evidence at $\alpha = 0.05$ to conclude that Americans, on average,
 work more than 40 hours per week.
 
 We can use the `visualize` function from the `infer` package to plot the 
-CLT-based null null distribution. We indicate the test statistic with a red 
+CLT-based null distribution. We indicate the test statistic with a red 
 vertical line and shade the region corresponding to the $p$-value in red.
 
 ```{r}
@@ -237,6 +240,11 @@ greater than 30?
 1. Calculate summary statistics and store the sample size as `n`, the standard 
 deviation as `s` and the sample mean as `xbar`.
 
+2. Use the summary statistics and standard error to calculate the test 
+statistic. 
+
+3. Calculate the $p$-value.
+
 ```{r ex3, exercise = TRUE}
 
 ```
@@ -252,16 +260,7 @@ age_summary <- gss %>%
 n <- age_summary %>% pull(n)
 s <- age_summary %>% pull(s)
 xbar <- age_summary %>% pull(xbar)
-```
 
-2. Use the summary statistics and standard error to calculate the test 
-statistic. Then, calculate the $p$-value.
-
-```{r ex4, exercise = TRUE, exercise.setup = "ex3-solution"}
-
-```
-
-```{r ex4-solution, exercise.setup = "ex3-solution"}
 se <- s/sqrt(n)
 t <- (xbar - 30) / se
 t
@@ -289,14 +288,14 @@ quiz(
 )
 ```
 
-6. Use the code chunk below to replicate the analysis above using the
+4. Use the code chunk below to replicate the analysis above using the
 `t_test` function from the `infer` package.
 
-```{r ex8, exercise = TRUE}
+```{r ex4, exercise = TRUE}
 
 ```
 
-```{r ex8-solution}
+```{r ex4-solution}
 t_test(
   x = gss,
   response = age,
@@ -304,17 +303,17 @@ t_test(
 )
 ```
 
-7. In additional to hours worked per week, the GSS asked if the respondent 
+5. In additional to hours worked per week, the GSS asked if the respondent 
 received a college degree. Use the `t_test` function from the `infer` package 
 to test if Americans with a college degree work the same number of hours per 
 week as Americans without a college degree. Remember, if you are confused 
 about a function you can pull up the documentation using `?t_test`.
 
-```{r ex9, exercise = TRUE}
+```{r ex5, exercise = TRUE}
 
 ```
 
-```{r ex9-solution}
+```{r ex5-solution}
 t_test(
   x = gss,
   formula = hours ~ college,
@@ -325,7 +324,7 @@ t_test(
 
 ```{r quiz2, echo=FALSE}
 quiz(
-  question("Report the p-value from Exercise #7 and provide an interpretation 
+  question("Report the p-value from Exercise #5 and provide an interpretation 
   of the p-value in the context of the problem.",
     answer("0.264",
       correct = TRUE,
