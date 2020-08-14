@@ -1,13 +1,11 @@
 ---
 title: "Customizing Data Visualizations"
-author: ''
-output:
+author: ""
+output: 
   html_document:
-    toc: yes
-    toc_float: yes
+    toc: true
+    toc_float: true
     theme: cerulean
-resource_files:
-- data-viz-customize-learnr.Rmd
 ---
 
 ```{r setup, include=FALSE}

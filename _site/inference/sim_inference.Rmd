@@ -13,6 +13,12 @@ resource_files:
 ## Introduction
 
 ```{r setup, include=FALSE}
+library(tidyverse)
+library(infer)
+
+cheating_data <-
+  tibble(outcome = c(rep("text", 27), rep("no text", 267 - 27)))
+
 knitr::opts_chunk$set(
   echo = TRUE,
   warning = FALSE,
@@ -167,6 +173,7 @@ provide the following information.
 Fill in the blanks in the code chunk below to generate the null distribution.
 
 ```{r ex1, exercise = TRUE}
+set.seed(11)
 null_dist <- ___ %>%
   specify(response = ___, success = ___) %>% 
   hypothesize(
@@ -178,6 +185,7 @@ null_dist <- ___ %>%
 ```
 
 ```{r ex1-solution}
+set.seed(11)
 null_dist <- cheating_data %>%
   specify(response = outcome, success = "text") %>%
   hypothesize(
@@ -191,6 +199,7 @@ null_dist <- cheating_data %>%
 We examine the first few rows of `null_dist`.
 
 ```{r echo = FALSE}
+set.seed(11)
 null_dist <- cheating_data %>%
   specify(response = outcome, success = "text") %>%
   hypothesize(
@@ -335,7 +344,7 @@ below. You can learn more about the General Social Survey by visiting their
 We will examine the variable `sex`, the respondent's self-identified sex and are
 interesting if the proportion of females in the population differs from 0.50.
 
-First, find the observed statistic. You can do this in using `dplyr` or using
+First, find the observed statistic. You can do this using `dplyr` or using
 `specify` and `calculate` from `infer`.
 
 ```{r ex2, exercise = TRUE}
