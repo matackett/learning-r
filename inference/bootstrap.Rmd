@@ -302,12 +302,15 @@ is between 10.2 and 25.7 hours.
 
 ## Your turn!
 
-1. Fill in the blanks in the code chunk below to generate the bootstrap
-distribution of the median repair time for ILEC customers. 
-
 ```{r echo = FALSE}
 rm(boot_dist)
 ```
+
+1. Use the code chunk below to generate the bootstrap
+distribution of the median repair time for ILEC customers. 
+
+2. Then, construct an 80\% bootstrap confidence interval. Provide 
+an interpretation of your interval in context.
 
 ```{r ex3, exercise = TRUE}
 set.seed(10)
@@ -319,17 +322,7 @@ boot_dist <- verizon_ilec %>%
   specify(response = Time) %>%
   generate(reps = 1000, type = "bootstrap") %>%
   calculate(stat = "median")
-```
 
-2. Use the code chunk below to construct an 80\% bootstrap 
-confidence interval using the bootstrap distribution in exercise #1. Provide 
-an interpretation of your interval in context.
-
-```{r ex4, exercise = TRUE, exercise.setup = "ex3-solution"}
-
-```
-
-```{r ex4-solution}
 get_ci(boot_dist, level = 0.80)
 ```
 
