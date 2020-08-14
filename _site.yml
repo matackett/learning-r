@@ -8,7 +8,7 @@ navbar:
     - text: "Getting Started"
       menu: 
         - text: "Basics of R and RStudio"
-          href: http://knight.stat.duke.edu:3939/basics-r/
+          href: http://knight.stat.duke.edu:3939/r-basics/
         - text: "Basics of R Markdown"
           href: http://knight.stat.duke.edu:3939/rmarkdown-basics/
         - text: "Into the Tidyverse"
