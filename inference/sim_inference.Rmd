@@ -18,6 +18,10 @@ library(infer)
 
 cheating_data <-
   tibble(outcome = c(rep("text", 27), rep("no text", 267 - 27)))
+phat <- gss %>%
+  specify(response = sex, success = "female") %>%
+  calculate(stat = "prop") %>%
+  pull(stat)
 
 knitr::opts_chunk$set(
   echo = TRUE,
@@ -261,9 +265,6 @@ null_dist %>%
   )
 ```
 
-Intuitively, and without calculating any numbers, is what we observed surprising 
-assuming the null hypothesis is true?
-
 ```{r quiz4, echo=FALSE}
 quiz(
   question("Without calculating any numbers and only examining the plot above,
@@ -344,8 +345,7 @@ below. You can learn more about the General Social Survey by visiting their
 We will examine the variable `sex`, the respondent's self-identified sex and are
 interesting if the proportion of females in the population differs from 0.50.
 
-First, find the observed statistic. You can do this using `dplyr` or using
-`specify` and `calculate` from `infer`.
+First, find the observed statistic. You can do this using `dplyr` or using `specify` and `calculate` from `infer`.
 
 ```{r ex2, exercise = TRUE}
 
@@ -361,10 +361,12 @@ phat <- gss %>%
 Next, generate the null distribution.
 
 ```{r ex3, exercise = TRUE}
+set.seed(42)
 
 ```
 
 ```{r ex3-solution}
+set.seed(42)
 null_dist <- gss %>%
   specify(response = sex, success = "female") %>%
   hypothesize(
@@ -388,13 +390,6 @@ null_dist %>%
 
 Starting with the plot above, add a vertical line representing the sample 
 statistic and shade the region corresponding to the $p$-value.
-
-```{r echo = FALSE}
-phat <- gss %>%
-  specify(response = sex, success = "female") %>%
-  calculate(stat = "prop") %>%
-  pull(stat)
-```
 
 ```{r ex5, exercise = TRUE, exercise.setup = "ex3-solution"}
 
