@@ -1,16 +1,37 @@
 ---
-title: "Duke Stat Sci Learning R Tutorials"
-description: |
-  Welcome to the website. I hope you enjoy it!
+title: "Duke StatSci Learning R Tutorials"
+authors: ["Maria Tackett","Bob Eisinger", "Yue Jiang", "Shawn Santo", "Jacob Smith"]
 site: distill::distill_website
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+## Accessing RStudio 
 
-# Learn more about creating websites with Distill at:
-# https://rstudio.github.io/distill/website.html
+You can access RStudio in three ways: 
 
-```
+1. **Docker containers**: As a Duke student, you can access RStudio through a Docker container maintained by Duke OIT. 
+    - Go to https://vm-manage.oit.duke.edu/containers and log in using your Duke NetID credentials. 
+1. **RStudio Cloud**: Sign up for a free account https://rstudio.cloud/ 1. Install R on your laptop.
+   - See the chapter [Install or upgrade R and RStudio](https://happygitwithr.com/install-r-rstudio.html) in *Happy Git and GitHub for the useR* for step-by-step instructions to install R and RStudio. 
 
-this is the homepage of the website. Include getting started information.
+## Using the interactive tutorials
+
+Many of the tutorials on this site were created using [Shiny](https://shiny.rstudio.com/) from RStudio. You will need to log into Duke's VPN in order to access these tutorials. 
+
+If you do not have [Duke's VPN](https://oit.duke.edu/what-we-do/services/vpn) client installed on your computer, go to https://portal.duke.edu to install the appropriate VPN client. 
+
+To log into VPN: 
+
+1. Click on the VPN client. Type **vpn.duke.edu** and click **Connect**. 
+1. Enter your Duke NetID and password. 
+1. Choose an option to receive the multi-factor authentication and complete the authentication process. 
+1. Click continue, and you are now in the VPN and ready to do the interactive tutorials!
+
+Visit the [Duke OIT website](https://oit.duke.edu/what-we-do/services/vpn) for more information about VPN. 
+
+## Additional resources
+
+- [R for Data Science](https://r4ds.had.co.nz/) by Garrett Grolemund and Hadley Wickham
+- [Happy Git and GitHub for the useR](https://happygitwithr.com/) by Jenny Bryan, the STAT 545 TAs, and Jim Hester
+- [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/) by Yihui Xie, J. J. Allaire, and Garrett Grolemund
+- [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/) by Hadley Wickham
+- [RStudio Cheatsheets](https://rstudio.com/resources/cheatsheets/)

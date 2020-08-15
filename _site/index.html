@@ -19,30 +19,32 @@
  <!--/radix_placeholder_import_source-->
 
   <!--radix_placeholder_meta_tags-->
-  <title>Duke StatSci Learning R Tutorials: Duke Stat Sci Learning R Tutorials</title>
+  <title>Duke StatSci Learning R Tutorials</title>
   
-  <meta property="description" itemprop="description" content="Welcome to the website. I hope you enjoy it!"/>
   
   <link rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/"/>
   
+  <meta name="article:author" content="Maria Tackett"/>
+  <meta name="article:author" content="Bob Eisinger"/>
+  <meta name="article:author" content="Yue Jiang"/>
+  <meta name="article:author" content="Shawn Santo"/>
+  <meta name="article:author" content="Jacob Smith"/>
   
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Duke StatSci Learning R Tutorials: Duke Stat Sci Learning R Tutorials"/>
+  <meta property="og:title" content="Duke StatSci Learning R Tutorials"/>
   <meta property="og:type" content="article"/>
-  <meta property="og:description" content="Welcome to the website. I hope you enjoy it!"/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="Duke StatSci Learning R Tutorials"/>
   
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Duke StatSci Learning R Tutorials: Duke Stat Sci Learning R Tutorials"/>
-  <meta property="twitter:description" content="Welcome to the website. I hope you enjoy it!"/>
+  <meta property="twitter:title" content="Duke StatSci Learning R Tutorials"/>
   
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","site"]}},"value":[{"type":"character","attributes":{},"value":["Duke Stat Sci Learning R Tutorials"]},{"type":"character","attributes":{},"value":["Welcome to the website. I hope you enjoy it!\n"]},{"type":"character","attributes":{},"value":["distill::distill_website"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","authors","site","author"]}},"value":[{"type":"character","attributes":{},"value":["Duke StatSci Learning R Tutorials"]},{"type":"character","attributes":{},"value":["Maria Tackett","Bob Eisinger","Yue Jiang","Shawn Santo","Jacob Smith"]},{"type":"character","attributes":{},"value":["distill::distill_website"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Maria Tackett"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Bob Eisinger"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Yue Jiang"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Shawn Santo"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Jacob Smith"]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -1297,7 +1299,7 @@
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Duke Stat Sci Learning R Tutorials","description":"Welcome to the website. I hope you enjoy it!","authors":[]}
+{"title":"Duke StatSci Learning R Tutorials","authors":[{"author":"Maria Tackett","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#"},{"author":"Bob Eisinger","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#"},{"author":"Yue Jiang","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#"},{"author":"Shawn Santo","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#"},{"author":"Jacob Smith","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#"}]}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -1391,13 +1393,43 @@ Special Topics
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>Duke Stat Sci Learning R Tutorials</h1>
-<p><p>Welcome to the website. I hope you enjoy it!</p></p>
+<h1>Duke StatSci Learning R Tutorials</h1>
+
 </div>
 
 
 <div class="d-article">
-<p>this is the homepage of the website. Include getting started information.</p>
+<h2 id="accessing-rstudio">Accessing RStudio</h2>
+<p>You can access RStudio in three ways:</p>
+<ol type="1">
+<li><strong>Docker containers</strong>: As a Duke student, you can access RStudio through a Docker container maintained by Duke OIT.
+<ul>
+<li>Go to <a href="https://vm-manage.oit.duke.edu/containers" class="uri">https://vm-manage.oit.duke.edu/containers</a> and log in using your Duke NetID credentials.</li>
+</ul></li>
+<li><strong>RStudio Cloud</strong>: Sign up for a free account <a href="https://rstudio.cloud/" class="uri">https://rstudio.cloud/</a> 1. Install R on your laptop.
+<ul>
+<li>See the chapter <a href="https://happygitwithr.com/install-r-rstudio.html">Install or upgrade R and RStudio</a> in <em>Happy Git and GitHub for the useR</em> for step-by-step instructions to install R and RStudio.</li>
+</ul></li>
+</ol>
+<h2 id="using-the-interactive-tutorials">Using the interactive tutorials</h2>
+<p>Many of the tutorials on this site were created using <a href="https://shiny.rstudio.com/">Shiny</a> from RStudio. You will need to log into Duke’s VPN in order to access these tutorials.</p>
+<p>If you do not have <a href="https://oit.duke.edu/what-we-do/services/vpn">Duke’s VPN</a> client installed on your computer, go to <a href="https://portal.duke.edu" class="uri">https://portal.duke.edu</a> to install the appropriate VPN client.</p>
+<p>To log into VPN:</p>
+<ol type="1">
+<li>Click on the VPN client. Type <strong>vpn.duke.edu</strong> and click <strong>Connect</strong>.</li>
+<li>Enter your Duke NetID and password.</li>
+<li>Choose an option to receive the multi-factor authentication and complete the authentication process.</li>
+<li>Click continue, and you are now in the VPN and ready to do the interactive tutorials!</li>
+</ol>
+<p>Visit the <a href="https://oit.duke.edu/what-we-do/services/vpn">Duke OIT website</a> for more information about VPN.</p>
+<h2 id="additional-resources">Additional resources</h2>
+<ul>
+<li><a href="https://r4ds.had.co.nz/">R for Data Science</a> by Garrett Grolemund and Hadley Wickham</li>
+<li><a href="https://happygitwithr.com/">Happy Git and GitHub for the useR</a> by Jenny Bryan, the STAT 545 TAs, and Jim Hester</li>
+<li><a href="https://bookdown.org/yihui/rmarkdown/">R Markdown: The Definitive Guide</a> by Yihui Xie, J. J. Allaire, and Garrett Grolemund</li>
+<li><a href="https://ggplot2-book.org/">ggplot2: Elegant Graphics for Data Analysis</a> by Hadley Wickham</li>
+<li><a href="https://rstudio.com/resources/cheatsheets/">RStudio Cheatsheets</a></li>
+</ul>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
