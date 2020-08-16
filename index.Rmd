@@ -8,10 +8,11 @@ site: distill::distill_website
 
 You can access RStudio in three ways: 
 
-1. **Docker containers**: As a Duke student, you can access RStudio through a Docker container maintained by Duke OIT. 
-    - Go to https://vm-manage.oit.duke.edu/containers and log in using your Duke NetID credentials. 
-1. **RStudio Cloud**: Sign up for a free account https://rstudio.cloud/ 1. Install R on your laptop.
-   - See the chapter [Install or upgrade R and RStudio](https://happygitwithr.com/install-r-rstudio.html) in *Happy Git and GitHub for the useR* for step-by-step instructions to install R and RStudio. 
+1. **Docker containers**: As a Duke student, you can access RStudio through a Docker container maintained by Duke OIT. Go to https://vm-manage.oit.duke.edu/containers and log in using your Duke NetID credentials. 
+    
+1. **RStudio Cloud**: Sign up for a free account https://rstudio.cloud/ 
+
+1. **Install R on your computer**: See the chapter [Install or upgrade R and RStudio](https://happygitwithr.com/install-r-rstudio.html) in *Happy Git and GitHub for the useR* for step-by-step instructions to install R and RStudio. 
 
 ## Using the interactive tutorials
 
