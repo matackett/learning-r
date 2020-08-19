@@ -22,7 +22,7 @@ navbar:
           href: getting-started/git-push-pull.html
     - text: "Data Viz & Wrangling"
       menu: 
-        - text: "ggplot2 baiscs"
+        - text: "ggplot2 basics"
           href: http://knight.stat.duke.edu:3939/ggplot2/
         - text: "Customize data visualizations"
           href: http://knight.stat.duke.edu:3939/customize-viz/

@@ -9,11 +9,17 @@ runtime: shiny_prerendered
 resource_files:
 - Canada.xlsx
 - Into the Tidyverse.Rmd
+- Canada.xlsx
+- Into the Tidyverse.Rmd
+- Into the Tidyverse.Rmd
+- Canada.xlsx
+- Into the Tidyverse.Rmd
+- Canada.xlsx
 ---
 
 ```{r setup, include=FALSE}
 library(learnr)
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## What is the Tidyverse?
@@ -38,7 +44,7 @@ In another tutorial, we used data from the 2019 Canadian Election to make a hist
 
 Let's say that you wanted to make a plot using ggplot and "Location" was your x variable and "Percentage" was your y variable. Your code would look like this:
 
-```{r canada, fig.width=5}
+```{r canada, echo=TRUE, fig.width=5}
 library(readxl)
 library(tidyverse)
 Canada <- read_excel("Canada.xlsx")
@@ -47,20 +53,20 @@ ggplot(Canada, aes(x = Location, y = Percentage))
 
 This has set up the foundation for our plot, but hasn't actually put any data on that. To do that, you need to add something else to your code. Let's say that we want a bar chart that shows the percentage of the vote that Justin Trudeau's Liberal Party received in each Province/Territory. You would add ``` + geombar(stat=identity)``` to your code. Overall, your code would now look like this; now your plot isn't just a blank grid.
 
-```{r bar, fig.width=5}
+```{r bar, echo=TRUE, fig.width=5}
 ggplot(Canada, aes(x = Location, y = Percentage)) +
   geom_bar(stat = "identity")
 ```
 
 This is one cool way to visualize this data, but you might also be interested in grouping provinces/territories together by Liberal Party vote percentage to see the typical values for how well they did in that area. To do that, you no longer would have a "y" variable because you want the y axis to represent counts of the number of provinces that fall into that bin (e.g., between 10 and 15% of the vote). You can also set the bin size in R by using the binwidth= command to tell R how wide to make the bins. The initial binwidth is set fairly narrowly, so you will often want to use this command to expand it. 
 
-```{r histogram, fig.width=5}
+```{r histogram, echo=TRUE, fig.width=5}
 ggplot(Canada, aes(x = Percentage)) +
   geom_histogram(binwidth = 5)
 ```
 
 Once you've create a plot in ggplot, there are a bunch of other neat things you can do with it, including changing the color of both the interior and border of the bars. Please note here that you can enter in colors using either names or hex codes; here I use codes for [color-blind friendly colors](https://www.color-hex.com/color-palette/49436).
-```{r colors, fig.width=5}
+```{r colors, echo=TRUE, fig.width=5}
 ggplot(Canada, aes(x = Percentage)) +
   geom_histogram(binwidth = 5, color = "#cc79a7", fill = "#0072b2")
 ```
@@ -75,7 +81,7 @@ One thing that `dplyr` can do is help select a subset of cases using the filter 
 
 Below is the code that you can use to filter these cases. The Atlantic variable exists as both a numeric variable and a string (i.e., word) variable to demonstrate how you would filter for either type of variable.
 
-```{r filter}
+```{r filter, echo=TRUE}
 Canada %>%
   filter(Atlantic == 1)
 
@@ -84,7 +90,7 @@ Canada %>%
 ```
 
 You may want to do something with the subset of data once you've filtered it. Here, I create a new variable in R for Atlantic Canada and then find the mean.
-```{r meanatlantic}
+```{r meanatlantic, echo=TRUE}
 Atlantic <- Canada %>%
   filter(Atlantic == 1)
 mean(Atlantic$Percentage)
@@ -92,25 +98,25 @@ mean(Atlantic$Percentage)
 
 You can also use `dplyr` to arrange variables in order based on the level of another variable. For example, let's say that we wanted to rank the provinces/territories by their vote percentage for the Liberals. An example of the code you would use to do that is below.
 
-```{r arrange}
+```{r arrange, echo=TRUE}
 Canada %>%
   arrange(Percentage)
 ```
 Still another thing you might want to do is use the existing variables you have to create other variables. Currently, the vote percentages are written as numbers from 0 to 100, but you might instead want them to be decimals from 0 to 1. Using the below code, I created a new variable representing the percentage of the votes Liberals received expressed in decimal form. 
 
-```{r mutate}
+```{r mutate, echo=TRUE}
 Canada %>%
   mutate(PercentageProportion = Percentage / 100)
 ```
 Finally, sometimes you might want to calculate a summary statistic for a variable. If we wanted to know the mean percentage of the votes that the Liberals received, the summarize command in `dplyr` would be just what we need!
 
-```{r summarize}
+```{r summarize, echo=TRUE}
 Canada %>%
   summarize(MeanLiberalPct = mean(Percentage))
 ```
 What if we wanted to find out the mean percentage that Liberals received outside Atlantic Canada? Here, we would have to combine two functions, filter and summarize.
 
-```{r filtersum}
+```{r filtersum, echo=TRUE}
 Canada %>%
   filter(Atlantic == 0) %>%
   summarize(mean(Percentage))
@@ -130,7 +136,7 @@ Finally, a final package not covered in these cheat sheets is the [`broom`](http
 ## Quiz
 Here are two quick quiz questions to review the material in this tutorial:
 
-```{r quiz}
+```{r quiz, echo=FALSE}
 quiz(
   question("Which of these is the piping operator in dplyr? (quotes added and should not be considered part of operator)",
     answer("'%$%'"),
