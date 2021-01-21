@@ -25,7 +25,7 @@ navbar:
         - text: "ggplot2 basics"
           href: http://knight.stat.duke.edu:3939/ggplot2/
         - text: "Customize data visualizations"
-          href: http://knight.stat.duke.edu:3939/customize-viz/
+          href: http://knight.stat.duke.edu:3939/content/3/
         - text: "---"
         - text: "Tidy data wrangling with dplyr"
           href: http://knight.stat.duke.edu:3939/wrangle-data/

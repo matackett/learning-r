@@ -9,6 +9,8 @@ runtime: shiny_prerendered
 resource_files:
 - Basics of Markdown.Rmd
 - Canada.xlsx
+- Basics of Markdown.Rmd
+- Canada.xlsx
 ---
 
 ```{r setup, include=FALSE}

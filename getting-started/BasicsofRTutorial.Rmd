@@ -10,6 +10,9 @@ resource_files:
 - images/R.png
 - images/RInitial.png
 - BasicsofRTutorial.Rmd
+- BasicsofRTutorial.html
+- BasicsofRTutorial.Rmd
+- BasicsofRTutorial.Rmd
 ---
 
 ```{r setup, include=FALSE}
