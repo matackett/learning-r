@@ -1,3 +1,9 @@
+---
+output: html_document
+resource_files:
+- getting-started/BasicsofRTutorial.html
+- getting-started/BasicsofRTutorial.html
+---
 # Duke StatSci Learning R Tutorials
 
 :link:  [duke-learning-r.netlify.app](https://duke-learning-r.netlify.app)
@@ -6,33 +12,16 @@
 
 ## Instructions if you have feedback: 
 
-## Instructions on updating tutorials: 
+## Instructions on updating tutorials:
 
-<!--
-|   Unit             |   Topic                              |   Contributor  |   Reviewer 1  |   Reviewer 2  |
-|--------------------|--------------------------------------|----------------|---------------|---------------|
-|   Getting started  |   Introducing R & RStudio            |   Jacob        |   Bob         |   Shawn       |
-|   Getting started  |   Clone repo + new project           |   Maria        |   Bob         |   Shawn       |
-|   Getting started  |   GitHub push + pull                 |   Maria        |   Bob         |   Shawn       |
-|   Getting started  |   R Markdown basics                  |   Jacob        |   Bob         |   Shawn       |
-|   Getting started  |   Introducing tidyverse              |   Jacob        |   Yue         |   Joan        |
-|   Getting started  |   Code style                         |   Shawn        |   Yue         |   Joan        |
-|   Data viz         |   ggplot2 basics                     |   Jacob        |   Yue         |   Joan        |
-|   Data viz         |   Customizing plots                  |   Maria        |   Yue         |   Joan        |
-|   Data wrangling   |   dplyr basics                       |   Yue-J        |   Shawn       |   Bob         |
-|   Data wrangling   |   forecats / dealing with factors    |   Yue-J        |   Shawn       |   Bob         |
-|   Data wrangling   |   Data types                         |   Yue-J        |   Shawn       |   Bob         |
-|   Inference        |   Bootstrap w/ infer                 |   Bob          |   Maria       |   Jacob       |
-|   Inference        |   Simulation-based testing w/ infer  |   Bob          |   Maria       |   Jacob       |
-|   Inference        |   CLT t-tests w/ infer               |   Bob          |   Maria       |   Jacob       |
-|   Regression       |   lm + tidy output + glance          |   Yue-J        |   Joan        |   Maria       |
-|   Regression       |   augment                            |   Yue-J        |   Joan        |   Maria       |
-|   Regression       |   glm + tidy output                  |   Yue-J        |   Joan        |   Maria       |
-|   Special topics   |   Spatial data                       |   Jacob        |   Shawn       |   Yue         |
-|   Special topics   |   Web scraping                       |   Shawn        |   Jacob       |   Yue         |
-|   Special topics   |   Functions                          |   Shawn        |   Jacob       |   Yue         |
-|   Special topics   |   Automation                         |   Shawn        |   Jacob       |   Maria       |
-|   Special topics   |   Text analysis                      |   Yue-J        |   Joan        |   Bob         |
-|   Special topics   |   Intro to Shiny                     |   Shawn        |   Maria       |   Jacob       |
-|   Special topics   |   knn classification                 |   Maria        |   Jacob       |   Yue         |
--->
+## Instructions for deploying the tutorials:
+
+- If you're not on campus, connect to VPN
+- Clone the learning-r repo and open in RStudio
+- Open the tutorial you're interested in (folder should coincide with the section headers)
+- Click "Run Document" just to make sure it runs 
+- Click the blue "Publish to Server" button on the top right of the editor window. 
+- If this is your first time, click "Add new account" in the pop-up box and add the name of the server. It should now show up as an option in the "Publish to Account" box. - In the list of files, click "uncheck all" if any of the files are checked. Then click "Add More" and navigate to the app you want to deploy. 
+- If the app reads in a data set, you'll need to repeat the process to add the appropriate data set.
+- For the title, you can use the same title at the end of the links in the _site.yml menu. Hopefully that way you don't have to update the link names. Just note whatever you put in the title will be coverted to the link name. 
+
