@@ -24,4 +24,5 @@ resource_files:
 - If this is your first time, click "Add new account" in the pop-up box and add the name of the server. It should now show up as an option in the "Publish to Account" box. - In the list of files, click "uncheck all" if any of the files are checked. Then click "Add More" and navigate to the app you want to deploy. 
 - If the app reads in a data set, you'll need to repeat the process to add the appropriate data set.
 - For the title, you can use the same title at the end of the links in the _site.yml menu. Hopefully that way you don't have to update the link names. Just note whatever you put in the title will be coverted to the link name. 
+- If you update the site, type rmarkdown::render_site() in the console to get the new site.
 
