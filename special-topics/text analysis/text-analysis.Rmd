@@ -36,6 +36,7 @@ In addition to `tidyverse` we will be using a few other packages today
 library(tidyverse)
 library(tidytext)
 library(genius) # https://github.com/JosiahParry/genius
+library(textdata)
 ```
 
 ---
@@ -545,3 +546,7 @@ ggplot(combined, aes(x = `Ariana Grande`, y = `The National`))+
 
 Application Exercise, available at
 [https://classroom.github.com/a/hPdnIAFI](https://classroom.github.com/a/hPdnIAFI)
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

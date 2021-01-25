@@ -1,13 +1,20 @@
 ---
 title: "Shiny"
-output: 
+output:
   learnr::tutorial:
-    progressive: false
-    theme: "cerulean"
-    allow_skip: true
-    includes:
-      in_header: www/hex.html
+    progressive: no
+    theme: cerulean
+    allow_skip: yes
 runtime: shiny_prerendered
+resource_files:
+- shiny.Rmd
+- images/input_widgets.png
+- images/overview_1.png
+- images/overview_2.png
+- images/publish_app.png
+- images/shiny.png
+- www/hex.html
+- www/hex.html
 ---
 
 ```{r setup, include=FALSE}
@@ -879,3 +886,7 @@ Want to learn more about Shiny? Check out some of the following resources.
 2. In-depth articles on specific Shiny topics: https://shiny.rstudio.com/articles/
 
 3. [Dashboards](https://rstudio.github.io/shinydashboard/) using Shiny
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

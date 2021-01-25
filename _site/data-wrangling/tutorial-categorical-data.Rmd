@@ -9,6 +9,8 @@ runtime: shiny_prerendered
 resource_files:
 - tutorial-categorical-data.Rmd
 - pokemon.csv
+- pokemon.csv
+- tutorial-categorical-data.Rmd
 ---
 
 ```{r setup, include=FALSE}
@@ -216,3 +218,7 @@ category. Once again, we're creating a new variable, `prim_type`:
 pokemon_cat %>% 
  mutate(prim_type = fct_lump(type_1, prop = 0.05))
 ```
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

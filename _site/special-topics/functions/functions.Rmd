@@ -1,11 +1,14 @@
 ---
 title: "Functions"
-output: 
+output:
   learnr::tutorial:
-    progressive: false
-    theme: "cerulean"
-    allow_skip: true
+    progressive: no
+    theme: cerulean
+    allow_skip: yes
 runtime: shiny_prerendered
+resource_files:
+- functions.Rmd
+- functions.Rmd
 ---
 
 ```{r setup, include=FALSE}
@@ -410,3 +413,7 @@ quiz(
    
 2. Wickham, H. (2020). The tidyverse style guide. Retrieved from
    https://style.tidyverse.org/.
+   
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

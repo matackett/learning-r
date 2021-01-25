@@ -11,6 +11,12 @@ resource_files:
 - Canada.xlsx
 - Basics of Markdown.Rmd
 - Canada.xlsx
+- Basics of Markdown.Rmd
+- images/Chunk.png
+- images/KnitExample.png
+- images/Markdown.png
+- images/MarkdownOptions.png
+- Canada.xlsx
 ---
 
 ```{r setup, include=FALSE}
@@ -147,3 +153,7 @@ quiz(
 )
 ```
 
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

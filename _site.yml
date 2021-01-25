@@ -8,61 +8,61 @@ navbar:
     - text: "Getting Started"
       menu: 
         - text: "Basics of R and RStudio"
-          href: http://knight.stat.duke.edu:3939/r-basics/
+          href: http://num1.stat.duke.edu:3939/content/4/
         - text: "Basics of R Markdown"
-          href: http://knight.stat.duke.edu:3939/rmarkdown-basics/
+          href: http://num1.stat.duke.edu:3939/content/5/
         - text: "Into the Tidyverse"
-          href: http://knight.stat.duke.edu:3939/into-tidyverse/
+          href: http://num1.stat.duke.edu:3939/content/6
         - text: "Code style"
-          href: http://knight.stat.duke.edu:3939/code_style
+          href: http://num1.stat.duke.edu:3939/content/7
         - text: "---"
         - text: "Clone repo + start new project"
           href:  getting-started/clone-new-project.html
         - text: "Commit + Push and Pull"
-          href: getting-started/git-push-pull.html
+          href: http://num1.stat.duke.edu:3939/content/8
     - text: "Data Viz & Wrangling"
       menu: 
         - text: "ggplot2 basics"
-          href: http://knight.stat.duke.edu:3939/ggplot2/
+          href: http://num1.stat.duke.edu:3939/content/9
         - text: "Customize data visualizations"
-          href: http://knight.stat.duke.edu:3939/content/3/
+          href: .........
         - text: "---"
         - text: "Tidy data wrangling with dplyr"
-          href: http://knight.stat.duke.edu:3939/wrangle-data/
+          href: http://num1.stat.duke.edu:3939/content/11
         - text: "Wrangling factors with forcats"
-          href: http://knight.stat.duke.edu:3939/wrangle-factors/
+          href: http://num1.stat.duke.edu:3939/content/12
         - text: "Data types in R"
-          href: http://knight.stat.duke.edu:3939/data-types/
+          href: http://num1.stat.duke.edu:3939/content/13
     - text: "Inference"
       menu: 
         - text: "Bootstrapping with Infer"
-          href: http://knight.stat.duke.edu:3939/bootstrap/
+          href: http://num1.stat.duke.edu:3939/content/14
         - text: "Simulation-Based Inference with Infer"
-          href: http://knight.stat.duke.edu:3939/sim-inference/
+          href: http://num1.stat.duke.edu:3939/content/15
         - text: "CLT-Based Inference with Infer"
-          href: http://knight.stat.duke.edu:3939/clt-inference/
+          href: http://num1.stat.duke.edu:3939/content/16
     - text: "Regression"
       menu: 
         - text: "Intro to Linear Models"
-          href: http://knight.stat.duke.edu:3939/regression-intro/
+          href: http://num1.stat.duke.edu:3939/content/17
         - text: "Regression diagnostics and prediction"
-          href: http://knight.stat.duke.edu:3939/regression-diagnostics/
+          href: http://num1.stat.duke.edu:3939/content/18
         - text: "Logistic Regression"
-          href: http://knight.stat.duke.edu:3939/logistic/
+          href: http://num1.stat.duke.edu:3939/content/19
     - text: "Special Topics"
       menu: 
         - text: "Spatial Analysis"
-          href: http://knight.stat.duke.edu:3939/spatial/
+          href: http://num1.stat.duke.edu:3939/content/20
         - text: "kNN"
-          href: special-topics/knn.html
+          href: http://num1.stat.duke.edu:3939/content/21
         - text: "Web Scraping"
-          href: http://knight.stat.duke.edu:3939/web_scraping
+          href: http://num1.stat.duke.edu:3939/content/22
         - text: "Functions"
-          href: http://knight.stat.duke.edu:3939/functions
+          href: http://num1.stat.duke.edu:3939/content/23
         - text: "Automation"
-          href: http://knight.stat.duke.edu:3939/automation
+          href: http://num1.stat.duke.edu:3939/content/24
         - text: "Shiny"
-          href: http://knight.stat.duke.edu:3939/shiny
+          href: http://num1.stat.duke.edu:3939/content/25
         - text: "Text analysis"
           href: special-topics/text-analysis.html
     - icon: fab fa-github

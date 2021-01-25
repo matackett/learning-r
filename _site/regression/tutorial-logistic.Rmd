@@ -11,6 +11,8 @@ resource_files:
 - pokemon.csv
 - tutorial-logistic.Rmd
 - pokemon.csv
+- tutorial-logistic.Rmd
+- pokemon.csv
 ---
 
 ```{r setup, include=FALSE}
@@ -287,3 +289,7 @@ pred_probs <- augment(___, newdata = ___) %>%
   mutate(p = exp(___)/(1 + exp(___)) %>% 
   pull(p)
 ```
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

@@ -9,6 +9,7 @@ runtime: shiny_prerendered
 resource_files:
 - clt_inference.Rmd
 - clt_inference.Rmd
+- clt_inference.Rmd
 ---
 
 ```{r setup, include=FALSE}
@@ -352,3 +353,7 @@ quiz(
 
 - [Infer Website](https://infer.netlify.app/)
 - [General Social Survey Website](https://gss.norc.org/)
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

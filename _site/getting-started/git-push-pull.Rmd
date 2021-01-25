@@ -1,13 +1,20 @@
 ---
 title: "Getting Started with GitHub"
-subtitle: "Commit + Push and Pull"
-author: ""
-output: 
-  html_document: 
-    toc: true
-    toc_float: true
-    fig_height: 10
+author: ''
+subtitle: Commit + Push and Pull
+output:
+  learnr::tutorial:
+    progressive: no
     theme: cerulean
+    allow_skip: yes
+runtime: shiny_prerendered
+resource_files:
+- git-push-pull.Rmd
+- git-push-pull.Rmd
+- push-pull-img/commit-message.png
+- push-pull-img/favicon.ico.png
+- push-pull-img/git-pane.png
+- push-pull-img/updated-repo.png
 ---
 
 ```{r setup, include=FALSE}
@@ -16,6 +23,8 @@ knitr::opts_chunk$set(echo = FALSE,
                       message = FALSE, 
                       fig.align = "center")
 ```
+
+## Introduction
 
 In the tutorial [Getting Started with GitHub: Clone Repo + Start New RStudio Project](clone-new-project.html), you learned how to clone a repo and start a new project in RStudio. In this tutorial, we'll talk about how to pass updated files between RStudio and GitHub as you work on your analysis. 
 
@@ -120,3 +129,7 @@ To update the local repo, click the **Pull** button in the Git pane. You will no
 ## Acknowledgements
 
 The instructions from this tutorial were adapted from labs in [Data Science in a Box](https://datasciencebox.org/) by Mine &Ccedil;etinkaya-Rundel.
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

@@ -9,10 +9,6 @@ runtime: shiny_prerendered
 resource_files:
 - Canada.xlsx
 - Into the Tidyverse.Rmd
-- Canada.xlsx
-- Into the Tidyverse.Rmd
-- Into the Tidyverse.Rmd
-- Canada.xlsx
 - Into the Tidyverse.Rmd
 - Canada.xlsx
 ---
@@ -154,3 +150,7 @@ quiz(
   )
 )
 ```
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

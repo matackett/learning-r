@@ -1,10 +1,14 @@
 ---
-title: "k nearest neighbors"
-output: 
-  html_document:
-    toc: true
-    toc_float: true
+title: "K Nearest Neighbors"
+output:
+  learnr::tutorial:
+    progressive: no
     theme: cerulean
+    allow_skip: yes
+runtime: shiny_prerendered
+resource_files:
+- knn.Rmd
+- knn.Rmd
 ---
 
 ```{r setup, include=FALSE}
@@ -14,6 +18,8 @@ knitr::opts_chunk$set(echo = TRUE,
 
 library(tidyverse)
 ```
+
+## Introduction
 
 By the end of this tutorial, you be able to:
 
@@ -152,3 +158,6 @@ Using k-nearest neighbors,
 - "K-Nearest Neighbors" in [Introduction to Statistical Learning](https://faculty.marshall.usc.edu/gareth-james/ISL/ISLR%20Seventh%20Printing.pdf) by Gareth James, Daniela Witten, Trevor Hastie, Robert Tibshirani, pg. 39 - 42.  
 - [K-Nearest Neighbors Algorithm with Examples in R (Simply Explained knn)](https://towardsdatascience.com/k-nearest-neighbors-algorithm-with-examples-in-r-simply-explained-knn-1f2c88da405c) by Kshitiz Sirohi
 
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

@@ -10,8 +10,9 @@ resource_files:
 - Ggplot.Rmd
 - SuperTuesday.xlsx
 - House.xlsx
-- SuperTuesday.xlsx
 - Ggplot.Rmd
+- House.xlsx
+- SuperTuesday.xlsx
 ---
 
 ```{r setup, include=FALSE}
@@ -184,3 +185,7 @@ quiz(
   )
 )
 ```
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

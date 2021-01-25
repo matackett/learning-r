@@ -9,6 +9,8 @@ runtime: shiny_prerendered
 resource_files:
 - tutorial-diag-pred-augment.Rmd
 - beijing.csv
+- beijing.csv
+- tutorial-diag-pred-augment.Rmd
 ---
 
 ```{r setup, include=FALSE}
@@ -441,3 +443,7 @@ augment(___) %>%
   labs(x = "Fitted value", y = "Residual",
        title = "___")
 ```
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

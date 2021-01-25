@@ -1,13 +1,19 @@
 ---
 title: "Web Scraping"
-output: 
+output:
   learnr::tutorial:
-    progressive: false
-    theme: "cerulean"
-    allow_skip: true
-    includes:
-      in_header: www/hex.html
+    progressive: no
+    theme: cerulean
+    allow_skip: yes
 runtime: shiny_prerendered
+resource_files:
+- web_scraping.Rmd
+- web_scraping.Rmd
+- images/books_to_scrape.png
+- images/html_structure.png
+- images/in_stock_css.png
+- images/rvest.png
+- images/title_css.png
 ---
 
 ```{r setup, include=FALSE}
@@ -393,3 +399,7 @@ resources.
    
 2. SelectorGadget: point and click CSS selectors. (2020). Selectorgadget.com. 
    Retrieved from https://selectorgadget.com/.
+   
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

@@ -9,6 +9,8 @@ runtime: shiny_prerendered
 resource_files:
 - tutorial-intro-lm.Rmd
 - beijing.csv
+- beijing.csv
+- tutorial-intro-lm.Rmd
 ---
 
 ```{r setup, include=FALSE}
@@ -311,3 +313,7 @@ ___ <- lm(___ ~ ___, data = ___)
   
 tidy(___)
 ```
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

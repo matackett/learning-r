@@ -9,6 +9,7 @@ runtime: shiny_prerendered
 resource_files:
 - tutorial-data-types.Rmd
 - tutorial-data-types.Rmd
+- tutorial-data-types.Rmd
 ---
 
 ```{r setup, include=FALSE}
@@ -159,3 +160,7 @@ If a plot or output is not behaving the way you expect, first investigate the
 data class. If you are absolutely sure of a data class (and the existing class
 is wrong), over-write it in your tibble so that you don't need to keep having to 
 keep track of it (perhaps by using `mutate`).
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

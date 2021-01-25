@@ -7,9 +7,6 @@ output:
     allow_skip: yes
 runtime: shiny_prerendered
 resource_files:
-- data-viz-customize.Rmd
-- data-viz-customize-learnr.Rmd
-- data-viz-customize-learnr.Rmd
 - data-viz-customize-learnr.Rmd
 - data-viz-customize-learnr.Rmd
 ---
@@ -26,6 +23,7 @@ library(ggthemes)
 library(viridis) 
 library(gradethis)
 library(flair)
+library(rstudioapi)
 
 tutorial_options(
   exercise.timelimit = 30
@@ -502,3 +500,7 @@ library(patchwork)
 - https://patchwork.data-imaginist.com/index.html
 - [R for Data Science: Data visualization](https://r4ds.had.co.nz/data-visualisation.html)
 - [ggplot2: Elegant Graphics for Data Analysis](ggplot2: Elegant Graphics for Data Analysis)
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

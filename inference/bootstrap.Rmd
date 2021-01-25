@@ -9,6 +9,8 @@ runtime: shiny_prerendered
 resource_files:
 - bootstrap.Rmd
 - verizon.csv
+- bootstrap.Rmd
+- verizon.csv
 ---
 
 ```{r setup, include=FALSE}
@@ -343,3 +345,7 @@ https://statistics.sites.stanford.edu/sites/g/files/sbiybj6031/f/BIO%2083.pdf)
 https://rss.onlinelibrary.wiley.com/doi/pdf/10.1111/j.1740-9713.2004.00067.x)
 - [Bootstrap Methods and Permutation Tests by Tim Hesterberg](
 https://statweb.stanford.edu/~tibs/stat315a/Supplements/bootstrap.pdf)
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

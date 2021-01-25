@@ -9,6 +9,7 @@ runtime: shiny_prerendered
 resource_files:
 - sim_inference.Rmd
 - sim_inference.Rmd
+- sim_inference.Rmd
 ---
 
 ## Introduction
@@ -380,11 +381,11 @@ null_dist <- gss %>%
 
 Visualize the null distribution using the `visualize` function.
 
-```{r ex4, exercise = TRUE, exercise.setup = "ex3-solution"}
+```{r ex4, exercise = TRUE}
 
 ```
 
-```{r ex4-solution, exercise.setup = "ex3-solution"}
+```{r ex4-solution}
 null_dist %>%
   visualize()
 ```
@@ -392,11 +393,11 @@ null_dist %>%
 Starting with the plot above, add a vertical line representing the sample 
 statistic and shade the region corresponding to the $p$-value.
 
-```{r ex5, exercise = TRUE, exercise.setup = "ex3-solution"}
+```{r ex5, exercise = TRUE}
 
 ```
 
-```{r ex5-solution, exercise.setup = "ex3-solution"}
+```{r ex5-solution}
 null_dist %>%
   visualize() +
   shade_p_value(phat, direction = "two-sided")
@@ -434,3 +435,7 @@ quiz(
 - "The Use and Abuse of Cell Phones and Text Messaging During Class: A Survey of
 College Students". College Teaching, 2012.
 - [General Social Survey Website](https://gss.norc.org/)
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

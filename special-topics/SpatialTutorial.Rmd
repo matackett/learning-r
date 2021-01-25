@@ -8,6 +8,7 @@ output:
 runtime: shiny_prerendered
 resource_files:
 - SpatialTutorial.Rmd
+- SpatialTutorial.Rmd
 ---
 
 ```{r setup, include=FALSE}
@@ -90,3 +91,7 @@ quiz(
     )
 )
 ```
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)

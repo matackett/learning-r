@@ -1,13 +1,14 @@
 ---
 title: "Getting Started with GitHub"
 subtitle: "Clone Repo + Start New RStudio Project"
-author: ""
-output: 
-  html_document: 
-    toc: true
-    toc_float: true
-    fig_height: 10
+output:
+  learnr::tutorial:
+    progressive: no
     theme: cerulean
+    allow_skip: yes
+runtime: shiny_prerendered
+resource_files:
+- clone-new-project.Rmd
 ---
 
 ```{r setup, include=FALSE}
@@ -156,3 +157,7 @@ This will cache your password for 604800 seconds, i.e. 7 days (60 * 60 * 24 * 7 
 
 The instructions from this tutorial were adapted from labs in [Data Science in a Box](https://datasciencebox.org/) by Mine &Ccedil;etinkaya-Rundel.
 
+   
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)
