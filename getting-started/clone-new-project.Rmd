@@ -9,7 +9,10 @@ output:
 runtime: shiny_prerendered
 resource_files:
 - clone-new-project.Rmd
-- clone-new-project.Rmd
+- clone-new-project-img/clone-repo.png
+- clone-new-project-img/create-project.png
+- clone-new-project-img/paste-url.png
+- clone-new-project-img/starter-repo.png
 ---
 
 ```{r setup, include=FALSE}
@@ -18,6 +21,9 @@ knitr::opts_chunk$set(echo = FALSE,
                       message = FALSE, 
                       fig.align = "center")
 ```
+
+## Introduction
+
 
 [GitHub.com](www.github.com) is an online platform that is commonly used in industry and academia for collaboration. You will use GitHub in your statistics / data science class to complete individual and team assignments. This is the first of two tutorials to walk you through the steps you will need to successfully use GitHub in your classes. 
 
