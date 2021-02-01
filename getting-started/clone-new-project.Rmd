@@ -1,6 +1,6 @@
 ---
 title: "Getting Started with GitHub"
-subtitle: "Clone Repo + Start New RStudio Project"
+subtitle: Clone Repo + Start New RStudio Project
 output:
   learnr::tutorial:
     progressive: no
@@ -8,6 +8,7 @@ output:
     allow_skip: yes
 runtime: shiny_prerendered
 resource_files:
+- clone-new-project.Rmd
 - clone-new-project.Rmd
 ---
 

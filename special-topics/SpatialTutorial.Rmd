@@ -8,7 +8,6 @@ output:
 runtime: shiny_prerendered
 resource_files:
 - SpatialTutorial.Rmd
-- SpatialTutorial.Rmd
 ---
 
 ```{r setup, include=FALSE}

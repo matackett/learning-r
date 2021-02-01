@@ -8,8 +8,6 @@ output:
 runtime: shiny_prerendered
 resource_files:
 - sim_inference.Rmd
-- sim_inference.Rmd
-- sim_inference.Rmd
 ---
 
 ## Introduction

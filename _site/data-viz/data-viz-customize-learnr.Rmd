@@ -9,6 +9,7 @@ runtime: shiny_prerendered
 resource_files:
 - data-viz-customize-learnr.Rmd
 - data-viz-customize-learnr.Rmd
+- data-viz-customize-learnr.Rmd
 ---
 
 ```{r setup, include=FALSE}
