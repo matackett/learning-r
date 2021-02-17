@@ -65,6 +65,8 @@ navbar:
           href: http://num1.stat.duke.edu:3939/content/25
         - text: "Text analysis"
           href: special-topics/text-analysis.html
+    - text: "FAQ"
+      href: faq/FAQ.html
     - icon: fab fa-github
       href: https://github.com/matackett/learning-r
 output: 

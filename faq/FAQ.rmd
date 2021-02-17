@@ -1,0 +1,36 @@
+---
+title: "Frequently Asked Questions"
+output:
+  learnr::tutorial:
+    progressive: no
+    theme: cerulean
+    allow_skip: yes
+runtime: shiny_prerendered
+resource_files:
+- FAQ.Rmd
+- missing.jpeg
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Introduction
+
+This FAQ page has answers to some of the more common issues students run into with R. If your question is not answered here, either search your error message on StackOverflow or reach out to your professor/TA. 
+
+## Package Errors
+
+When you try to call `library(<PACKAGE>)` on a package that has not yet been installed into RStudio, you will receive the following error message
+
+```{r missing-package, fig.width=3}
+knitr::include_graphics("faq-img/missing.jpeg")
+```
+
+To fix this error message, run `install.packages('MissingPackage')` and replace 'MissingPackage' with the package you are trying to work with.
+
+## Return to Learn R Tutorials Page
+
+[Click here.](https://duke-learning-r.netlify.app)
