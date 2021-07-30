@@ -6,7 +6,7 @@
       "description": "Some additional details about the website",
       "author": [],
       "contents": "\nThis is some text about the site.\n\n\n\n",
-      "last_modified": "2021-07-30T16:26:08-04:00"
+      "last_modified": "2021-07-30T17:38:48-04:00"
     },
     {
       "path": "index.html",
@@ -34,7 +34,7 @@
         }
       ],
       "contents": "\nAccessing RStudio\nYou can access RStudio in three ways:\nDocker containers: As a Duke student, you can access RStudio through a Docker container maintained by Duke OIT. Go to https://vm-manage.oit.duke.edu/containers and log in using your Duke NetID credentials.\nRStudio Cloud: Sign up for a free account https://rstudio.cloud/\nInstall R on your computer: See the chapter Install or upgrade R and RStudio in Happy Git and GitHub for the useR for step-by-step instructions to install R and RStudio.\nUsing the interactive tutorials\nMany of the tutorials on this site were created using Shiny from RStudio. You will need to log into Duke’s VPN in order to access these tutorials.\nIf you do not have Duke’s VPN client installed on your computer, go to https://portal.duke.edu to install the appropriate VPN client.\nTo log into VPN:\nClick on the VPN client. Type vpn.duke.edu and click Connect.\nEnter your Duke NetID and password.\nChoose an option to receive the multi-factor authentication and complete the authentication process.\nClick continue, and you are now in the VPN and ready to do the interactive tutorials!\nVisit the Duke OIT website for more information about VPN.\nAdditional resources\nR for Data Science by Garrett Grolemund and Hadley Wickham\nHappy Git and GitHub for the useR by Jenny Bryan, the STAT 545 TAs, and Jim Hester\nR Markdown: The Definitive Guide by Yihui Xie, J. J. Allaire, and Garrett Grolemund\nggplot2: Elegant Graphics for Data Analysis by Hadley Wickham\nRStudio Cheatsheets\n\n\n\n",
-      "last_modified": "2021-07-30T16:26:08-04:00"
+      "last_modified": "2021-07-30T17:38:49-04:00"
     }
   ],
   "collections": []
