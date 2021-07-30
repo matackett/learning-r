@@ -7,13 +7,7 @@ output:
     allow_skip: yes
 runtime: shiny_prerendered
 resource_files:
-- BasicsofRTutorial.html
 - BasicsofRTutorial.Rmd
-- images/RInitial.png
-- images/R.png
-- BasicsofRTutorial.Rmd
-- images/R.png
-- images/RInitial.png
 ---
 
 ```{r setup, include=FALSE}

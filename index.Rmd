@@ -1,7 +1,18 @@
 ---
 title: "Duke StatSci Learning R Tutorials"
-authors: ["Maria Tackett","Bob Eisinger", "Yue Jiang", "Shawn Santo", "Jacob Smith"]
+author: 
+  - first_name: "Maria"
+    last_name: "Tackett"
+  - first_name: "Bob"
+    last_name: "Eisinger"
+  - first_name: "Yue"
+    last_name: "Jiang"
+  - first_name: "Shawn"
+    last_name: "Santo"
+  - first_name: "Jacob"
+    last_name: "Smith"
 site: distill::distill_website
+
 ---
 
 ## Accessing RStudio 

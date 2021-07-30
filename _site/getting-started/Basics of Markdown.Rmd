@@ -8,15 +8,23 @@ output:
 runtime: shiny_prerendered
 resource_files:
 - Basics of Markdown.Rmd
-- Canada.xlsx
-- Basics of Markdown.Rmd
-- Canada.xlsx
-- Basics of Markdown.Rmd
 - images/Chunk.png
 - images/KnitExample.png
 - images/Markdown.png
 - images/MarkdownOptions.png
 - Canada.xlsx
+- Basics of Markdown.Rmd
+- Canada.xlsx
+- Chunk.png
+- KnitExample.png
+- Markdown.png
+- MarkdownOptions.png
+- images/KnitExample.png
+- images/Chunk.png
+- images/Markdown.png
+- images/MarkdownOptions.png
+- images/R.png
+- images/RInitial.png
 ---
 
 ```{r setup, include=FALSE}
