@@ -23,16 +23,14 @@ navbar:
     - text: "Data Viz & Wrangling"
       menu: 
         - text: "ggplot2 basics"
-          href: http://num1.stat.duke.edu:3939/content/9
-        - text: "Customize data visualizations"
-          href: http://num1.stat.duke.edu:3939/content/10
+          href: http://maths4.stat.duke.edu:3939/ggplot2-basics/
         - text: "---"
         - text: "Tidy data wrangling with dplyr"
-          href: http://num1.stat.duke.edu:3939/content/11
+          href: http://maths4.stat.duke.edu:3939/data-wrangling/
         - text: "Wrangling factors with forcats"
-          href: http://num1.stat.duke.edu:3939/content/12
+          href: http://maths4.stat.duke.edu:3939/forcats/
         - text: "Data types in R"
-          href: http://num1.stat.duke.edu:3939/content/13
+          href: http://maths4.stat.duke.edu:3939/data-types/
     - text: "Inference"
       menu: 
         - text: "Bootstrapping with Infer"
